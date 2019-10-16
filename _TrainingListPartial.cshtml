@@ -1,0 +1,106 @@
+﻿@model CTMS.Models.ViewScheduledTrainingDetails
+
+@{
+    Layout = null;
+}
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table table-striped remove-bottom table-selector">
+				<thead>
+					<tr>
+						
+						<th>
+							<div>
+								@*<a href="javascript:void(0)" sortby="ProgramName" class="sort"></a></div>*@
+								Training Name
+						</th>
+						<th>
+							<div>
+								@*<a href="javascript:void(0)" sortby="MaintainancePointName" class="sort">Maintenance
+									Point / HO / SHO </a>*@
+								StandardDuration
+							</div>
+						</th>
+						<th>
+							<div>
+								@*<a href="javascript:void(0)" sortby="TrainingTypeName" class="sort">Training Type
+								</a>*@
+								Start Date Time
+							</div>
+						</th>
+						<th>
+							<div>
+								@*<a href="javascript:void(0)" sortby="Duration" class="sort">Duration </a>*@
+								End Date Time
+							</div>
+						</th>
+						@*<th>
+							<div>
+								<a href="javascript:void(0)" sortby="BookingDone" class="sort">Booking Done </a>
+							</div>
+						</th>
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="FreePlace" class="sort">Free Place </a>
+							</div>
+						</th>
+						<th>
+							<div>
+								Training Status
+							</div>
+						</th>
+						<th class="text-center">
+							<div>
+								Action
+							</div>
+						</th>*@
+					</tr>
+				</thead>
+				<tbody>
+				
+				 @if (Model != null && Model.TrainingList != null && Model.TrainingList.Count > 0)
+	 {
+		 for (int i = 0; i < Model.TrainingList.Count; i++)
+		 {
+									<tr class="ui-widget-content jqgrow ui-row-ltr">
+										@*<td class="ui-state-default jqgrid-rownum">@Model.PublishedTrainings[i].RowNumber
+										</td>*@
+										@*<td>
+										<a class="lnkDetail" href="javascript:void(0)" onclick="openEditDialog('/PublishedTraining/ViewProgramDetails?ProgramId=@Model.PublishedTrainings[i].ScheduledTrainingId','Program Details','dialog-edit')"> @Model.PublishedTrainings[i].Training.Trim()</a>
+										</td>*@
+										<td>@Model.TrainingList[i].TrainingName
+										</td>
+										@*<td>@Model.TrainingList[i].TrainingType
+										</td>*@
+										<td>@CTMS.Common.CommonUtils.GetActualTrainingDuration(Convert.ToInt32(Model.TrainingList[i].StandardDuration))
+										</td>
+										<td>@Model.TrainingList[i].StartDateTime
+										</td>
+										<td>@Model.TrainingList[i].EndDateTime
+										</td>
+										
+										
+										</tr>
+		 }
+	 }
+	 else
+	 {
+													<tr>
+														<td colspan="6">
+															No record found.
+														</td>
+													</tr>
+	 }
+				</tbody>
+			</table>
+		</div>
+		@*<div class="pagination-strip clearfix">
+			<div class="show-page-number">
+			</div>
+			<div id="pg_pager" class="text-right pagination-wrp">
+			</div>
+		</div>*@
+	</div>
+</div>

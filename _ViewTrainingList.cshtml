@@ -1,0 +1,100 @@
+﻿@using CTMS.Models
+@model ViewCandidate
+<div class="row">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table table-striped remove-bottom table-selector">
+                <thead>
+                    <tr>
+                        <th>
+                            Sr.No.
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="TrainingName" class="sort">Training Name</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="ProgramName" class="sort">Program Name</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="TrainingTypeName" class="sort">Training Type</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="TrainingStatus" class="sort">Training Status</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="IsPass" class="sort">Result Status</a></div>
+                        </th>
+                        <th>
+                            <div class="text-center">
+                                Action
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.CandidateBookedTrainingList != null && Model.CandidateBookedTrainingList.Count > 0)
+                    {
+                        for (int i = 0; i < Model.CandidateBookedTrainingList.Count; i++)
+                        {
+                        <tr>
+                            @Html.HiddenFor(m => Model.CandidateBookedTrainingList[i].BookedCandidateID, new { Value = Model.CandidateBookedTrainingList[i].BookedCandidateID })
+                            @Html.HiddenFor(m => Model.CandidateBookedTrainingList[i].TrainingID, new { Value = (Model.CandidateBookedTrainingList[i].TrainingID) })
+                            <td>
+                                @Model.CandidateBookedTrainingList[i].RowNumber
+                            </td>
+                            <td>
+                                @Model.CandidateBookedTrainingList[i].TrainingName
+                            </td>
+                            <td>
+                                @Model.CandidateBookedTrainingList[i].ProgramName
+                            </td>
+                            <td>@Model.CandidateBookedTrainingList[i].TrainingTypeName
+                            </td>
+                            <td>@Model.CandidateBookedTrainingList[i].TrainingStatusName
+                            </td>
+                            <td>
+                                @(Model.CandidateBookedTrainingList[i].IsPass != null ? Convert.ToBoolean(Model.CandidateBookedTrainingList[i].IsPass) ? "Passed" : "Failed" : "")
+                            </td>
+                            <td class="btn-action" width="15%">
+                                @if (@Model.CandidateBookedTrainingList[i].TrainingStatusName.ToLower() == "completed" && Model.CandidateBookedTrainingList[i].IsPass != null && Convert.ToBoolean(Model.CandidateBookedTrainingList[i].IsPass) && Model.CandidateBookedTrainingList[i].CertificateTemplateID > 0)
+                                {
+                                    <a class="icon-print"  target="_blank" href="/Candidate/PrintCertificate?TID=@Model.CandidateBookedTrainingList[i].TrainingID&CID=@Model.CandidateID" title="Print Certificate">
+                                        Print</a>
+                                }
+                                else
+                                {
+                                    <a class="icon-print-disabled" href="Javascript:void(0)" title="Print Certificate">Print</a>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">
+                                No record found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-strip clearfix">
+            <div class="show-page-number">
+            </div>
+            <div id="pg_pager" class="text-right pagination-wrp">
+            </div>
+        </div>
+        <!--.pagination-strip-->
+    </div>
+</div>
+@Html.HiddenFor(m => m.CandidateID, new { id = "CandidateID", Value = Model.CandidateID.ToString() })
+@Html.HiddenFor(m => m.TrainingID, new { id = "TrainingID", Value = Model.TrainingID })
+@Html.Partial("_ViewParameters", Model, new ViewDataDictionary<ViewParameters>())
+ 

@@ -1,0 +1,167 @@
+﻿  
+@{
+    ViewBag.Title = "Assessment Result";
+    Layout = "~/Views/Shared/_LayoutOnlineExam.cshtml";
+}
+@using CTMS.Models
+@model OnlineAssessmentResult
+   <div class="start-training-wrapper">
+    <div class="container-fluid">
+    @if (Model != null)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="gray-heading remove-bottom text-center">
+                 @if (!String.IsNullOrEmpty(Model.TopicName))
+                 {
+                      @Model.TopicName
+                 }
+                 else
+                 {
+                     @Model.TrainingName
+                 }   
+                </h2>
+                
+                <div class="table-bg table-style-new add-bottom">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr class="no-border">
+                                    <td><strong>Candidate Name:</strong></td>
+                                    <td>@Model.CandidateName</td>
+                                    <td><strong>Date :</strong></td>
+                                    <td>@Model.CurrentDate</td>
+                                    <td><strong>Total Questions:</strong></td>
+                                    <td>@Model.TotalQuestions</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><strong>Duration:</strong></td>
+                                    <td>@Model.AssessmentDuration</td>
+                                    <td><strong>Attempt Questions:</strong></td>
+                                    <td>@Model.AttemptQuestions</td>
+                                    <td><strong>Correct Answers:</strong></td>
+                                    <td>@Model.CorrectAnswers</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="white-bg">
+                	<div class="training-status-message">
+                    
+                    	<div class="row add-bottom">
+                        	<div class="col-sm-2"><label>Required Score:</label></div>
+                            <div class="col-sm-10">
+                                <div class="progress remove-bottom">
+                                  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @Model.RequiredPassingPercentage%">
+                                    <span class="sr-only">@Model.RequiredPassingPercentage % Complete (success)</span>
+                                      @Convert.ToInt32(Model.RequiredPassingPercentage) %
+                                  </div>
+                                </div>
+                                <div class="clearfix add-bottom">
+                                    <div class="progress-col-left">0</div>
+                                    <div class="progress-col-half">@Convert.ToInt32((Model.TotalMarks/2))</div>
+                                    <div class="progress-col-half">@Convert.ToInt32(@Model.TotalMarks)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row add-bottom">
+                        	<div class="col-sm-2"><label>Your Score:</label></div>
+                            <div class="col-sm-10">
+                            @if (Model.IsPass)
+                            {   
+                                <div class="progress remove-bottom">
+                                  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @Model.ObtainedPercentage%">
+                                    <span class="sr-only">@Model.ObtainedPercentage % Complete (success)</span>
+                                    @Convert.ToInt32(Model.ObtainedPercentage) %
+                                  </div>
+                                </div>
+                            }
+                            else
+                            {
+                                 <div class="progress remove-bottom">
+                                  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @Model.ObtainedPercentage%">
+                                    <span class="sr-only">@Model.ObtainedPercentage% Complete (success)</span>
+                                    @Convert.ToInt32(Model.ObtainedPercentage) %
+
+                                  </div>
+                                </div>
+                            }
+                                <div class="clearfix add-bottom">
+                                    <div class="progress-col-left">0</div>
+                                    <div class="progress-col-half">@Convert.ToInt32((Model.TotalMarks / 2))</div>
+                                    <div class="progress-col-half">@Convert.ToInt32(@Model.TotalMarks)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                       @if (Model.IsPass)
+                       {   
+                            <div class="alert alert-success text-center" role="alert">
+                    	        <h1>Congratulations!</h1> You have successfully completed Assessment.
+                            </div>
+                           
+                           <div class="text-center button-group">
+                           @if (Model.IsTopicWiseAssessment != null && Model.IsTopicWiseAssessment == true)
+                           {
+                               if (Model.TopicOrderNo == Model.MaxTopicOrder)
+                               {
+                                   if(Model.IsFeedbackRequired)
+                                   {
+                                   <a href="/ParticipantFeedback/Feedback?BCID=@Model.BookedCandidateID" class="btn btn-primary">Feedback</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Vendor/StartTraining?BCID=@Model.BookedCandidateID&ISF=False" class="btn btn-primary">Close</a>
+                                    }
+                               }
+                               else
+                               {
+                                     <a href="/Vendor/StartTraining?BCID=@Model.BookedCandidateID&ISF=False" class="btn btn-primary">Next Topic</a>
+                               }
+                           }
+                           else if (Model.IsTopicWiseAssessment != null && Model.IsTopicWiseAssessment == false)
+                           {
+                               if (Model.IsFeedbackRequired)
+                               {
+                                  <a href="/ParticipantFeedback/Feedback?BCID=@Model.BookedCandidateID" class="btn btn-primary">Feedback</a>
+                               }
+                               else
+                               {
+                                    <a href="/Vendor/StartTraining?BCID=@Model.BookedCandidateID&ISF=False" class="btn btn-primary">Close</a>
+                               }
+                           }
+                                 
+                           </div>
+                       }
+                       else
+                       {
+                            <div class="alert alert-danger text-center" role="alert">
+                    	      <h1>Sorry!</h1> You have not clear Assessment, please try again.
+                           </div>
+                           <div class="text-center button-group">
+                                 <a href="/Vendor/StartTraining?BCID=@Model.BookedCandidateID&ISF=False" class="btn btn-primary">Try Again</a>
+                           </div>
+                       
+                       }
+
+                       
+                       
+                    </div>
+                    
+                    
+                    
+                    
+                
+                </div>
+                
+            </div>
+        </div>
+    }
+        
+    </div>
+</div>    

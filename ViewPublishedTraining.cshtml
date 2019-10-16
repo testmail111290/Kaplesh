@@ -1,0 +1,291 @@
+﻿@model CTMS.Models.ViewPublishedTrainingModel
+
+@{
+	ViewBag.Title = "Published Program";
+	//Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <ol class="breadcrumb">
+            <li><a href="/Home/Home">
+                <img src="/Images/home-icon.png"></a></li>
+            <li class="active">Published Program</li>
+        </ol>
+    </div>
+</div>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@using (Ajax.BeginForm(new AjaxOptions { UpdateTargetId = "divPublishedTrainingList", OnBegin = "beginRequest", OnComplete = "searchComplete" }))
+{
+	<div class="text-right">
+		<a class="btn btn-primary" href="/PendingApproval/ViewPendingApproval" title="My Pending Approvals">My Pending Approvals</a>
+        <a class="btn btn-primary" href="/PublishedTraining/TrainingCalendar" title="View Training Calendar">View Training Calendar</a>
+	</div>
+	
+	
+	<div class="search-strip label-left text-center">
+		<div class="row">
+        <div class="col-sm-12">
+				 <div class="search-row search-row-large radio-group">
+					@Html.LabelFor(model => model.FilterPointType)
+				    
+				  <div class="radio-btn">
+					@if (Model.FilterPointType == 1)
+					{	 @Html.RadioButtonFor(model => model.FilterPointType, "1", new { @id = "radioMP", @checked = "checked" })}
+					else
+					{@Html.RadioButtonFor(model => model.FilterPointType, "1", new { @id = "radioMP" })
+                    }
+                    Maintenance Point </div> 
+                    <div class="radio-btn">
+					@if (Model.FilterPointType == 2)
+					{ @Html.RadioButtonFor(model => model.FilterPointType, "2", new { @id = "radioHO", @checked = "checked" })}
+					else
+					{ @Html.RadioButtonFor(model => model.FilterPointType, "2", new { @id = "radioHO" })
+                    } HO </div> 
+                     <div class="radio-btn">
+					@if (Model.FilterPointType == 3)
+					{ @Html.RadioButtonFor(model => model.FilterPointType, "3", new { @id = "radioSHO", @checked = "checked" })}
+					else
+					{@Html.RadioButtonFor(model => model.FilterPointType, "3", new { @id = "radioSHO" })} SHO </div>     
+					@Html.ValidationMessageFor(model => model.FilterPointType)
+				</div>
+		
+			
+				<div class="search-row search-row-large">
+					@Html.LabelFor(model => model.FilterCircleId)
+					@Html.DropDownListFor(model => model.FilterCircleId, (SelectList)ViewBag.CircleList, new { @class = "form-control  filter-control", @onchange = "GetCities()" })
+				</div>
+
+				<div class="search-row search-row-large">
+					@Html.LabelFor(model => model.FilterCityId)
+					@Html.DropDownListFor(model => model.FilterCityId, (SelectList)ViewBag.CityList, new { @class = "form-control  filter-control", @onchange = "GetMPs()" })
+				</div>
+
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+                <div class="search-row search-row-large">
+					@Html.LabelFor(model => model.FilterMaintanencePointId)
+					@Html.DropDownListFor(model => model.FilterMaintanencePointId, (SelectList)ViewBag.MaintanencePointList, new { @class = "form-control  filter-control" })
+				</div>
+
+				<div class="search-row search-row-large">
+					@Html.LabelFor(model => model.FilterTrainingType)
+					@Html.DropDownListFor(model => model.FilterTrainingType, (SelectList)ViewBag.TrainingTypeList, new { @class = "form-control  filter-control" })
+				</div>
+
+				<div class="search-row search-row-large">
+					@Html.LabelFor(model=> model.FilterTrainingCategory)
+					@Html.DropDownListFor(model => model.FilterTrainingCategory, (SelectList)ViewBag.TrainingCategoryList, new { @class = "form-control  filter-control" })
+
+				</div>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+			<div class="search-row search-row-large">
+					<div class="form-group  has-feedback">
+							@Html.LabelFor(model => model.FilterTrainingName)
+							@Html.TextBoxFor(model => model.FilterTrainingName, new { @class = "form-control  filter-control" })
+					</div>
+				</div>
+				<div class="search-row search-row-large">
+					<div class="form-group  has-feedback">
+						@Html.LabelFor(model => model.FilterFromDate)
+						@Html.TextBoxFor(model => model.FilterFromDate, new { id = "fromdate", @class = "form-control cal_icon filter-control", @readonly = "readonly" })
+						
+					</div>
+				</div>
+
+				<div  class="search-row search-row-large">
+					<div class="form-group  has-feedback">
+						@Html.LabelFor(model => model.FilterToDate)
+						@Html.TextBoxFor(model => model.FilterToDate, new { id = "todate", @class = "form-control cal_icon filter-control", @readonly = "readonly" })
+						
+					</div>
+				</div>
+				<div class="search-row search-row-medium">
+					<div class="form-group  has-feedback">
+						
+					</div>
+				</div>
+
+				<div  class="search-row search-row-medium">
+					<div class="form-group  has-feedback">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+            <div class="col-sm-12 text-center">
+                <input id="btnSubmit" type="submit" value="Search" class="btn" style="display: none" />
+                <input id="btnSearch" type="button" value="Search" class="btn btn-primary" />
+				 <input id="btnReset" type="button" value="Reset" onclick="resetFilter()" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+	
+	<div id="divPublishedTrainingList">
+        @Html.Partial("_PublishedTrainingGrid", Model)
+    </div>  
+}
+<div id="dialog-edit"></div>
+
+
+<script type="text/javascript">
+
+	$().ready(function () {
+
+	    $('#fromdate').datetimepicker({ minView: 2, autoclose: true, format: "@CTMS.Common.CommonUtils.ShortDateFormat.ToLower()" })
+	    $('#todate').datetimepicker({ minView: 2, autoclose: true, format: "@CTMS.Common.CommonUtils.ShortDateFormat.ToLower()" })
+
+	    $("#fromdate").on("changeDate", function (e) {
+	        $('#todate').datetimepicker('setStartDate', e.date);
+	    });
+	    $("#todate").on("changeDate", function (e) {
+	        $('#fromdate').datetimepicker('setEndDate', e.date);
+	    });
+
+
+
+	    $("#btnSearch").click(function () {
+	    	$("#CurrentPage").val("1");
+			sendToServer();
+		});
+
+		$("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+
+		$("#btnPendingApproval").click(function () {
+			window.location = "/PendingApproval/ViewPendingApproval";
+		})
+
+		$("#btnTrainingCalendar").click(function () {
+			alert("Training Calender clicked");
+		})
+
+
+		$('input[name="FilterPointType"]').change(function () {
+			$("#FilterCircleId").val("0");
+			$("#FilterCityId").val("0");
+			$("#FilterMaintanencePointId").val("0");
+			$.uniform.update("#FilterCircleId");
+			$.uniform.update("#FilterCityId");
+			$.uniform.update("#FilterMaintanencePointId");
+			changePointType();
+		});
+
+
+		function changePointType() {
+			var selected = $('input[name="FilterPointType"]:checked');
+			if (selected.val() == 1) {
+
+				$("#uniform-FilterCircleId").removeClass("disabled");
+				$("#uniform-FilterCityId").removeClass("disabled");
+				$("#uniform-FilterMaintanencePointId").removeClass("disabled");
+				$("#FilterCircleId").prop("disabled", false);
+				$("#FilterCityId").prop("disabled", false);
+				$("#FilterMaintanencePointId").prop("disabled", false);
+			}
+			else if (selected.val() == 2) {
+
+				$("#FilterCircleId").prop("disabled", true);
+				$("#uniform-FilterCircleId").addClass("disabled");
+				$("#uniform-FilterCityId").addClass("disabled");
+				$("#uniform-FilterMaintanencePointId").addClass("disabled");
+				$("#FilterCityId").prop("disabled", true);
+				$("#FilterMaintanencePointId").prop("disabled", true);
+			}
+			else if (selected.val() == 3) {
+
+				$("#FilterCircleId").prop("disabled", false);
+				$("#uniform-FilterCircleId").removeClass("disabled");
+				$("#FilterCityId").prop("disabled", true);
+				$("#FilterMaintanencePointId").prop("disabled", true);
+				$("#uniform-FilterCityId").addClass("disabled");
+				$("#uniform-FilterMaintanencePointId").addClass("disabled");
+			}
+
+		}
+
+
+
+	});
+	function resetFilter() {
+	    $('input[name="FilterPointType"][value=1]').attr('checked', false);
+	    $('input[name="FilterPointType"][value=2]').attr('checked', false);
+	    $('input[name="FilterPointType"][value=3]').attr('checked', false);
+		$("#uniform-FilterCircleId").removeClass("disabled");
+		$("#uniform-FilterCityId").removeClass("disabled");
+		$("#uniform-FilterMaintanencePointId").removeClass("disabled");
+		$("#FilterCircleId").prop("disabled", false);
+		$("#FilterCityId").prop("disabled", false);
+		$("#FilterMaintanencePointId").prop("disabled", false);
+		$(".filter-control").val("");
+		$("#ActionType").val("search");
+		$("#CurrentPage").val("1");
+		sendToServer();
+	} 
+
+	createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+
+	function sendToServer() {
+		$("#btnSubmit").click();
+	}
+
+	function searchComplete(xmlHttpRequest, textStatus) {
+		// createFooter("pg_pager",@Model.TotalPages,@Model.PageSize,"ActionType","CurrentPage",sendToServer);
+		createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+		$("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+		setSortClass("SortBy", "SortOrder");
+		endRequest();
+	}
+
+
+	function GetCities() {
+		
+		var circleId = $("#FilterCircleId").val() == "" ? 0 : $("#FilterCircleId").val();
+		
+		$.getJSON('@Url.Action("GetCitiesByCircle", "PublishedTraining")', { CircleId: circleId },
+            function (CityData) {
+            	var select = $("#FilterCityId");
+            	select.empty();
+            	if (CityData != null) {
+            		$.each(CityData, function (index, itemData) {
+            			select.append($('<option/>', {
+            				value: itemData.CityID,
+            				text: itemData.CityName
+            			}));
+            		});
+            	}
+            });
+
+            GetMPs();
+	}
+
+	function GetMPs() {
+
+		var circleId = $("#FilterCircleId").val() == "" ? 0 : $("#FilterCircleId").val();
+		var cityId=$("#FilterCityId").val() == "" ? 0 : $("#FilterCityId").val();
+
+		$.getJSON('@Url.Action("GetMaintenancePointByCircleCity", "PublishedTraining")', { CircleId: circleId, CityId:cityId },
+            function (MPData) {
+            	var select = $("#FilterMaintanencePointId");
+            	select.empty();
+
+            	if (MPData != null) {
+            		$.each(MPData, function (index, itemData) {
+            			select.append($('<option/>', {
+            				value: itemData.MaintenancePointId,
+            				text: itemData.MaintenancePoint
+            			}));
+            		});
+            	}
+            });
+     }
+
+</script>
+

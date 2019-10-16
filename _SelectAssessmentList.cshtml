@@ -1,0 +1,264 @@
+﻿@using CTMS.Models
+@model SelectAssessment
+
+
+@Html.HiddenFor(model=> Model.IsTopicWiseAssessment,new{Value = Model.IsTopicWiseAssessment})
+@Html.HiddenFor(m=> Model.AssignAssessmentDetailID,new{Value= Model.AssignAssessmentDetailID})
+@Html.HiddenFor(m => Model.SelectedTrainingID, new {Value =Model.SelectedTrainingID})
+@Html.HiddenFor(m=>Model.SelectedTopicID,new{Value=Model.SelectedTopicID})
+@Html.HiddenFor(m=>Model.QuestionCount,new{Value=Model.QuestionCount})
+@Html.HiddenFor(m=>Model.IsFromTopicPage,new{Value=Model.IsFromTopicPage})
+@Html.HiddenFor(m=>Model.Message,new{Value=Model.Message,id="hdnMessage"})
+@Html.HiddenFor(m => Model.MessageType, new { Value = Model.MessageType, id = "hdnMessageType" })
+@Html.HiddenFor(m=>Model.PublishCount,new{Value=Model.PublishCount})
+@Html.HiddenFor(m=>Model.QuestionCount,new{Value= Model.QuestionCount})
+
+<div class="col-sm-12">
+<div class="table-responsive">
+<div class="text-right half-bottom">
+
+@Html.Label("Total Selected count", new { id = "lblSetCount", @class = "total-select-count" })
+
+
+
+</div>
+    <table class="table table-striped remove-bottom">
+      <thead>
+
+      <th style="width:12%;">@Html.CheckBox("chkIsSelected_" + -1, new { id = "chkIsAllSelected" }) Select</th>
+      <th><a href="javascript:void(0)" sortby="QuestionDescription" class="sort"> Question</a></th>
+       @if (Model.IsTopicWiseAssessment)
+            {
+            <th>
+                <a href="javascript:void(0)" sortby="AssessmentTopic" class="sort">Topic / Subject</a>
+                   
+            </th>
+            }
+            <th>Question Type</th>
+            <th class="text-right">Weightage</th>
+      </thead>
+      <tbody>
+
+    
+      @if (Model != null && Model.Assessments != null && Model.Assessments.Count > 0)
+        {
+
+            for (int i = 0; i < Model.Assessments.Count; i++)
+            {
+                
+                <tr>
+                
+                   @Html.HiddenFor(m=> Model.Assessments[i].AssessmentID,new{Value=(Model.Assessments[i].AssessmentID),id= "hdnAssessmentID_" + @i})
+                   @Html.HiddenFor(m=> Model.Assessments[i].AssignAssessmentQuestionDetailID, new {Value= (Model.Assessments[i].AssignAssessmentQuestionDetailID)})
+                    @Html.HiddenFor(m => Model.Assessments[i].QuestionTypeID, new { Value = (Model.Assessments[i].QuestionTypeID) }) 
+                    @Html.HiddenFor(m => Model.Assessments[i].QuestionTypeName, new { Value = (Model.Assessments[i].QuestionTypeName) }) 
+                    @Html.HiddenFor(m => Model.Assessments[i].QuestionDescription, new { Value = (Model.Assessments[i].QuestionDescription) })
+                    @Html.HiddenFor(m => Model.Assessments[i].Weightage, new { Value = (Model.Assessments[i].Weightage) })
+
+                    <td>
+                    @Html.CheckBox("chkIsSelected_" + i, new { id = "chkIsSelected_" + i, @class = "selectedAssessment selectItem" }) @Html.HiddenFor(m => Model.Assessments[i].IsSelected, new { id = "hdnIsSelected_" + @i, Value = Model.Assessments[i].IsSelected })
+                    
+                    </td>
+                   <td class="text-left">@Model.Assessments[i].QuestionDescription</td>
+                   @if (Model.IsTopicWiseAssessment)
+                   {
+                    <td class="text-left">@Model.Assessments[i].AssessmentTopic</td>
+                   }
+                   <td class="text-left">@Model.Assessments[i].QuestionTypeName</td>
+                    <td  class="text-right">@Model.Assessments[i].Weightage</td>
+                 </tr>
+            }
+
+        }
+      else
+      {
+            <tr>
+            <td colspan="5">
+             No record found.
+            </td>
+            </tr>
+      }
+      </tbody>
+    </table>
+</div>
+ <div class="pagination-strip clearfix add-bottom">
+                                    <div class="show-page-number">
+                                    </div>
+                                     <div id="pg_pager" class="text-right pagination-wrp">
+                                      
+                                      
+                                     </div>
+                                </div><!--.pagination-strip-->
+
+  <div class="text-center button-group">
+     @if (Model.PublishCount == 0)
+     {
+     <input type="button" class="btn btn-primary" value="Submit" id="btnSave" />
+     }
+     @Html.ActionLink("Back", "AssignAssessment", "Assessment", new { tID = Model.SelectedTrainingID, isTa = Model.IsTopicWiseAssessment, tpID = Model.SelectedTopicID, IsT = Model.IsFromTopicPage}, new { @class = "btn btn-primary" })
+</div>
+
+     @Html.Partial("_ViewParameters", Model, new ViewDataDictionary<ViewParameters>())
+</div>
+     <script type="text/javascript">
+         var TotalSelectedQuestionCount = 0;
+         $(document).ready(function () {
+             TotalSelectedQuestionCount = parseInt($("#hdnTotalSelectedCount").val());
+             $("#lblSetCount").text('Total Selected Count: ' + TotalSelectedQuestionCount);
+             $("input[type='checkbox']").uniform();
+             if ($("#hdnMessage").val() != "" && $("#hdnMessageType").val() != "") {
+                 showMessage("divMessage", $("#hdnMessageType").val(), $("#hdnMessage").val());
+             }
+
+             $(".selectedAssessment").each(function () {
+
+                 var hdnSelectedId = $(this).attr('id').replace('chk', 'hdn');
+
+                 if ($("#" + hdnSelectedId).val() == "True") {
+                     $(this).attr('checked', true);
+
+                 }
+                 else {
+                     $(this).attr('checked', false);
+
+                 }
+
+             });
+             isSeletedAll();
+             EnableDisableSaveButton();
+             //             var selectedcheckboxCount = $('input:checkbox:checked.selectedAssessment').length;
+             //             if (selectedcheckboxCount > 0) {
+             //                 $("#btnSave").removeAttr('disabled');
+             //             }
+             //             else {
+             //                 $("#btnSave").attr('disabled', 'disabled');
+             //             }
+
+             $("#btnSave").click(function () {
+                 $("#ActionType").val("saveassessment");
+                 if (TotalSelectedQuestionCount < parseInt($("#QuestionCount").val())) {
+                     var message = "Total Selected Count should not be less than " + $("#QuestionCount").val() + ".";
+                     showMessage("divMessage", "notice", message);
+                 }
+                 else {
+                     sendToServer();
+                 }
+             });
+
+
+             $('.selectedAssessment').click(function () {
+
+                 UpdateSelectCheckBoxList(this);
+                 isSeletedAll();
+                 $("#lblSetCount").text('Total Selected count: ' + TotalSelectedQuestionCount);
+             });
+             $("input[type='checkbox']").uniform();
+
+
+
+         });
+
+         $("#chkIsAllSelected").click(function () {
+             var seletedCount = $(".selectItem:checked").length;
+
+             var isChecked = $(this).attr('checked') ? true : false;
+             if (isChecked) {
+                 TotalSelectedQuestionCount = TotalSelectedQuestionCount - seletedCount;
+             }
+             $(".selectItem").attr('checked', isChecked);
+             $.uniform.update(".selectItem");
+             
+             if ('@Model.Assessments' != null & '@Model.Assessments' != '') {
+                 var totalCount = parseInt('@Model.Assessments.Count');
+                 for (var i = 0; i < totalCount; i++) {
+                     var chkId = 'chkIsSelected_' + i;
+
+                     UpdateSelectCheckBoxList($("#" + chkId));
+ }
+                 isSeletedAll();
+                 $("#lblSetCount").text('Total Selected count: ' + TotalSelectedQuestionCount);
+             }
+             //$.uniform.update("#chkIsAllSelected");
+
+         });
+
+
+         function isSeletedAll() {
+             
+            
+             var seletedCount = $(".selectItem:checked").length;
+             var totalCount = 0;
+             if ('@Model.Assessments' != null & '@Model.Assessments' != '') {
+                  totalCount = parseInt('@Model.Assessments.Count');
+              }
+              if (seletedCount == totalCount && seletedCount > 0) {
+                $("#chkIsAllSelected").attr('checked', true);
+             }
+             else {
+                 $("#chkIsAllSelected").attr('checked', false);
+             }
+             $.uniform.update("#chkIsAllSelected");
+         }
+
+         function EnableDisableSaveButton() {
+             if (TotalSelectedQuestionCount > 0) {
+                 $("#btnSave").removeAttr('disabled');
+             }
+             else {
+                 $("#btnSave").attr('disabled', 'disabled');
+             }
+         }
+         function UpdateSelectCheckBoxList(obj) {
+             
+             var chkId = $(obj).attr('id');
+             var index = parseInt($(obj).attr('id').replace('chkIsSelected_', ''));
+             var assessmentID = $("#hdnAssessmentID_" + index).val();
+             var assessmentIDValue = $("#hdnAssessmentID_" + index).val() + ",";
+             var selectedList = $("#hdnSelectedQuestionList").val() + ",";
+             var unselectedList = $("#hdnUnSelectedQuestionList").val() + ",";
+             var hdnSelectedId = $(obj).attr('id').replace('chk', 'hdn');
+             
+             if (obj.checked || $("#" + chkId).is(":checked")) {
+                 
+                 TotalSelectedQuestionCount = TotalSelectedQuestionCount+1;
+                $("#" + hdnSelectedId).val(true);
+                 if (selectedList.indexOf(assessmentIDValue) < 0) {
+                     $("#hdnSelectedQuestionList").val(addValue($("#hdnSelectedQuestionList").val(), assessmentID, ','));
+                 }
+                 if (unselectedList.indexOf(assessmentIDValue) >= 0) {
+                     $("#hdnUnSelectedQuestionList").val(removeValue($("#hdnUnSelectedQuestionList").val(), assessmentID, ','));
+                 }
+             }
+             else {
+                 $("#" + hdnSelectedId).val(false);
+                 TotalSelectedQuestionCount = TotalSelectedQuestionCount - 1;
+                 if (unselectedList.indexOf(assessmentIDValue) < 0) {
+                     $("#hdnUnSelectedQuestionList").val(addValue($("#hdnUnSelectedQuestionList").val(), assessmentID, ','));
+                 }
+                 if (selectedList.indexOf(assessmentIDValue) >= 0) {
+                     $("#hdnSelectedQuestionList").val(removeValue($("#hdnSelectedQuestionList").val(), assessmentID, ','));
+                 }
+             }
+             $("#hdnTotalSelectedCount").val(TotalSelectedQuestionCount);
+             if (TotalSelectedQuestionCount > 0) {
+                 $("#btnSave").removeAttr('disabled');
+             }
+             else {
+                 $("#btnSave").attr('disabled', 'disabled');
+             }
+             //isSeletedAll();
+
+         }
+
+         function clearselecteditems()
+         {
+             $("#hdnSelectedQuestionList").val("");
+             $("#hdnUnSelectedQuestionList").val("");
+             $("#ActionType").val("search");
+             $("#CurrentPage").val("1");
+             $("#lblSetCount").text('Total Selected Count: @Model.TotalSelectedCount');
+             $("#hdnTotalSelectedCount").val('@Model.TotalSelectedCount');
+             $("#chkIsAllSelected").attr('checked', false);
+         }
+         
+     </script>

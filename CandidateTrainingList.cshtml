@@ -1,0 +1,152 @@
+﻿@using CTMS.Models
+@model ViewCandidate
+@{
+    ViewBag.Title = "Training List";
+    
+}
+<h2>
+    Training List</h2>
+<div class="row">
+    <div class="col-sm-12">
+        <ol class="breadcrumb">
+            <li><a href="/Home/Home">
+                <img src="@Url.Content("~/Images/home-icon.png")"></a></li>
+            <li><a href="/candidate/viewcandidate">View Candidate </a></li>
+            <li class="active">@ViewBag.Title</li>
+        </ol>
+    </div>
+</div>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@using (Ajax.BeginForm(new AjaxOptions { UpdateTargetId = "divCandidateList", OnBegin = "beginRequest", OnSuccess = "Success", OnComplete = "searchComplete" }))
+{  
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="gray-heading">
+                Candidate Detail</h2>
+            <div class="table-bg table-style-new">
+                <div class="table-responsive">
+                    <table class="table half-bottom">
+                   
+                        <tbody>
+                         @if (Model.CandidateList != null && Model.CandidateList.Count() > 0 && @Model.CandidateList[0]!= null)
+                         {
+                            <tr class="no-border">
+                                <td>
+                                    <strong>Candidate Code:</strong>
+                                </td>
+                                <td>@Model.CandidateList[0].CandidateCode
+                                </td>
+                                <td>
+                                    <strong>Candidate Name:</strong>
+                                </td>
+                                <td>@Model.CandidateList[0].CandidateName
+                                </td>
+                            </tr>
+                            <tr class="no-border">
+                                <td>
+                                    <strong>Category Name:</strong>
+                                </td>
+                                <td>@Model.CandidateList[0].CategoryName
+                                </td>
+                                <td>
+                                    <strong>Function Name:</strong>
+                                </td>
+                                <td>@Model.CandidateList[0].FunctionName
+                                </td>
+                            </tr>
+                         }
+                         else
+                         { 
+                             <tr>
+                             <td>No record found.
+                             </td></tr>
+                         }
+                        </tbody>
+                    
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="search-strip   label-height remove-top">
+        <div class="row">
+            <div class="col-sm-12">
+              
+                <div class="search-row  width-auto">
+                    <label>
+                        Training Name:</label></div>
+                <div class="search-row ">
+                    @Html.TextBoxFor(model => model.FilterTrainingName, new { @class = "form-control filter-control", @maxlength = "30" })
+                </div>
+                <div class="search-row  width-auto">
+                    <label>
+                        Program Name:</label></div>
+                <div class="search-row ">
+                    @Html.TextBoxFor(model => model.FilterProgramName, new { @class = "form-control filter-control", @maxlength = "30" })
+                </div>
+                <div class="search-row  width-auto">
+                    <label>
+                        Training Type:</label></div>
+                <div class="search-row ">
+                    @Html.DropDownListFor(model => model.FilterTrainingType, (SelectList)ViewBag.TrainingTypeList, new { @id = "ddlTrainingType", @class = "form-control  filter-control text-left" })
+                </div>
+                <br class="clear" />
+                <div class="text-center button-group">
+                    <input id="btnSubmit" type="submit" value="Search" class="btn remove-bottom" style="display: none" />
+                    <input id="btnSearch" type="button" value="Search" class="btn btn-primary" />
+                    <input id="btnReset" type="button" value="Reset" onclick="resetFilter()" class="btn btn-primary" />
+                    <input id="btnback" class="btn btn-primary" type="button" value="Back" onclick="fncBack();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divCandidateList">
+        @Html.Partial("_ViewTrainingList", Model)
+    </div>  
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+        var message = '@Model.Message';
+        var messageType = '@Model.MessageType';
+        if (message != '' && messageType != '') {
+            showMessage('divMessage', messageType, message);
+        }
+    });
+    createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+    function sendToServer() {
+        $("#btnSubmit").click();
+    }
+    function searchComplete(xmlHttpRequest, textStatus) {
+        createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+        $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+        setSortClass("SortBy", "SortOrder");
+        showMessage("divMessage", $("#hdnMessageType").val(), $("#hdnMessage").val());
+        endRequest();
+    }
+    function Success(result) {
+        if (result != null) {
+            if (result.Url) {
+                window.location.href = result.Url;
+            }
+        }
+    }
+    $("#btnSearch").click(function () {
+
+        $("#ActionType").val("search");
+        sendToServer();
+    });
+    function resetFilter() {
+        $(".filter-control").val("");
+        $("#ddlTrainingType").val(0);
+        $("#ActionType").val("search");
+        $("#CurrentPage").val("1");
+        sendToServer();
+    }
+
+    function fncBack() {
+
+        window.location = '/candidate/viewcandidate';
+    }
+</script>

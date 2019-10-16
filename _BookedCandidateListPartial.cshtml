@@ -1,0 +1,131 @@
+﻿@model CTMS.Models.ViewScheduledTrainingDetails
+<div class="row">
+	<div class="col-sm-12">
+		<div  class="table-responsive">
+			<table class="table table-striped remove-bottom table-selector">
+				<thead>
+					<tr>
+					<th></th>
+					<th>
+						<div>
+							<a href="javascript:void(0)" sortby="CandidateCode" class="sort">Candidate Code</a></div>
+					</th>
+					<th>
+						<div>
+							<a href="javascript:void(0)" sortby="Name" class="sort">Name </a></div>
+					</th>
+					<th>
+						<div>
+							<a href="javascript:void(0)" sortby="BookedBy" class="sort">Booked By </a></div>
+					</th>
+					<th>
+						<div>
+							<a href="javascript:void(0)" sortby="CreatedOn" class="sort">Nomination Date </a></div>
+					</th>
+                    <th>
+                       <div>
+							<a href="javascript:void(0)" sortby="BookingStatusName" class="sort">Booking Status </a></div>
+                    </th>
+					<th class="text-center">
+						<div>Action</div>
+					</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model != null && Model.BookedCandidateList != null && Model.BookedCandidateList.Count > 0)
+	 {
+		 for (int i = 0; i < Model.BookedCandidateList.Count; i++)
+   {
+		 <tr>
+					<td class="text-primary">@Model.BookedCandidateList[i].RowNumber</td>
+					<td>@Model.BookedCandidateList[i].CandidateCode  </td>
+					<td>@Model.BookedCandidateList[i].Name  </td>
+					<td>@Model.BookedCandidateList[i].BookedBy </td>
+					<td>@Model.BookedCandidateList[i].CreatedOn</td>
+                    <td>@Model.BookedCandidateList[i].BookingStatusName</td>
+					<td class="btn-action">
+                    @if(Model.ScheduleTraining.isEditable)
+                    {
+                    <a class="icon-delete" onclick="openConfirmDialog('@Model.BookedCandidateList[i].BookedCandidateID','Are you sure to delete ?',deleteCandidate,null)" href="javascript:void(0)" title="Delete">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    }
+                    else
+                    {
+                    if (string.IsNullOrEmpty(Model.ScheduleTraining.ProgramStatusName) || (Model.ScheduleTraining.ProgramStatusName.ToLower() != "in progress" && Model.ScheduleTraining.ProgramStatusName.ToLower() != "completed"))
+                    {
+                    <a class="icon-delete-disabled" href="javascript:void(0)" title="Deletion can be done before @CTMS.Common.CommonUtils.RestrictEditBeforeHours hours of Scheduled Start Date.">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    }
+                    else
+                    {
+                        <a class="icon-delete-disabled" href="javascript:void(0)" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    }
+
+                    }</td>
+				</tr>
+   }
+     }
+     else
+     {
+		 <tr>
+							<td colspan="5">
+								No record found.
+							</td>
+						</tr>
+     }
+				</tbody>
+			</table>
+		</div>
+		<div class="pagination-strip clearfix add-bottom">
+			<div class="show-page-number">
+			</div>
+			<div id="pg_pager" class="text-right pagination-wrp">
+			</div>
+		</div>
+		<!--.pagination-strip-->
+	</div>
+</div>
+@*<div class="ui-widget-content">
+	<div class="ui-jqgrid">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ui-jqgrid-htable ui-jqgrid-btable">
+			<tr class="ui-jqgrid-labels">
+				<th class="ui-state-default ui-th-column ui-th-ltr" style="width:25px"></th>
+				<th class="ui-state-default ui-th-column ui-th-ltr">
+					<div>
+						<a href="javascript:void(0)" sortby="CandidateCode" class="sort">Candidate Code</a></div>
+				</th>
+				<th class="ui-state-default ui-th-column ui-th-ltr">
+					<div>
+						<a href="javascript:void(0)" sortby="Name" class="sort">Name </a></div>
+				</th>
+				<th class="ui-state-default ui-th-column ui-th-ltr">
+					<div>
+						<a href="javascript:void(0)" sortby="BookedBy" class="sort">Booked By </a></div>
+				</th>
+				<th class="ui-state-default ui-th-column ui-th-ltr">
+					<div>
+						<a href="javascript:void(0)" sortby="CreatedOn" class="sort">Nomination Date </a></div>
+				</th>
+			</tr>
+			@for (int i = 0; i < Model.BookedCandidateList.Count; i++)
+   {
+				<tr class="ui-widget-content jqgrow ui-row-ltr">
+					<td class="ui-state-default jqgrid-rownum">@Model.BookedCandidateList[i].RowNumber</td>
+					<td style="border-left: 1px solid inherit">@Model.BookedCandidateList[i].CandidateCode  </td>
+					<td style="border-left: 1px solid inherit">@Model.BookedCandidateList[i].Name  </td>
+					<td style="border-left: 1px solid inherit">@Model.BookedCandidateList[i].BookedBy </td>
+					<td style="border-left: 1px solid inherit">@Model.BookedCandidateList[i].CreatedOn</td>
+				</tr>
+   }
+		</table>
+	</div>
+	<div id="pager" class="ui-state-default ui-jqgrid-pager ui-corner-bottom">
+		<div id="pg_pager" class="ui-pager-control pager">
+		</div>
+	</div>
+	</div>*@
+@Html.HiddenFor(m => m.BookedCandidateId, new { id = "BookedCandidateId" })
+@Html.HiddenFor(m => Model.CurrentPage, new { Value = (Model.CurrentPage.ToString()), id = "CurrentPage" })
+@Html.HiddenFor(m => Model.TotalPages, new { Value = (Model.TotalPages.ToString()), id = "TotalPages" })
+@Html.Hidden("PageSize", Model.PageSize, new { id = "PageSize" })
+@Html.HiddenFor(m => m.ActionType, new { id = "ActionType" })
+@Html.HiddenFor(m => m.SortOrder, new { id = "SortOrder" })
+@Html.HiddenFor(m => m.SortBy, new { id = "SortBy" })

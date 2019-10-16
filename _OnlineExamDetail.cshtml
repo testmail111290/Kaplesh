@@ -1,0 +1,200 @@
+﻿
+ @using CTMS.Models
+@model OnlineQuestionPaperModel
+  <div class="main-page-container">
+     
+    <div class="page-sidebar-wrapper">
+    	<div class="page-sidebar">
+            
+                <div class="show-questions clearfix">
+       	            <div class="questions">
+                    <div class="scroll-tbl">
+                        <ul>
+                        @if (Model != null && Model.QuestionsStatus != null && Model.QuestionsStatus.Count > 0)
+                        {
+                            @Html.HiddenFor(m=>Model.ActionType,new{Value=Model.ActionType})
+                            @Html.HiddenFor(m => Model.TrainingID, new { Value = Model.TrainingID })
+                             @Html.HiddenFor(m => Model.AssessmentResultID, new { Value = Model.AssessmentResultID })
+                                
+                              
+
+                            for (int i = 0; i < Model.QuestionsStatus.Count; i++)
+                            {
+                                 @Html.HiddenFor(m => Model.QuestionsStatus[i].QuestionNo, new { Value = Model.QuestionsStatus[i].QuestionNo })
+                                 @Html.HiddenFor(m => Model.QuestionsStatus[i].QuestionID, new { Value = Model.QuestionsStatus[i].QuestionID })
+                                 @Html.HiddenFor(m => Model.QuestionsStatus[i].QuestionStatus, new { Value = Model.QuestionsStatus[i].QuestionStatus })
+                             <li  class="@Model.QuestionsStatus[i].QuestionStatus"><a id="lnkQuestion_@Model.QuestionsStatus[i].QuestionNo" class="questinoLink"  href="#">@Model.QuestionsStatus[i].QuestionNo</a></li>
+                            }
+                        }
+                        </ul>
+                        </div>
+                    </div>
+                
+            </div>
+
+            <div class="show-question-status">
+                        	<ul>
+                    <li class="answered">
+                        <span></span> Answered
+                    </li>
+                                
+                    <li class="not-answered">
+                        <span></span> Not Answered
+                    </li>
+                                
+                    <li class="not-visited">
+                        <span></span> Not Visited
+                    </li>
+
+                    <li class="current">
+                        <span></span> Current
+                    </li>
+                                
+                </ul>
+            </div>
+         
+
+        </div>
+    </div>
+     </div>
+    <div class="page-content-wrapper">
+        
+        <div class="page-content-body">
+        	<div class="container-fluid">
+            	 <div class="row">
+                	<div class="col-sm-12">
+                    	<div class="white-bg question-wrapper add-bottom">
+                            
+                     
+                        	<h1>Question No @Model.QuestionNo</h1>
+                            @if (Model != null && Model.Question != null && Model.Question.QuestionID> 0)
+                            {
+                                <div class="show-question-weightage">@Model.Question.Weightage.ToString("0.##")</div>
+                                @Html.HiddenFor(m => Model.QuestionNo, new { Value = Model.QuestionNo })
+                                @Html.HiddenFor(m => Model.ChangeQuestionNo, new { Value = Model.ChangeQuestionNo })
+                                @Html.HiddenFor(m => Model.SelectedAnswers, new { Value = Model.SelectedAnswers })
+                               @Html.HiddenFor(m => Model.Question.QuestionID, new { Value = Model.Question.QuestionID })
+                               @Html.HiddenFor(m => Model.Question.CandidateAnswer, new { Value = Model.Question.CandidateAnswer, id = "hdnCandidateAnswer" })
+                               @Html.HiddenFor(m => Model.Question.Weightage, new { Value = Model.Question.Weightage })
+                                 <p>
+                                   @Model.Question.QuestionDescription
+                                </p>
+                                if (Model.Question.AnswerOptions != null && Model.Question.AnswerOptions.Count > 0)
+                                {
+                                    <ul>
+                                    @for (int j = 0; j < Model.Question.AnswerOptions.Count; j++)
+                                    {
+                                        if (Model.Question.IsSingleAnswer)
+                                        {
+                                         <li>@Html.RadioButton("questionAnswer", @Model.Question.AnswerOptions[j].AnswerID, new { id = @Model.Question.AnswerOptions[j].AnswerID, Value = @Model.Question.AnswerOptions[j].AnswerID }) @Model.Question.AnswerOptions[j].AnswerDescription</li>   
+                                        }
+                                        else
+                                        {
+                                        <li>@Html.CheckBox("questionAnswer", new { id = @Model.Question.AnswerOptions[j].AnswerID, Value = @Model.Question.AnswerOptions[j].AnswerID })@Model.Question.AnswerOptions[j].AnswerDescription </li>
+                                        }
+                                    }
+                                </ul>
+                                
+                                }
+                            }
+                            
+                          </div>
+                        
+                        
+                    	
+                    </div>
+                </div>
+                
+                <div class="row add-bottom">
+                	<div class="col-sm-12">
+                        <div class="text-center button-group button-group-new question-button-group">
+                           @if (Model != null && Model.QuestionNo > 1)
+                           {
+                            <a href="#" id="btnPrevious" class="btn btn-primary">Previous</a>
+                           }
+                            <a href="#" id="btnClear" class="btn btn-primary">Clear</a>
+                            @if (Model != null && Model.QuestionsStatus != null && Model.QuestionNo == Model.QuestionsStatus.Count)
+                            {
+                             <a href="#" id="btnSave" class="btn btn-primary">Save</a>
+                             <a href="#" id="btnSaveAndFinish" class="btn btn-primary">Save & Finish</a>
+                            }
+                            else
+                            {
+                                <a href="#" id="btnNext" class="btn btn-primary">Next</a>
+                            }
+                            <input type="submit" id="btnSubmit" style="display:none" />
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-sm-12">
+                    	
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+ <script type="text/javascript">
+     $(document).ready(function () {
+         if ($("#hdnCandidateAnswer").val() != null && $("#hdnCandidateAnswer").val() != "") {
+             var candidateAnswers = $("#hdnCandidateAnswer").val().split(",");
+             for (var i = 0; i < candidateAnswers.length; i++) {
+                 var answerID = parseInt(candidateAnswers[i]);
+                 $("#" + answerID).attr("checked", true);
+                 $("select, input[type='checkbox'], input[type='radio']").uniform();
+
+             }
+         }
+         $("#btnSave").click(function () {
+             SetSelectedAnswers();
+             $("#ActionType").val("save");
+             sendToServer();
+         });
+
+         $("#btnSaveAndFinish").click(function () {
+             SetSelectedAnswers();
+             $("#ActionType").val("submit");
+             sendToServer();
+         });
+
+         $(".questinoLink").click(function () {
+             $("#ActionType").val("changequestion");
+             SetSelectedAnswers();
+             var questionNo = parseInt($(this).attr("id").replace("lnkQuestion_", ""));
+             $("#ChangeQuestionNo").val(questionNo);
+             sendToServer();
+
+         });
+         $("#btnClear").click(function () {
+             $("input[name='questionAnswer']").prop("checked", false);
+             $("select, input[type='checkbox'], input[type='radio']").uniform();
+         });
+         $("#btnPrevious").click(function () {
+             $("#ActionType").val("previous");
+             SetSelectedAnswers();
+             sendToServer();
+         });
+         $("#btnNext").click(function () {
+             $("#ActionType").val("next");
+             SetSelectedAnswers();
+             sendToServer();
+         });
+     });
+     function sendToServer() {
+         $("#btnSubmit").click();
+     }
+     function SetSelectedAnswers() {
+         var selectedAnswer = $("input[name='questionAnswer']:checked").map(function () { return this.value; }).get().join(',');
+         if (selectedAnswer != '') {
+             $("#SelectedAnswers").val(selectedAnswer);
+         }
+         else {
+             $("#SelectedAnswers").val('na');
+         }
+         
+      }
+ </script>

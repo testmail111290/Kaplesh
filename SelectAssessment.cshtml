@@ -1,0 +1,118 @@
+﻿@using CTMS.Models
+@{
+    ViewBag.Title = "Select Question for Assessment";
+}
+
+@model SelectAssessment
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+ @using (Ajax.BeginForm(new AjaxOptions { OnBegin = "beginRequest", UpdateTargetId = "divSelectAssessments",OnSuccess="onSuccess", OnComplete = "searchComplete"}))
+ {
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="/Home/Home"><img src="@Url.Content("~/Images/home-icon.png")"></a></li>
+                    <li><a href="/Training/ViewTraining">Training</a></li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
+            </div>
+        </div>
+     @Html.HiddenFor(m => Model.SelectedQuestionList, new { Value = (Model.SelectedQuestionList), id = "hdnSelectedQuestionList" })
+     @Html.HiddenFor(m => Model.UnSelectedQuestionList, new { Value = (Model.UnSelectedQuestionList),id="hdnUnSelectedQuestionList" })
+     @Html.HiddenFor(m => Model.TotalSelectedCount, new { Value = (Model.TotalSelectedCount), id = "hdnTotalSelectedCount" })
+     <div class="row half-bottom">
+                	<div class="col-sm-12">
+                    	<h2 class="gray-heading">@ViewBag.Title</h2>
+                    	<div class="white-bg half-padding">
+                            <div class="row half-bottom">
+                            		<div class="col-sm-1 text-right">
+                                    	<strong> @Html.LabelFor(model => model.FilterQuestion)</strong>
+                                    </div>
+                                    <div class="col-sm-2 col-sm-2-new">
+                                     @Html.TextBoxFor(model => model.FilterQuestion, new { @class = "form-control remove-bottom filter-control" })
+                                    </div>
+                                        @if (@Model.IsTopicWiseAssessment)
+                                        {
+                                            <div class="col-sm-2 col-sm-2-new-small text-right">
+                                    	            <strong> @Html.LabelFor(model => model.FilterTopic)</strong>
+                                            </div>
+                                            <div class="col-sm-2">
+                                           
+                                            @Html.TextBoxFor(model => model.FilterTopic, new { @class = "form-control remove-bottom filter-control" })
+               
+                                            </div>
+        
+                                        }
+                                    <div class="col-sm-3">
+                                    	<strong>@Html.LabelFor(model => model.FilterQuestionType)</strong> 
+                                        @Html.HiddenFor(model => model.FilterQuestionType)
+                                         @Html.HiddenFor(model => model.FilterQuestionTypeName)
+                                          <label>@Model.FilterQuestionTypeName</label>
+                                         
+                                         
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <input id="btnSubmit" type="submit" value="Search" class="btn btn-primary" style="display: none" />
+                                    <input id="btnSearch" class="btn btn-primary searchMargin" type="button" value="Search" />
+                                    <input id="btnReset" type="button" value="Reset" onclick="resetFilter()" class="btn btn-primary" />
+                                    </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+   
+     <div id="divSelectAssessments" class="row">
+         @Html.Partial("_SelectAssessmentList", Model)
+     </div>
+ }
+
+  <script type="text/javascript">
+      $().ready(function () {
+
+          $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+          createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+
+
+          $("#btnSearch").click(function () {
+              $("#ActionType").val("search");
+              clearselecteditems();
+              sendToServer();
+          });
+      });
+
+      function resetFilter() {
+          $(".filter-control").val("");
+          clearselecteditems();
+          sendToServer();
+      }
+
+          function sendToServer() {
+              $("#btnSubmit").click();
+          }
+          function searchComplete(xmlHttpRequest, textStatus) {
+              // createFooter("pg_pager",@Model.TotalPages,@Model.PageSize,"ActionType","CurrentPage",sendToServer);
+              createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+              $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+              setSortClass("SortBy", "SortOrder");
+              endRequest();
+
+          }
+
+          var onSuccess = function (result) {
+              if (result.messageType == "success") {
+                  if (result.url) {
+                      // if the server returned a JSON object containing an url 
+                      // property we redirect the browser to that url
+                      endRequest();
+                      window.location.href = result.url;
+                  }
+              }
+              else {
+                  showMessage("divMessage", result.messageType, result.message);
+              }
+
+          }
+
+     
+     </script>

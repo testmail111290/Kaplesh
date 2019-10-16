@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "OnlineExam";
+    Layout = "~/Views/Shared/_LayoutOnlineExam.cshtml";
+}
+@using CTMS.Models
+@model OnlineQuestionPaperModel
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+ @using (Ajax.BeginForm("OnlineExam", "Assessment", null, new AjaxOptions { OnBegin = "beginRequest", UpdateTargetId = "dvAssessmentList", OnSuccess = "onSuccess", OnComplete = "endRequest" }, new { @id = "frmOnlineExam" }))
+ { 
+     <div class="main-page-container">
+        <div class="page-sidebar-wrapper">
+            <div class="page-sidebar">&nbsp;</div>
+        </div>
+     </div>
+     <div class="page-content-wrapper">
+        <div class="start-training-wrapper">
+        <div class="page-content-body">
+            
+                    	<h2 class="gray-heading half-bottom text-center"> 
+                        @if (Model != null)
+                        {
+                            @Html.HiddenFor(m=>Model.TrainingID,new{Value=Model.TrainingID})
+                            @Html.HiddenFor(m => Model.TrainingName, new { Value = Model.TrainingName })
+                            if (Model.TopicID != null && Model.TopicID > 0)
+                            {
+                                @Html.HiddenFor(m=>Model.TopicID,new{Value=Model.TopicID})
+                                @Html.HiddenFor(m => Model.TopicName, new { Value = Model.TopicName })
+                               @Model.TopicName
+                            }
+                            else
+                            {
+                                @Model.TrainingName
+                            }
+                        }
+                        </h2>
+                        <div class="show-questions clearfix half-bottom">
+                        	<div class="show-time-limit">Time Left: <span id ="lblSpendTime">@Model.SpendTime</span></div>
+                        </div>
+                   
+        </div>
+        </div>
+     </div>
+     
+     <div id="dvAssessmentList">
+          @Html.Partial("_OnlineExamDetail",Model)
+      </div>
+ }
+
+ <script type="text/javascript">
+     var onSuccess = function (result) {
+         if (result != null) {
+             if (result.url) {
+                 // if the server returned a JSON object containing an url 
+                 // property we redirect the browser to that url
+                 endRequest();
+                 window.location.href = result.url;
+             }
+         }
+         else {
+             endRequest();
+         }
+
+     }
+
+     //Update  spend time only for view at HTML page.
+     //-----------------------------------------------------------------------------------
+     var arrToTime;
+     var timeSec = 0;
+     var MyExamTimer; 
+   
+     function TimeUpdate() {
+         try {
+             var ts = $("#lblSpendTime").text();
+             //get time in sec 
+             arrToTime = ts.split(':');
+
+             timeSec = (parseInt(arrToTime[0]) * 3600) + (parseInt(arrToTime[1]) * 60) + parseInt(arrToTime[2]);
+             // exam time out
+             if (timeSec == 0) {
+                 // close exam
+                 clearTimeout(MyExamTimer);
+                 MyExamTimer = null;
+                 SetSelectedAnswers();
+                 $("#ActionType").val("submit");
+                 sendToServer();
+             }
+             else {
+                   timeSec = parseInt(timeSec) - 1;
+                 }
+                 var hr = (parseInt(timeSec / 3600));
+                 var min = (parseInt(timeSec / 60) - hr * 60);
+                 var sec = parseInt(timeSec % 60);
+                 $("#lblSpendTime").text(hr + ":" + min + ":" + sec);
+             
+         }
+         catch (err) {
+
+             showMessage("divMessage", "@CTMS.Common.MessageType.Error.ToString().ToLower()", err.Message);
+         }
+     }
+     function timer() {
+         TimeUpdate();
+        MyExamTimer =  setTimeout('timer()', 1000);
+     }
+     $().ready(function () {
+         timer();
+     });
+
+     //disable browser event 
+     window.history.forward(1);
+
+     function fnNoTypeing() {
+
+         var e = window.event
+         if (e.keyCode == 8 || e.keyCode == 46)
+             return true;
+         else
+             return false;
+
+     }
+
+     //-Right Click Disabled--//
+     function disableRightClick(e) {
+             var evt = e || window.event;
+
+             if ((evt.button && evt.button == 2) || (evt.which && evt.which & 2)) {
+                 alert("An attempt has been made to disable right-clicking on this Application.");
+             }
+     }
+     document.onmousedown = disableRightClick;
+
+
+
+     // ADDED------------------------------
+     function disableCtrlKeyCombination(e) {
+         //list all CTRL + key combinations you want to disable
+         //var forbiddenKeys = new Array('a', 't', 'n', 'c', 'x', 'v', 'j');
+         var forbiddenKeys = new Array('a', 't', 'n', 'x', 'j');
+         var key;
+         var isCtrl;
+         if (window.event) {
+             key = window.event.keyCode;     //IE
+             if (window.event.ctrlKey)
+                 isCtrl = true;
+             else
+                 isCtrl = false;
+         }
+         else {
+             key = e.which;     //firefox
+             if (e.ctrlKey)
+                 isCtrl = true;
+             else
+                 isCtrl = false;
+         }
+         //if ctrl is pressed check if other key is in forbidenKeys array
+         if (isCtrl) {
+             for (i = 0; i < forbiddenKeys.length; i++) {
+                 //case-insensitive comparation
+                 if (forbiddenKeys[i].toLowerCase() == String.fromCharCode(key).toLowerCase()) {
+                     alert('Key combination CTRL + '
+                                        + String.fromCharCode(key)
+                                        + ' has been disabled.');
+                     return false;
+                 }
+             }
+         }
+         return true;
+     }
+
+     //END ---------------------------
+
+   
+
+
+
+ 
+ 
+ </script>

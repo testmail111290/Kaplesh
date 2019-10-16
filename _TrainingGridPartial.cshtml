@@ -1,0 +1,146 @@
+﻿@model CTMS.Models.ViewPublishedTrainingModel
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table table-striped remove-bottom table-selector">
+				<thead>
+					<tr>
+						<th>
+						</th>
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="TrainingName" class="sort">Training Name</a></div>
+						</th>
+						@*<th>
+							<div>
+								<a href="javascript:void(0)" sortby="MaintainancePointName" class="sort">Maintenance
+									Point / HO / SHO </a>
+							</div>
+						</th>*@
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="TrainingTypeName" class="sort">Training Type
+								</a>
+							</div>
+						</th>
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="Duration" class="sort">Duration </a>
+							</div>
+						</th>
+						@*<th>
+							<div>
+								<a href="javascript:void(0)" sortby="BookingDone" class="sort">Booking Done </a>
+							</div>
+						</th>
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="FreePlace" class="sort">Free Place </a>
+							</div>
+						</th>*@
+						<th>
+							<div>
+								Training Status
+							</div>
+						</th>
+						<th class="text-center">
+							<div>
+								Action
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				@{
+					int circleid = Model.FilterCircleId == null ? 0 : (int)Model.FilterCircleId;
+					int cityid = Model.FilterCityId == null ? 0 : (int)Model.FilterCityId;
+					int mpid = Model.FilterMaintanencePointId == null ? 0 : (int)Model.FilterMaintanencePointId;
+				} 
+				 @if (Model != null && Model.PublishedTrainings != null && Model.PublishedTrainings.Count > 0)
+	 {
+		 for (int i = 0; i < Model.PublishedTrainings.Count; i++)
+		 {
+									<tr class="ui-widget-content jqgrow ui-row-ltr">
+										<td class="ui-state-default jqgrid-rownum">@Model.PublishedTrainings[i].RowNumber
+										</td>
+										<td>
+										@*@Model.PublishedTrainings[i].Training.Trim()*@
+										<a class="lnkDetail" href="javascript:void(0)" onclick="openEditDialog('/PublishedTraining/ViewScheduleDetails?ScheduledTrainingId=@Model.PublishedTrainings[i].ScheduledTrainingId&TrainingID=@Model.PublishedTrainings[i].TrainingID','Training Details','dialog-edit')"> @Model.PublishedTrainings[i].Training.Trim()</a>
+										</td>
+										@*<td>@Model.PublishedTrainings[i].MaintainancePointName
+										</td>*@
+										<td>@Model.PublishedTrainings[i].TrainingType
+										</td>
+										<td>@CTMS.Common.CommonUtils.GetActualTrainingDuration(Convert.ToInt32(Model.PublishedTrainings[i].Duration))
+										</td>
+										@*<td>@Model.PublishedTrainings[i].BookingDone
+										</td>
+										<td>@Model.PublishedTrainings[i].FreePlace
+										</td>*@
+										<td>@Model.PublishedTrainings[i].TrainingStatus
+										</td>
+										<td class="btn-action">
+										@if (Model.PublishedTrainings[i].TrainingStatus.ToLower() == "published")
+										  {
+												
+																				<a class="icon-submit-test-result-disabled" href="#" title="View Assessment">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> <text>&nbsp;</text>
+
+																				<a class="icon-update-feedback-disabled" href="#" title="View Feedback">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><text>&nbsp;</text>
+																				@*<a class="btnViewFeedback" href="#" title="View Feedback">
+																							View Feedback</a> &nbsp; <a class="btnTDITSI" href="#" title="TDI/TSI">TDI/TSI</a>*@
+										  }
+										  else if (Model.PublishedTrainings[i].TrainingStatus.ToLower() == "in progress")
+										  {
+												
+																				<a class="icon-submit-test-result-disabled" href="#" title="View Assessment">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> <text>&nbsp;</text>
+
+																				<a class="icon-update-feedback-disabled" href="#" title="View Feedback">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><text>&nbsp;</text>
+																				@*<a class="btnViewFeedback" href="#" title="View Feedback">
+																							View Feedback</a> &nbsp; <a class="btnTDITSI" href="#" title="TDI/TSI">TDI/TSI</a>*@
+										  }
+										  else if (Model.PublishedTrainings[i].TrainingStatus.ToLower() == "completed")
+										  {
+												
+																				<a class="icon-view-right" href="/SearchAssessment/SearchAssessment?PointType=@Model.FilterPointType&CircleId=@circleid&CityId=@cityid&MaintainancePointId=@mpid&TrainingId=@Model.PublishedTrainings[i].TrainingID&ScheduledTrainingId=@Model.PublishedTrainings[i].ScheduledTrainingId" title="View Assessment">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> <text>&nbsp;</text>
+
+																				<a class="icon-update-feedback" href="/ParticipantFeedback/ViewFeedback?ScheduledTrainingId=@Model.PublishedTrainings[i].ScheduledTrainingId&CallingModule=M&TrainingId=@Model.PublishedTrainings[i].TrainingID" title="View Feedback">
+																					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><text>&nbsp;</text>
+																				@*<a class="btnViewFeedback" href="#" title="View Feedback">
+																							View Feedback</a> &nbsp; <a class="btnTDITSI" href="#" title="TDI/TSI">TDI/TSI</a>*@
+										  }
+																			</td>
+																		</tr>
+										 }
+									 }
+									 else
+									 {
+																					<tr>
+																						<td colspan="6">
+																							No record found.
+																						</td>
+																					</tr>
+									 }
+				</tbody>
+			</table>
+		</div>
+		<div class="pagination-strip clearfix">
+			<div class="show-page-number">
+			</div>
+			<div id="pg_pager" class="text-right pagination-wrp">
+			</div>
+		</div>
+	</div>
+</div>
+
+@Html.HiddenFor(m => Model.CurrentPage, new { Value = (Model.CurrentPage.ToString()), id = "CurrentPage" })
+@Html.HiddenFor(m => Model.TotalPages, new { Value = (Model.TotalPages.ToString()), id = "TotalPages" })
+@Html.Hidden("PageSize", Model.PageSize, new { id = "PageSize" })
+@Html.HiddenFor(m => m.ActionType, new { id = "ActionType" })
+@Html.HiddenFor(m => m.SortOrder, new { id = "SortOrder" })
+@Html.HiddenFor(m => m.SortBy, new { id = "SortBy" })

@@ -1,0 +1,130 @@
+﻿@model CTMS.Models.ViewAddCandidateModel
+<label class="text-left" id="lblSelectValidation" style="color: Red">
+		</label>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table table-striped remove-bottom table-selector table-overflow">
+				<thead>
+					<tr>
+						<th>
+							<div>
+								Select</div>
+						</th>
+						<th>
+							<div>
+								<a href="javascript:void(0)" sortby="CandidateName" class="sortVLMS">Name of Candidate
+								</a>
+							</div>
+						</th>
+						<th>
+							<div>
+								Maintenance Point Name
+							</div>
+						</th>
+						<th>
+							<div>
+								Business Function
+							</div>
+						</th>
+						<th>
+							<div>
+								Job Role
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model != null && Model.VLMSCandidateList != null && Model.VLMSCandidateList.Count > 0)
+					 {
+						 for (int i = 0; i < Model.VLMSCandidateList.Count; i++)
+						 {
+										<tr>
+											<td>
+                                             @Html.CheckBox("chkIsSelected_" + i, new { id = "chkIsSelected_" + i, @class = "chkIsSelected selectedCandidate selectItem" }) @Html.HiddenFor(m => Model.VLMSCandidateList[i].IsSelected, new { id = "hdnIsSelected_" + @i, Value = Model.VLMSCandidateList[i].IsSelected })
+                                            @*@Html.CheckBoxFor(model => @Model.VLMSCandidateList[i].IsSelected, new { @class="chkIsSelected", @checked=@Model.VLMSCandidateList[i].IsSelected})*@
+											</td>
+											<td style="width:30%;">@Model.VLMSCandidateList[i].CandidateName
+											</td>
+											<td>@Model.VLMSCandidateList[i].MaintenancePointName</td>
+											<td>@Model.VLMSCandidateList[i].CategoryName</td>
+											<td>@Model.VLMSCandidateList[i].FunctionName</td>
+											@Html.HiddenFor(m => Model.VLMSCandidateList[i].CandidateId, new { Value = (Model.VLMSCandidateList[i].CandidateId.ToString()), id = "hdnCandidateID_" + @i })
+										</tr>
+						 }
+					 }
+					 else
+					 {
+										<tr>
+											<td colspan="2">
+												No record found.
+											</td>
+										</tr>
+					 }
+				</tbody>
+			</table>
+		</div>
+		<div class="pagination-strip clearfix">
+			<div class="show-page-number">
+			</div>
+			<div id="pg_pager1" class="text-right pagination-wrp">
+			</div>
+		</div>
+	</div>
+</div>
+@Html.HiddenFor(m => Model.CurrentPage, new { Value = (Model.CurrentPage.ToString()), id = "CurrentPage1" })
+	@Html.HiddenFor(m => Model.TotalPages, new { Value = (Model.TotalPages.ToString()), id = "TotalPages1" })
+	@Html.HiddenFor(m => Model.PageSize, new { Value = (Model.PageSize.ToString()), id = "PageSize1" })
+	@*@Html.Hidden("PageSize", Model.PageSize, new { id = "PageSize" })*@
+	@Html.HiddenFor(m => m.ActionType, new { id = "ActionType1" })
+	@Html.HiddenFor(m => m.SortOrder, new { id = "SortOrder1" })
+	@Html.HiddenFor(m => m.SortBy, new { id = "SortBy1" })
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $(".selectedCandidate").each(function () {
+
+                var hdnSelectedId = $(this).attr('id').replace('chk', 'hdn');
+
+                if ($("#" + hdnSelectedId).val() == "True") {
+                    $(this).attr('checked', true);
+
+                }
+                else {
+                    $(this).attr('checked', false);
+
+                }
+
+            });
+
+            $('.selectedCandidate').click(function () {
+
+                UpdateSelectCheckBoxList(this);
+            });
+        });
+
+        function UpdateSelectCheckBoxList(obj) {
+            var chkId = $(obj).attr('id');
+            var index = parseInt($(obj).attr('id').replace('chkIsSelected_', ''));
+            var selectedList = $("#hdnSelectedCandidateList").val() + ",";
+            var candidateID = $("#hdnCandidateID_" + index).val();
+            var candidateIDValue = $("#hdnCandidateID_" + index).val() + ",";
+            var hdnSelectedId = $(obj).attr('id').replace('chk', 'hdn');
+
+            if (obj.checked || $("#" + chkId).is(":checked")) {
+               
+                $("#" + hdnSelectedId).val(true);
+                if (selectedList.indexOf(candidateIDValue) < 0) {
+                    $("#hdnSelectedCandidateList").val(addValue($("#hdnSelectedCandidateList").val(), candidateID, ','));
+                }
+
+            }
+            else {
+                $("#" + hdnSelectedId).val(false);
+                if (selectedList.indexOf(candidateIDValue) >= 0) {
+                    $("#hdnSelectedCandidateList").val(removeValue($("#hdnSelectedCandidateList").val(), candidateID, ','));
+                }
+            }
+        }
+    </script>

@@ -1,0 +1,108 @@
+﻿@model CTMS.Models.ViewPublishedTrainingModel
+
+@{
+	ViewBag.Title = "Program Details";
+					//Layout = "~/Views/Shared/_LayoutResponsive.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <ol class="breadcrumb">
+            <li><a href="/Home/Home">
+                <img src="/Images/home-icon.png"></a></li>
+				<li>@Html.ActionLink("Published Program", "ViewPublishedTraining", "PublishedTraining")</li>
+            <li class="active">Program Details</li>
+        </ol>
+    </div>
+</div>
+
+@using (Ajax.BeginForm(new AjaxOptions { UpdateTargetId = "divPublishedTrainingList", OnBegin = "beginRequest", OnComplete = "searchComplete" }))
+{
+	 <div class="row">
+		<div class="col-sm-12">
+			<h2 class="gray-heading">Program Details</h2>
+			<div class="table-bg table-style-new">
+				<div class="table-responsive">
+					<table class="table half-bottom">
+						<tbody>
+							<tr class="no-border">
+								<td><strong>Program Name:</strong></td>
+                                <td>@Model.ScheduleTraining.TrainingName</td>
+								<td><strong>Training Duration:</strong></td>
+                                <td>@CTMS.Common.CommonUtils.GetActualTrainingDuration(Model.ScheduleTraining.TrainingDuration) </td>
+                               @*<td><strong>@*Training Type:</strong></td>
+                                <td>@Model.ScheduleTraining.TrainingTypeName</td>*@
+							</tr>
+							<tr class="no-border">
+								
+                                <td><strong> Start Date:</strong></td>
+                                <td>@Model.ScheduleTraining.StartDateTime</td>
+								<td><strong>End Date:</strong></td>
+                                <td>@Model.ScheduleTraining.EndDateTime</td>
+							</tr>
+							<tr class="no-border">
+								
+                                <td><strong>Maximum Allowed:</strong></td>
+                                <td>@Model.ScheduleTraining.MaxAllowed</td>
+								<td><strong>@* Maintenance Point/HO/SHO*@ Venue:</strong></td>
+                                <td>@Model.ScheduleTraining.Venue</td>
+							</tr>
+							<tr class="no-border">
+								
+                                <td><strong>Booking Done:</strong></td>
+                                <td>@Model.ScheduleTraining.BookingDone</td>
+								<td><strong> Free Place:</strong></td>
+                                <td>@Model.ScheduleTraining.FreePlace</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="divPublishedTrainingList">
+			@Html.Partial("_TrainingGridPartial", Model)
+	</div> 
+    <br />
+    <div class="row">
+            <div class="col-sm-12 text-center">
+                <input id="btnSubmit" type="submit" value="Search" class="btn" style="display: none" />         
+                 <input id="btnBack" type="button" value="Back" onclick="back()" class="btn btn-primary" />
+            </div>
+        </div>
+	@Html.HiddenFor(m => Model.FilterScheduleTrainingId, new { Value = (Model.FilterScheduleTrainingId.ToString()), id = "TrainingID" })
+}
+<script type="text/javascript">
+
+	$().ready(function () {
+
+		
+		$("#btnSearch").click(function () {
+			$("#CurrentPage").val("1");
+			sendToServer();
+		});
+
+		$("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+
+	}); // end of document ready
+
+	createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+
+	function sendToServer() {
+		$("#btnSubmit").click();
+	}
+
+	function back() {
+
+	    window.location = '/PublishedTraining/ViewPublishedTraining/';
+
+	}
+
+	function searchComplete(xmlHttpRequest, textStatus) {
+		// createFooter("pg_pager",@Model.TotalPages,@Model.PageSize,"ActionType","CurrentPage",sendToServer);
+		createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+		$("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
+		setSortClass("SortBy", "SortOrder");
+		endRequest();
+	}
+</script>

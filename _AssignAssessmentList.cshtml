@@ -1,0 +1,188 @@
+﻿@using CTMS.Models
+@model SaveTrainingAssignAssessment
+
+
+@Html.HiddenFor(m => Model.IsTopicWiseAssessment, new { Value = @Model.IsTopicWiseAssessment })
+@Html.HiddenFor(m=>Model.TopicID,new{Value=@Model.TopicID})
+@Html.HiddenFor(m=>Model.MaterialTypeName,new{Value= @Model.MaterialTypeName,@id="hdnMaterialTypeName"})
+ <div class="row">
+     <div class="col-sm-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-form-style">
+          <thead>
+            <th>Question Type</th>
+            <th class="text-right">Weightage</th>
+            <th class="text-right">Total Selected Questions</th>
+            <th class="text-center">No. of Questions for Training</th>
+            <th class="text-right">Total Marks</th>
+            <th class="text-center">Action</th>
+          </thead>
+          <tbody>
+            @if (Model != null && Model.AssignAssessments != null && Model.AssignAssessments.Count > 0)
+            {
+
+                for (int i = 0; i < Model.AssignAssessments.Count; i++)
+                {
+                
+                <tr>
+                    @Html.HiddenFor(m => Model.AssignAssessments[i].QuestionTypeID, new { Value = (Model.AssignAssessments[i].QuestionTypeID) }) 
+                    @Html.HiddenFor(m => Model.AssignAssessments[i].QuestionTypeName, new { Value = (Model.AssignAssessments[i].QuestionTypeName) }) 
+                    @Html.HiddenFor(m => Model.AssignAssessments[i].AssignAssessmentDetailID, new { Value = (Model.AssignAssessments[i].AssignAssessmentDetailID) })
+                    @Html.HiddenFor(m => Model.AssignAssessments[i].TotalSelectedQuestions, new { Value = (Model.AssignAssessments[i].TotalSelectedQuestions) })
+                    @Html.HiddenFor(m => Model.AssignAssessments[i].Weightage, new { Value = (Model.AssignAssessments[i].Weightage) })
+                    @Html.HiddenFor(m=> Model.AssignAssessments[i].AssignAssessmentID,new{Value =(Model.AssignAssessments[i].AssignAssessmentID)})
+                   <td class="text-left">@Model.AssignAssessments[i].QuestionTypeName</td>
+                    <td class="text-right">@Model.AssignAssessments[i].Weightage</td>
+                    <td  class="text-right">@Model.AssignAssessments[i].TotalSelectedQuestions</td>
+                    <td class="text-right table-field">
+                    @Html.TextBoxFor(m => Model.AssignAssessments[i].QuestionCount, new { Value = Model.AssignAssessments[i].QuestionCount, @class = "numeric questionCount form-control", @maxLength = "4" })</td>
+                    <td class="text-right"><label id="TotalMarks_@i">@Model.AssignAssessments[i].TotalMarks</label></td>
+                    <td class="text-center"><a id="LinkSelectAssessment" title="Select Assessment" href="/Assessment/SelectAssessment?aadID=@Model.AssignAssessments[i].AssignAssessmentDetailID&IsT=@Model.IsFromTopicPage.ToString()&aaID=@Model.AssignAssessments[i].AssignAssessmentID&qtID=@Model.AssignAssessments[i].QuestionTypeID" ><img src="@Url.Content("~/Images/icon-calendar.png")"></a></td>
+                </tr>
+                }
+            }
+            else
+            {
+            <tr>
+            <td colspan="8">
+             No record found.
+            </td>
+            </tr>
+            }
+          </tbody>
+            <tfoot>
+                <th>Total</th>
+                <th>&nbsp;</th>
+                <th class="text-right"><label id="lblSumofTotalSelected"></label></th>
+                <th class="text-right">
+                    <div class="half">
+                        <label id="lblSumQuestionCount"></label>
+                    </div>
+                </th>
+                <th class="text-right"><label id="lblSumTotalMarks"></label></th>
+                <th>&nbsp;</th>
+            </tfoot>
+          </table>
+        </div>
+         <div class="row form-label-style add-bottom">
+                <div class="col-sm-1 hiden-mobile">&nbsp;</div>
+                <div class="col-sm-3">
+                    <label>Required Passing Marks (%):</label>
+                </div>
+                <div class="col-sm-2 dv_spiner_outer">
+                    @Html.TextBoxFor(model => Model.RequiredPassingPercentage, new { Value = Model.RequiredPassingPercentage, @class = "numeric form-control", @maxLength = "3" })
+                </div>
+                <div class="col-sm-3">
+                    <label>Standard Duration (Minutes):</label>
+                </div>
+                <div class="col-sm-2 dv_spiner_outer">
+                    @Html.TextBoxFor(model => Model.StandardDuration, new { Value = Model.StandardDuration, @class = "numeric form-control", @maxLength = "3", title = "Maximum Standard Duration value can be " + @CTMS.Common.CommonUtils.MaxAssessmentDurationMinutes + " minutes." })
+                </div>
+            </div>
+            <div class="row form-label-style add-bottom">
+                <div class="col-sm-1 hiden-mobile">&nbsp;</div>
+                <div class="col-sm-3">
+                    <label>Attempts Required:</label>
+                </div>
+                <div class="col-sm-2 dv_spiner_outer">
+                    @Html.TextBoxFor(model => Model.MaxAttempt, new { Value = Model.MaxAttempt, @class = "numeric form-control", @maxLength = "3" })
+                </div>
+            </div>
+     </div>
+ </div>
+
+  <script type="text/javascript">
+
+      $(document).ready(function () {
+
+        
+          GetSumOfTotalSelectedQuestions();
+          GetSumOfQuestionCount();
+          GetSumOfTotalMarks();
+          $(".numeric").numeric({ negative: false });
+
+          if ($("#hdnMaterialTypeName").val() != "") {
+              $("#lblMaterialType").text($("#hdnMaterialTypeName").val());
+          }
+          var message = '@Model.Message';
+          var messageType = '@Model.MessageType';
+
+          if (message != '' && messageType != '') {
+              showMessage("divMessage", messageType, message);
+          }
+
+          if ($("#RequiredPassingPercentage").val() == "0") {
+              $("#RequiredPassingPercentage").val('');
+          }
+          if ($("#StandardDuration").val() == "0") {
+              $("#StandardDuration").val('');
+          }
+
+          if ($("#MaxAttempt").val() == "0") {
+              $("#MaxAttempt").val('1');
+          }
+
+          $(".questionCount").keyup(function () {
+              GetSumOfQuestionCount();
+              GetSumOfTotalMarks();
+          });
+      });
+
+
+      function GetSumOfTotalSelectedQuestions() {
+          var totalCount = '@Model.AssignAssessments.Count';
+          var sumofTotalSelectedQuestions = 0;
+          for (var i = 0; i < totalCount; i++) {
+              var totalSelQuestionID = "AssignAssessments_" + i + "__TotalSelectedQuestions";
+
+              if (isNaN($("#" + totalSelQuestionID).val()) || $("#" + totalSelQuestionID).val() < 0) {
+                  $("#" + totalSelQuestionID).val('0');
+              }
+              sumofTotalSelectedQuestions = sumofTotalSelectedQuestions + parseInt($("#" + totalSelQuestionID).val());
+          }
+          $("#lblSumofTotalSelected").text(sumofTotalSelectedQuestions);
+      }
+
+      function GetSumOfQuestionCount() {
+          
+          var totalCount = '@Model.AssignAssessments.Count';
+          var sumofQuestionCount = 0;
+          for (var i = 0; i < totalCount; i++) {
+              var QuestionCountID = "AssignAssessments_" + i + "__QuestionCount";
+
+              if (isNaN($("#" + QuestionCountID).val()) || $("#" + QuestionCountID).val() < 0) {
+                  $("#" + QuestionCountID).val('0');
+              }
+              var weightageId = "AssignAssessments_" + i + "__Weightage";
+              if ($("#" + QuestionCountID).val() != "") {
+                  var totalMarks = $("#" + weightageId).val() * $("#" + QuestionCountID).val();
+                  $("#TotalMarks_" + i).text(totalMarks);
+                  sumofQuestionCount = sumofQuestionCount + parseInt($("#" + QuestionCountID).val());
+              }
+          }
+          $("#lblSumQuestionCount").text(sumofQuestionCount);
+
+          if ($("#lblSumQuestionCount").text() != "" && parseInt($("#lblSumQuestionCount").text()) > 0) {
+              $("#btnAssign").removeAttr("disabled");
+          }
+          else {
+              $("#btnAssign").attr("disabled", "disabled");
+          }
+      }
+
+      function GetSumOfTotalMarks() {
+          var totalCount = '@Model.AssignAssessments.Count';
+          var sumofTotalMarks = 0;
+          for (var i = 0; i < totalCount; i++) {
+              var totalMarkId = "TotalMarks_" + i;
+              sumofTotalMarks = sumofTotalMarks + parseFloat($("#" + totalMarkId).text());
+          }
+          $("#lblSumTotalMarks").text(sumofTotalMarks);
+
+        }
+      
+      
+              showSpinnerForInteger('RequiredPassingPercentage', '0', '100');
+              showSpinnerForInteger('StandardDuration', '0', '@CTMS.Common.CommonUtils.MaxAssessmentDurationMinutes');
+              showSpinnerForInteger('MaxAttempt','1','@CTMS.Common.CommonUtils.MaxAttempt');
+  </script>

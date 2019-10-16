@@ -1,0 +1,91 @@
+﻿@model CTMS.Models.ViewScheduledTrainingDetails
+@if (Model != null)
+{
+    <div class="container-fluid model-body-text">
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Training</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.TrainingName</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Function</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.Function</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Training Type</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.TrainingTypeName</div>
+        </div>
+       @* <div class="row">
+            <div class="col-sm-5 text-right">
+                Max Allowed</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.MaxAllowed</div>
+        </div>*@
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Category</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.Category</div>
+        </div>
+        @*<div class="row">
+            <div class="col-sm-5 text-right">
+                Maintenance point/HO/SHO</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.MaintenancePointName</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Venue</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.Venue</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                City</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.City</div>
+        </div>*@
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Standard Duration</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@CTMS.Common.CommonUtils.GetActualTrainingDuration(Model.ScheduleTraining.TrainingDuration) </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                Start Date</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.StartDateTime</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-right">
+                End Date</div>
+            <div class="col-sm-1 text-center">
+                :</div>
+            <div class="col-sm-6 text-left">@Model.ScheduleTraining.EndDateTime
+            </div>
+        </div>
+        @if (Model.TrainingTopics != null && Model.TrainingTopics.TopicList.Count() > 0)
+		{
+            <div id="divTopicList">
+                @Html.Partial("~/Views/Training/_ViewTopicList.cshtml", Model.TrainingTopics)
+            </div>
+		}
+    </div>
+    
+}

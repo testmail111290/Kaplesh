@@ -1,0 +1,170 @@
+﻿@using CTMS.Models
+@{
+    ViewBag.Title = "AssignAssessment";
+}
+@model SaveTrainingAssignAssessment
+
+ <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+@if (Model.IsTopicWiseAssessment)
+{
+  ViewBag.Title = "Assign Assessment to Topic";
+}
+else
+{
+    ViewBag.Title = "Assign Assessment to Training";
+}
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="/Home/Home"><img src="@Url.Content("~/Images/home-icon.png")"></a></li>
+                    <li><a href="/Training/ViewTraining">Training</a></li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
+            </div>
+        </div>
+      
+  @using (Ajax.BeginForm(new AjaxOptions { OnBegin = "beginRequest",UpdateTargetId="dvAssignAssessments", OnComplete = "Complete" }))
+  {
+      @Html.HiddenFor(m=>Model.TrainingData.TrainingID)
+      @Html.HiddenFor(m => Model.TrainingData.TrainingName)
+      @Html.HiddenFor(m=>Model.ActionType)
+      @Html.HiddenFor(m=>Model.IsFromTopicPage)
+      @Html.HiddenFor(m => Model.PublishCount, new { Value = @Model.PublishCount })
+      
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="gray-heading">@ViewBag.Title</h2>
+                    <div class="table-bg table-style-new">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr class="no-border">
+                                        <td><strong>Training Name:</strong></td>
+                                        <td>@Model.TrainingData.TrainingName</td>
+                                        <td><strong>Training Type:</strong></td>
+                                        <td>@Model.TrainingData.TrainingTypeName</td>
+                                    </tr>
+                                      @if (Model.IsTopicWiseAssessment)
+                                      {  
+                                        <tr>
+                                            <td class="ver-align"><strong>Topic Name:</strong></td>
+                                            <td style="width:25%;" class="tbl-selector-style">
+                                               <div class="selector-medium">
+                                               @if (Model.IsFromTopicPage)
+                                               {
+                                                   <label>@Model.TopicName</label>
+                                               }
+                                               else if (ViewBag.TopicList != null)
+                                               {
+                                                 @Html.DropDownListFor(model => model.TopicID, (SelectList)ViewBag.TopicList, new { @id = "ddlTopic" })
+                                               }</div></td>
+                                            <td class="ver-align"><strong>Topic Type:</strong></td>
+                                            <td class="ver-align"><label id="lblMaterialType">@Model.MaterialTypeName</label></td>
+                                    </tr>
+                                      }
+                                      else
+                                      {
+                                         <tr>
+                                            <td><strong>Business Function:</strong></td>
+                                            <td>@Model.TrainingData.Categories</td>
+                                            <td><strong>Job Role:</strong></td>
+                                            <td>@Model.TrainingData.Functions</td>
+                                            </tr>  
+                                      }
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+      <div id="dvValidationMsg" class="half-bottom" style="color:Red"></div>
+      <div id="dvAssignAssessments" class="divpadding">
+        @Html.Partial("_AssignAssessmentList", Model)
+   </div>
+    
+      <div class="text-center button-group">
+        @if (Model.PublishCount == 0)
+        {
+         <input type="button" class="btn btn-primary" id="btnAssign" value="Assign" />
+        }
+         <input type="submit" class="btn btn-primary" id="btnSubmit" value="Assign" style="display:none" />
+      
+         <input type="button" class="btn btn-primary" id="btnCancel" value="Back" />
+      </div>
+  }
+  <script type="text/javascript">
+      $(document).ready(function () {
+
+          $("#ddlTopic").change(function () {
+              $("#ActionType").val("changetopic");
+              $("#btnSubmit").click();
+          });
+
+         
+          $("#btnAssign").click(function () {
+              if (isFormValid()) {
+                  $("#ActionType").val("saveassignassessment");
+                  $("#btnSubmit").click();
+              }
+          });
+          $("#btnCancel").click(function () {
+              var redirectUrl = "/Training/SaveTraining?TrainingID=" + '@Model.TrainingData.TrainingID';
+              if ('@Model.IsFromTopicPage' == 'true' || '@Model.IsFromTopicPage' == 'True') {
+                  redirectUrl = "/Topic/AddTopic?TrainingId=" + '@Model.TrainingData.TrainingID' + "&Assessment=" + '@Model.TrainingData.IsTopicWiseAssessment.ToString()'
+              }
+              window.location.href = redirectUrl;
+          });
+
+          function isFormValid() {
+              var isValid = true;
+              var totalCount = '@Model.AssignAssessments.Count';
+              $("#dvValidationMsg").empty();
+              for (var i = 0; i < totalCount; i++) {
+                  var TotalSelectedQuestionsID = "AssignAssessments_" + i + "__TotalSelectedQuestions";
+                  var QuestionCountID = "AssignAssessments_" + i + "__QuestionCount";
+                  if ($("#" + QuestionCountID).val() == "") {
+                      isValid = false;
+                      $("#dvValidationMsg").append("No. of Questions for Training is required.<br/>");
+                      break;
+                  }
+                  else if (parseInt($("#" + QuestionCountID).val()) > parseInt($("#" + TotalSelectedQuestionsID).val())) {
+                      isValid = false;
+                      $("#dvValidationMsg").append("No. of Questions for Training should not be greater than Total Selected Questions.<br/>");
+                      break;
+                  }
+              }
+
+              if ($("#RequiredPassingPercentage").val() == "") {
+                  isValid = false;
+                  $("#dvValidationMsg").append("Required Passing Percentage is required.<br/>");
+              }
+              else if ($("#RequiredPassingPercentage").val() <= 0) {
+                  isValid = false;
+                  $("#dvValidationMsg").append("Required Passing Percentage should be greater than 0.<br/>");
+              }
+
+              if ($("#StandardDuration").val() == "") {
+                  isValid = false;
+                  $("#dvValidationMsg").append("Standard Duration is required.<br/>");
+              }
+              else if ($("#StandardDuration").val() <= 0) {
+                  isValid = false;
+                  $("#dvValidationMsg").append("Standard Duration should be greater than 0.<br/>");
+              }
+              if ($("#MaxAttempt").val() == "") {
+                  isValid = false;
+                  $("#dvValidationMsg").append("Attempts Required should be greater than 0.<br/>");
+              }
+              return isValid;
+
+          }
+      });
+
+       function Complete(xmlHttpRequest, textStatus) {
+           endRequest();
+           $(window).scrollTop(0);
+       }
+  </script>

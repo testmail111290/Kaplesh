@@ -1,0 +1,113 @@
+﻿@using CTMS.Models
+@model ViewCandidate
+<div class="row">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table table-striped remove-bottom table-selector">
+                <thead>
+                    <tr>
+                        <th>
+                            Sr.No.
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="CandidateCodeName" class="sort">Candidate Code</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="CandidateName" class="sort">Candidate Name</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="CategoryName" class="sort">Category Name</a></div>
+                        </th>
+                        <th>
+                            <div>
+                                <a href="javascript:void(0)" sortby="FunctionName" class="sort">Function Name</a></div>
+                        </th>
+                        <th>
+                            <div class="text-center">
+                                Action
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.CandidateList != null && Model.CandidateList.Count > 0)
+                    {
+                        for (int i = 0; i < Model.CandidateList.Count; i++)
+                        {
+                        <tr>
+                            @Html.HiddenFor(m => Model.CandidateList[i].CandidateCode, new { Value = Model.CandidateList[i].CandidateCode })
+                            @Html.HiddenFor(m => Model.CandidateList[i].CandidateName, new { Value = (Model.CandidateList[i].CandidateName) })
+                            @Html.HiddenFor(m => Model.CandidateList[i].CategoryID, new { Value = (Model.CandidateList[i].CategoryID) })
+                            @Html.HiddenFor(m => Model.CandidateList[i].FunctionID, new { Value = (Model.CandidateList[i].FunctionID) })
+                            @Html.HiddenFor(m => Model.CandidateList[i].CandidateID, new { Value = (Model.CandidateList[i].CandidateID) })
+                            <td>
+                                @Model.CandidateList[i].RowNumber
+                            </td>
+                            <td>
+                                @Model.CandidateList[i].CandidateCode
+                            </td>
+                            <td>
+                                @Model.CandidateList[i].CandidateName
+                            </td>
+                            <td>@Model.CandidateList[i].CategoryName
+                            </td>
+                            <td>
+                                @Model.CandidateList[i].FunctionName
+                            </td>
+                            <td class="btn-action" width="15%">
+                                <a class="icon-view" href="/Candidate/CandidateTrainingList?CID=@Model.CandidateList[i].CandidateID" title="View Trainings">
+                                    View Trainings</a>
+                            </td>
+                        </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">
+                                No record found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-strip clearfix">
+            <div class="show-page-number">
+            </div>
+            <div id="pg_pager" class="text-right pagination-wrp">
+            </div>
+        </div>
+        <!--.pagination-strip-->
+    </div>
+</div>
+@Html.HiddenFor(m => m.CandidateID, new { id = "CandidateID" })
+@Html.Partial("_ViewParameters", Model, new ViewDataDictionary<ViewParameters>())
+<script type="text/javascript">
+    $(document).ready(function () {
+        var message = '@Model.Message';
+        var messageType = '@Model.MessageType';
+
+        if (message != '' && messageType != '') {
+            showMessage('divMessage', messageType, message);
+        }
+
+
+    });
+    function deleteTraining(id) {
+        $("#ActionType").val("Delete");
+        $("#CandidateID").val(id);
+        sendToServer()
+    }
+
+    $(".edit").click(function () {
+        var id = $(this).attr("id").replace("Editlink_", "");
+        $("#CandidateID").val(id);
+        $("#ActionType").val("Edit");
+        sendToServer();
+    });
+
+</script>
