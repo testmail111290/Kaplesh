@@ -348,3 +348,57 @@ pause       Pause all processes within one or more containers
   update      Update configuration of one or more containers
   version     Show the Docker version information
   wait        Block until one or more containers stop, then print their exit codes
+
+
+Multi-Host Networking
+Docker Engine provides out-of-the-box support to multi-host networking using overlay network driver.
+
+A bridge network is used when we run a relatively small network on a single host.
+
+An overlay network is used when we have a significantly larger network involving multiple host.
+
+Multi-Host Networking
+Docker Engine provides out-of-the-box support to multi-host networking using overlay network driver.
+
+A bridge network is used when we run a relatively small network on a single host.
+
+An overlay network is used when we have a significantly larger network involving multiple host
+Overlay Network
+There are 2 ways of creating an overlay network.
+
+Overlay networking with an external key-value store
+
+Overlay networking in swarm mode
+Overlay networking with an external key-value store
+We need a valid key-value store service to create a Overlay network.
+
+Before creating a network in this way, you must install and configure your chosen key-value store service.
+
+Pre-requisites:
+
+A key-value store (Docker supports Consul, Etcd, and ZooKeeper)
+
+A cluster of hosts that connects to key-value store
+
+Host with Docker Engine configured properly
+
+Host within cluster must have a unique hostname because key-value store uses host name to identify cluster members
+
+Overlay networks in swarm mode
+What is Swarm?
+
+A swarm is a cluster of Docker engines, or nodes, where you deploy services.
+
+The cluster management and orchestration features embedded in the Docker Engine are built using SwarmKit.
+
+Docker engines participating in a cluster are running in swarm mode.
+
+Source: docker.com
+
+You can initialize a swarm or join an already existing swarm.
+Overlay Network in Swarm Mode
+The swarm nodes exchange overlay network information using a gossip protocol.
+
+By default the nodes encrypt and authenticate information they exchange via gossip using the AES algorithm in GCM mode.
+
+Manager nodes in the swarm rotate the key used to encrypt gossip data every 12 hours.
