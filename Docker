@@ -1,1 +1,350 @@
 
+Docker Container
+Containers are multiple isolated services that are run on a single control host (underlying infrastructure) and they access a single kernel.
+
+Key Benefits
+
+Improved performance
+
+portability
+
+eliminates environmental inconsistencies
+
+Docker is a tool that uses open source Container technology intended to make the process of creating, deploying and running applications easier by using container based virtualization technology.
+
+Docker Components
+Docker components include
+
+Docker daemon : Docker process responsible for managing docker objects
+
+Docker client : Communicates with Docker daemon through API calls
+
+Docker Image - Read only template that stores the application and environment.
+
+Docker Container - Runtime instance of a docker image
+
+Docker File - Automates Image construction
+
+Docker registry - Public and private repositories to store images
+
+Docker End-to-End Workflow
+Let us quickly look into the steps involved in the docker flow.
+
+Create a Dockerfile
+
+Build a Docker Image
+
+Verify Image
+
+Push to Registry
+
+Pull from Registry
+
+Run Image
+
+Verify running Container/ServiceMore on Docker
+In this course we will continue to learn more about Docker. Following are the aspects of Docker that will be covered.
+
+Docker Networking
+
+Docker Storage
+
+Docker Compose tool
+
+Docker Security
+
+Best Practices
+The concept of networking in Docker comes into picture when working with Docker in a real time scenario at a large scale.
+
+Docker Networking helps us to share data across various containers.
+
+Host and containers in Docker are tied with 1:N relationship, which means one host can command multiple containers.
+Container Networking Model
+Container networking model is a standard defined for configuring network interfaces in Linux containers. This was proposed by Docker and later adopted by libnetwork (defines networking for docker) project.
+
+In this model, a set of network interfaces is assembled together to formalize the steps that are required to provide networking for containers.
+
+The fundamental goal of this model is to achieve application portability across various infrastructures.
+
+This model not only provides application portability but also utilizes the advantages of special features and capabilities of the infrastructure.
+
+Container Networking Model (CNM)
+Container Networking Model (CNM)
+This block diagram represents the Container networking model.
+
+Containers are interconnected to each other through a network established by connecting the ethernet port of the individual containers to the host system.
+
+Every host system has a network infrastructure built in with a network driver and IPAM driver.
+
+Network driver - Device that enables network communication.
+
+IPAM Driver - Provides IP address management serives.
+
+CNM core components include
+
+Sandbox
+
+Endpoint
+
+Network
+
+CNM - Components
+Sandbox
+Includes container's network stack configuration
+
+Manages container's interfaces, routing table and DNS settings
+
+Includes multiple endpoints from multiple networks
+
+Endpoint
+Connects Sandbox to Network
+
+Abstracts Network connection from the application
+
+Provides portability to connect to different Network drivers
+
+Network
+Collection of endpoints that can be connected to each other
+
+Implementation can be a Linux bridge, VLAN etc.
+
+Docker Networking
+Refer to the image to understand how docker network is configured on a host machine
+Behind the screens
+Docker Networking
+Every regular host machine (laptops/ Vm / Cloud machine) has an ethernet interface with an IP attached (eg. ip address 10.0.1.1).
+
+Once you install docker , within the host machine, Docker creates a bridge.
+
+Docker installs scripts that are clever enough to interpret the networking on the host and identify a space for its ip configuration.
+
+When you start a container, it creates a virtual bridge called docker01.
+
+Default inet address for Docker 172.17.42.1.
+
+Docker Native Network Drivers
+Docker engine had in-built network drivers which are the core component that enables networking in containers.
+
+Below are the different types of network drivers that can be used to configure networking in docker.
+
+Host: Uses host's networking stack.
+
+Bridge: Creates a Linux Bridge on the host which is managed by Docker.
+
+Overlay: Creates an overlay network for multi-host networks.
+
+MACVLAN: Uses MACVLAN brige to connect container interfaces with parent host interface.
+
+None: Container has its own networking stack and completely isolated from the host network.
+
+Network Modes
+Various modes for networking is all about how we manage connections between containers using the ​network drivers.
+
+Bridge mode Networking: The default network will be bridge network.
+Unless we specify the network option in docker run command, Docker daemon connects the container to this network.
+
+Host Mode Networking: Add the container to the network stack of the host. Container in this mode will not create a new network configuration, where as share the network config of host.
+--net = host
+
+Container Mode Networking: New container created will have the same config as that of the specified Container.
+--net=container:$comtainer2
+
+No Networking: Adds container to container network stack. Hence this lacks connectivity with the host.
+--net=none
+
+Network Drivers & Scope
+Network Drivers & Scope
+On Docker installation, there are 3 networks that are automatically created.
+
+This can be listed using command
+
+docker network ls
+You may try this on Katacoda Playground.
+
+Bridge Network
+Bridge Network
+This default network is available in all docker hosts. While creating containers, by default they get mapped to this bridge if you do not specify a different one.
+
+Lets run docker inspect command to know more on this network.
+
+docker network inspect bridge
+This command lists
+
+Details on the configured bridge network
+
+Containers running in the network
+
+1 of 15Bridge Network (Contd1...)
+Lets create couple of containers using below command. Click here to try this out in Katacoda Docker playground.
+
+docker run -itd --name=container1 busybox
+docker run -itd --name=container2 busybox
+Now we have 2 containers running in the default bridge network.
+
+Lets run docker inspect command.
+
+docker network inspect bridge
+Now we can see these containers listed under this bridge network.
+
+Bridge Network (Contd 2...)
+Disconnect from the bridge network
+
+docker network disconnect bridge container1
+User Defined Network
+Users can create 2 kinds of network
+
+Bridge network
+
+Overlay network
+
+Docker command to create a Bridge network
+
+docker network create <<network name>> 
+e.g. docker network create  myNetwork
+Create a User Defined Network
+Lets create our new bridge network and learn how to connect containers to the network.
+
+Step 1:
+
+docker network create -d bridge new_bridge
+-d --> to specify the driver type (in this case its is bridge network)
+
+Step 2:
+
+Verify if the new network is created
+
+docker network ls
+This command will list the new bridge along with the other default bridges.
+
+Run the below command to inspect the new network created.
+
+docker network inspect new_bridge
+Create a User Defined Network (Contd 1...)
+Step 3:
+
+Add container to the network
+
+Lets create a new container using image training/postgres to run a PostgreSQL db and tag this to the new network created.
+
+docker run -d --net=new_bridge --name db training/postgres
+Step 4: Verify if its connected to the new network.
+
+Run the below command to get the network details on where this container is connected.
+
+docker inspect --format='{{json .NetworkSettings.Networks}}'  db
+Create a User Defined Network (Contd 2...)
+Step 5:
+
+Lets run the python web app using image training/webapp without specifying any network settings.
+
+This connects the container to the default bridge network.
+
+docker run -d --name web training/webapp python app.py
+Step 6:
+
+Verify if the web app container is connected to the default bridge network.
+
+docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' web
+Create a User Defined Network (Contd 4...)
+Step 7:
+
+Check Connectivity between containers.
+
+Lets try to ping the web app container from the db container using the below command.
+
+docker exec -it db bash
+Now lets enter the ping command in the db running container.
+
+ping 172.17.0.2
+Note: ip address should be as that of the web app container. Refer to Step 6 to get the ip address.
+
+Press CTRL-C to end this ping and you will find that the ping command failed. This is because the web app and the db container is not connected to the same network.
+
+Create a User Defined Network (Contd 5...)
+Step 8:
+
+Connect web container to new_bridge.
+
+You can open an additional terminal in Katacoda playground. Let's execute the below commands in this new terminal.
+
+Let's now connect web container new_bridge network.
+
+
+docker network connect new_bridge web
+
+Step 9:
+
+Repeat Step 7 commands to ping web container from db container. Get the ipaddress by running below command again. This time you will find 2 ipaddress, the second one is for the connectivity with the new_bridge.
+
+
+docker inspect --format='{{json .NetworkSettings.Networks.new_bridge}}'  web
+
+This ping command is successful now since we have established connectivity between 2 containers.
+
+Network Commands
+Click here to try this out in Katacoda Docker playground.
+
+Create Network
+Command to create new bridge network.
+
+docker network create <<network name>>
+e.g docker network create myNetwork
+
+Connect Container to Network
+docker network connect <<network name>> <<Container name>>
+e.g. Create a container busybox and connect this to myNetwork.
+
+docker run -itd --name=container1 busybox
+docker network connect myNetwork container1
+
+Network Commands (Contd 1...)
+List all Networks
+docker network ls
+Inspect a Network
+We can inspect a network to list the configuration and containers connected to using command
+
+docker network inspect <<network name>>
+e.g.
+
+docker network inspect myNetwork
+Disconnect a container from a Network
+docker network disconnect <<network name>> <<container name>>
+e.g.
+
+docker network disconnect isolated_nw container5
+Network Commands (Contd 2...)
+Remove network
+Command to remove unused network
+
+docker network rm <<network name>>
+e.g. docker network rm MynetwoTry Networking in Docker
+Create a new bridge 'bridge_sample'.
+
+Run a couple of images (Cont1 and Cont2) and connect these to the new bridge created. Now try to ping from cont1 to cont2 to verify connectivity.
+
+Once done, stop containers and then remove network, containers, and images using docker commands.
+
+rk
+
+
+pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
