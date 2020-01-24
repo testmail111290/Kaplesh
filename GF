@@ -1,0 +1,295 @@
+
+$(document).ready(function () {
+    SetChromePasteEvent(); //This is used only if browser is Chrome
+
+    //when copy checkbox value changes
+    $('.selectedRow').change(function (e) {
+        $(this).closest('tr').toggleClass("tr_selected", this.checked);
+        CopyRow(e, this);
+        e.target.focus();
+    });
+
+    //when paste icon is clicked.
+    $('.pasteRow').click(function (e) {
+        PasteRows(e, this);
+        e.target.focus();
+    });
+
+    //when any key is pressed any where in service line grid
+    $(".Tabform tr").keydown(function (e) {
+        var key = e.which | e.keyCode;
+        if (key === 83 && e.ctrlKey === true && e.shiftKey === true) { //'ctrl +shift + s' to copy header row as well
+            SelectRow(e, this);
+            CopyRow(e, this, true); //third argument will decide if header row needs to be copied or not
+            e.target.focus();
+            e.preventDefault(); //to prevent default browser functionalty on this hot key combination
+        }
+        else if (key === 83 && e.ctrlKey === true) { //'ctrl s' -- copy without header
+            SelectRow(e, this);
+            CopyRow(e, this, false); //third argument will decide if header row needs to be copied or not
+            e.target.focus();
+            e.preventDefault(); //to prevent default browser functionalty on this hot key combination
+        }
+        else if (key === 68 && e.ctrlKey) { //'ctrl d'
+            PasteRows(e, this);
+            e.target.focus();
+            e.preventDefault(); //to prevent default browser functionalty on this hot key combination
+        }
+    });
+})
+var displayMesseges = {
+    "WrongGrid": "The Service Line(s) copied are not compatible with this grid.",
+    "EndofGrid": "Sufficient space isn’t available to paste. For remaining lines, user must copy/paste manually onto the next page of line(s).",
+    "WrongFormat": "The copied data is not in the right format to be pasted.",
+    "ChromeDoesNotSupportPaste": "Chrome browser does not support this paste. Press Ctrl + V to paste service lines.",
+    "ErrorOccured": "An error occurred in your last action. Please refresh the page and try again. If this error comes again report this to Support team.",
+    "CopyFailed": "Copy to clipboard failed.",
+    "NoServiceLinesCopied": "No Service Line(s) have been copied.",
+    "DisabledFields": "Some fields in CAS were not editable when pasting service line data"
+};
+
+//this function will highlight the row or not (apply/remove CSS) based on the checkbox value
+//no actual copying is done here
+function SelectRow(e, thisObject) {
+    var row = $(thisObject).closest("tr");
+    if (row != null) {
+        if (row.hasClass("tr_selected")) {
+            row.removeClass("tr_selected");
+            var checkbox = row.find('input[type = "checkbox"]')[0];
+            if (checkbox != null)
+                checkbox.checked = false;
+        }
+        else {
+            row.addClass("tr_selected");
+            var checkbox = row.find('input[type = "checkbox"]')[0];
+            if (checkbox != null)
+                checkbox.checked = true;
+        }
+    }
+}
+
+//Will copy all rows where checkbox is selected (actual copy logic is here)
+function CopyRow(e, thisObject, headerCopy) {
+    //debugger;
+    var gridName = $('#ViewName').val();
+    var source = $(".Tabform tr.tr_selected");
+    var copiedData = '';
+    var headerIndex = [];
+    var headerData = '';
+    //Below loop will also populated the index of all the fields from where data is copied
+    for (var i = 0; i < source.length; i++) {
+        $(source[i]).find('td').each(function (r) {
+            if (r != 0) {
+                var text = ''
+                if ($(this).find('input:text').length != 0)
+                    text = $(this).find('input:text').val();
+                else
+                    text = $(this).text();
+                text=text.replace('\n', '').trim();
+                copiedData += text + '\t';
+                if (i == 0)
+                    headerIndex.push($(this).index());
+            }
+        });
+
+        if (copiedData.match(/\t$/)) //remove the last tab
+            copiedData = copiedData.substring(0, copiedData.length - 1);
+        copiedData += '\n';
+    }
+    if (copiedData.match(/\n$/)) //remove the last end of line
+        copiedData = copiedData.substring(0, copiedData.length - 1);
+    //if header should also be copied with the data
+    if (headerCopy) {
+        var header = $(".Tabform tr").eq(0);
+        if (header != null) {
+            for (var i = 0; i < headerIndex.length; i++) {
+                var node = $(header).find('th').eq(headerIndex[i]);
+                var text = '';
+                if (node.find('input:text').length != 0)
+                    text = node.find('input:text').val();
+                else
+                    text = node.text();
+                text = text.replace('\n', '').trim();
+                headerData += text + '\t';
+            }
+            if (headerData.match(/\t$/))
+                headerData = headerData.substring(0, headerData.length - 1);
+            headerData += '\n';
+        }
+        gridName=gridName+'-h'
+        copiedData = gridName + '\n' + headerData + copiedData;
+    }
+    else
+    {
+        copiedData = gridName + '\n' + copiedData;
+    }
+    copyToClipboard(copiedData);
+}
+
+//Function will check the browser. If chrome will display a message, if IE it will proceed
+function PasteRows(e, thisObject) {
+    // Chrome 
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    if (isChrome) {
+        //clipBoardData = GetFromClipboardChrome();
+        ShowMessage(displayMesseges["ChromeDoesNotSupportPaste"], "warning");
+        return;
+    }
+    //for IE
+    var clipBoardData = GetFromClipboard();
+    PasteServiceLine(clipBoardData,thisObject);
+}
+
+//this function will validate and paste the data passed. 
+//clipBoardData --data from clipboard
+//thisObject -- object where paste was initiated. That would be the starting line.
+function PasteServiceLine(clipBoardData, thisObject) {
+    var targetRow = $(thisObject).closest("tr");
+    var gridName = $('#ViewName').val();
+    if (clipBoardData == null) {
+        ShowMessage(displayMesseges["NoServiceLinesCopied"], "warning");
+        return;
+    }
+    var clipBoardArray = clipBoardData.split('\r\n');
+    clipBoardArray = cleanArray(clipBoardArray);
+    var pasteGridName = clipBoardArray[0].replace(/\t/g, '');
+    //var pasteHeader = pasteGridName.includes('-h');
+    var pasteHeader=(pasteGridName.indexOf('-h')!=-1);
+    pasteGridName = pasteGridName.replace('-h', '');
+    var dataStartRow = -1;
+    if (pasteHeader)
+        dataStartRow = 3;
+    else
+        dataStartRow = 2;
+
+    if (clipBoardArray.length < dataStartRow) {
+        ShowMessage(displayMesseges["WrongFormat"], "error");
+        return;
+    }
+
+    if (gridName == pasteGridName) {
+        var disabled = false;
+        var rowData = [];
+        for (var i = dataStartRow-1; i < clipBoardArray.length; i++) {
+            if (clipBoardArray[i] == '')
+                continue;
+            rowData = [];
+            rowData = clipBoardArray[i].split('\t');
+            if (targetRow.length == 0) {
+                ShowMessage(displayMesseges["EndofGrid"], "error");
+                break;
+            }
+            var rowDataLength = rowData.length;
+            targetRow.find('td').each(function (r) {
+                var len = $(this).find('input:text:enabled').length;
+                if ($(this).find('input:text:disabled').length > 0){
+                    disabled = true;
+                }
+                if (len > 0 && r > 0 && (r - 1) <= rowDataLength) {
+                    $(this).find('input:text:enabled').eq(0).val(rowData[r - 1]);
+                    $(this).find('input:text:enabled').eq(0).blur();
+                }
+
+            });
+
+            targetRow.addClass('tr_pasted');
+
+            targetRow.delay(2000).queue(function (next) {
+                $(this).removeClass("tr_pasted");
+                next();
+            });
+            targetRow = targetRow.next("tr");
+        }
+        var source = $(".Tabform tr.tr_selected");
+        for (var i = 0; i < source.length; i++) {
+            var checkbox = $(source[i]).find('input[type = "checkbox"]')[0];
+            if (checkbox != null)
+                checkbox.checked = false;
+            $(source[i]).removeClass("tr_selected");
+        }
+        if (disabled) {
+            ShowMessage(displayMesseges["DisabledFields"], "warning");
+        }
+    }
+    else
+        ShowMessage(displayMesseges["WrongGrid"], "error");
+
+
+}
+
+//if browswer is chrome, we are adding listeners for Ctrl V within the service line grid
+function SetChromePasteEvent() {
+    // Chrome 1+
+    try{
+        var isChrome = !!window.chrome && !!window.chrome.webstore;
+        if (isChrome) {
+            document.querySelectorAll('.Tabform tr')
+                .forEach(function (e) {
+                    e.addEventListener('paste', function (event) {
+                        GetFromClipboardChrome(event);
+                    })
+                }); 
+        }
+    }
+    catch (err) {
+        ShowMessgae(displayMesseges["ErrorOccured"] +" Error Messge : " +err.message,"error");
+    }
+}
+
+//Will put the data into clipboard
+function copyToClipboard(text) {
+    var textarea = document.createElement("textarea");
+    textarea.textContent = text;
+    textarea.style.position = "fixed";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        return document.execCommand("cut");
+    } catch (ex) {
+        ShowMessage(displayMesseges["CopyFailed"], "error");
+        return false;
+    } finally {
+        document.body.removeChild(textarea);
+    }
+}
+
+//Will retrieve the data from clipboard (for IE only)
+function GetFromClipboard() {
+    var pastedText = ''
+    
+    if (window.clipboardData && window.clipboardData.getData) { // IE
+        pastedText = window.clipboardData.getData('Text');
+    } else if (e.clipboardData && e.clipboardData.getData) {
+        pastedText = e.clipboardData.getData('text/plain');
+    }
+    return pastedText;
+}
+
+//Will retrieve the data from clipboard (for chrome only)
+function GetFromClipboardChrome(event) {
+    var clipText = event.clipboardData.getData('Text');
+    var clipArray = clipText.split('\r\n');
+    clipArray = cleanArray(clipArray);
+    if (clipArray.length !=1) {
+        PasteServiceLine(clipText, event.target);
+        event.preventDefault();
+    }
+
+    
+}
+
+
+
+// Will remove all falsy values: undefined, null, 0, false, NaN and "" (empty string)
+function cleanArray(actual) {
+    var newArray = new Array();
+    for (var i = 0; i < actual.length; i++) {
+        if (actual[i] && actual[i].trim()!='') {
+            newArray.push(actual[i]);
+        }
+    }
+    return newArray;
+}
+
+
+
