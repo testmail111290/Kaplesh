@@ -1,0 +1,146 @@
+﻿@model Humana.WebClaim.CASUI.Common.DBAR
+@*@Scripts.Render("~/Content/UMTDBARJS")*@
+@*@Scripts.Render("~/Content/DBAR")*@
+@*@Scripts.Render("~/Content/UDbootstrap")
+    @Styles.Render("~/Content/UMTDBARCSS")*@
+@Scripts.Render("~/Content/UDvalidate")
+@Scripts.Render("~/Content/UDvalidate.unobtrusive")
+
+@using (Html.BeginForm("CreateDBAR", "DBAR", FormMethod.Post, new { @id = "frmCreateDBAR" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div id="divClient"> </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger", @id = "summary" })
+        <div class="form-group">
+            @Html.HiddenFor(m => m.data, new { @value = Model.data, @id = "hdndata" })
+            @Html.LabelFor(model => model.client, htmlAttributes: new { @class = "control-label col-md-2 text-uppercase" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.client, new { htmlAttributes = new { @class = "form-control dctxt", @maxlength = 3, @id = "txtDBARClient" } })
+                @Html.ValidationMessageFor(model => model.client, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control dctxt", @id = "txtDBARName", @maxlength = 4 } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.entry, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.entry, new { htmlAttributes = new { @class = "form-control dctxt ", @id = "txtDBAREntry", @maxlength = 12 } })
+                @Html.ValidationMessageFor(model => model.entry, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.data, htmlAttributes: new { @class = "control-label col-md-2 " })
+            <div class="col-md-6 ">
+                <input type="text" class=" dbarcontrol datatxt" disabled='disabled' maxlength="50" id="txtDBARScale" />
+                <input type="text" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt1" data-id="1" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt2" data-id="2" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt3" data-id="3" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt4" data-id="4" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt5" data-id="5" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt6" data-id="6" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt7" data-id="7" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt8" data-id="8" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt9" data-id="9" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt10" data-id="10" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt11" data-id="11" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt12" data-id="12" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt13" data-id="13" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt14" data-id="14" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt15" data-id="15" />
+                <input type="text" tabindex="-1" autocomplete="off" class=" dbarcontrol datatxt" maxlength="50" id="txt16" data-id="16" />
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div>
+                <div tabindex="-1" class="col-md-3 w250 dpadding">
+                    <ul tabindex="-1" class="ControllSet">
+                        <li>
+                            <span class="control-label">Over-all Index</span>
+                        </li>
+
+                        <li class="dfloatl">
+                            @Html.Editor("OverallIndex", new { htmlAttributes = new { @class = "form-control dctxtoverall", @id = "txtOverallIndex", @maxlength = 3 } })
+                        </li>
+                        <li class="dfloatl">
+                            <input tabindex="-1" class="button-1 dcbtnclear" id="btnCopyAll" type="button" style="display:none" value="Copy" onclick="CopyAllRows()">
+                        </li>
+                        <li class="dfloatl">
+                            <input tabindex="-1" class="button-1 dcbtnclear" id="btnPasteAll" type="button" style="display:none" value="Paste" onclick="PasteAllRows()">
+                        </li>
+                        <li> <input tabindex="-1" class="button-1 dcbtnclear" id="btnClear" type="button" value="Clear"></li>
+                    </ul>
+                </div>
+                <div tabindex="-1" class="col-md-2 dpadding w250">
+                    <ul tabindex="-1" class="ControllSet dfloatr">
+                        <li tabindex="-1" class="dfloatr">
+                            @Html.Editor("ColumnIndex", new { htmlAttributes = new { @class = "form-control dRCIndextxt", @id = "txtColumnIndex", @maxlength = 2, @tabindex = 101 } })
+                        </li>
+                        <li tabindex="-1" class="dfloatr">
+                            @Html.Editor("RowIndex", new { htmlAttributes = new { @class = "form-control dRCIndextxt", @id = "txtRowIndex", @maxlength = 2, @tabindex = 100 } })
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-8 dcenter">
+                <input tabindex="-1" class="button-1 dselfcenter" id="SaveDBARRecord" type="button" value="Save">
+                <input tabindex="-1" class="button-1 dselfcenter" data-dismiss="modal" id="btnCancel" type="button" value="Cancel">
+                @*<input tabindex="-1" class="button-2 dbtn" id="btnAddNewtest" type="button" value="Copy" onclick="copyToClipboard('Aarti Soni')">*@
+
+            </div>
+        </div>
+        <label id="lblError" class="elabel"></label>
+        <input type="hidden" id="hdnValidation" value="true" />
+    </div>
+}
+
+<script type="text/javascript">
+    //
+    $('.dbarcontrol').on('keydown', function (e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) {
+            var Rownumber = Number($("#txtRowIndex").val());
+            AppendSpaceToEND(Rownumber);
+            if (Rownumber < DataColumnLength) {
+                Rownumber++;
+                $("#txtRowIndex").val(Rownumber);
+                setCaretPosition(GetFielByRowNumber(Rownumber).id, 0);
+            }
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $(document).keydown(function (event) {
+        if ($("#TableModal").css('display') == "block") {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {                           //CODE FOR ENTER KEY PRESS
+                event.preventDefault();
+                return false;
+            }
+            if (event.ctrlKey && (event.which == 83)) {     //CODE FOR CTRL+S (COPY DATAFIELD) KEY PRESS
+                event.preventDefault();
+                CopyAllRows();
+                return false;
+            }
+            if (event.ctrlKey && (event.which == 68)) {     //CODE FOR CTRL+D (PASTE DATAFIELD) KEY PRESS
+                event.preventDefault();
+                PasteAllRows();
+                return false;
+            }
+        }
+    });
+</script>

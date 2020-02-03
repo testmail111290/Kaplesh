@@ -1,0 +1,123 @@
+﻿@using Humana.WebClaim.CASUI.Common
+@model Humana.WebClaim.CASUI.Common.DBARList
+<div id="divTableList">
+    <table class="dtable">
+
+        @if (Model != null && Model.objDBARList != null && Model.objDBARList.Count > 0)
+        {
+            <tr>
+                <th colspan="1">Client ID :  @Model.FilterClient</th>
+                <th colspan="2">Name : @Model.FilterName</th>
+            </tr>
+            <tr>
+                <th>
+                    Entry
+                </th>
+                <th>
+                    Data
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            @Html.HiddenFor(m => m.Action, new { @value = Model.Action, @id = "hdnAction" })
+            foreach (var item in Model.objDBARList)
+            {
+                <tr>
+                    <td class="w100">
+                        @Html.DisplayFor(modelItem => item.entry)
+                    </td>
+
+                    <td class="w400">
+                        @Html.DisplayFor(modelItem => item.data)
+                    </td>
+
+                    <td class="w100">
+
+                        <a href="#" onclick="EditDBAR('@item.client','@item.name','@item.entry')">Edit</a>|
+
+                        <a href="#" id="btnDelete" onclick="DeleteDBARRecord('@item.client','@item.name','@item.entry')"> Delete</a>
+
+                    </td>
+
+                </tr>
+            }
+
+        }
+        else
+        {
+            <tr>
+                <th colspan="1">Client ID : </th>
+                <th colspan="2">Name :</th>
+            </tr>
+            <tr>
+                <th>
+                    Entry
+                </th>
+                <th>
+                    Data
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    No record found.
+                </td>
+            </tr>
+        }
+    </table>
+    <table id="tblPageSize" style="display:none">
+        <tr>
+            <td colspan="3" class="noborder">
+                <label class="dlabel">Show </label>
+            </td>
+            <td>
+                @Html.DropDownListFor(model => model.PageSize, new List<SelectListItem>
+              {
+                  new SelectListItem{ Text="10", Value = "10" },
+                  new SelectListItem{ Text="25", Value = "25" },
+                  new SelectListItem{ Text="50", Value = "50" },
+                  new SelectListItem{ Text="100", Value = "100" }
+
+               }, new { @class = "select",
+                   @style="width:40px;",
+                   @id= "ddlPageSize"
+               })
+            </td>
+            <td colspan="3" class="noborder">
+                <label class="dlabel">Entries </label>
+            </td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td colspan="5" align="center" class="noborder">
+                <div class="divpagination-strip clearfix flex">
+                    <div class="show-page-number">
+                    </div>
+                    <div id="pg_pager" class="text-center divpagination-wrp">
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+@Html.Partial("~/Views/DBAR/_ViewParameters.cshtml", Model, new ViewDataDictionary<ViewParameters>())
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //     $("#txtControlText").focus();
+    //});
+     $(document).ready(function () {
+         $("#txtControlText").focus();
+        createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
+        $("#ddlPageSize").change(function () {
+            $("#ActionType").val("dropdownchange");
+            $("#CurrentPage").val(1);
+            $("#btnSearch").click();
+        });
+    });
+</script>
+

@@ -1,0 +1,181 @@
+﻿@model Humana.WebClaim.CASUI.Common.DBARList
+@*@Scripts.Render("~/Content/UMTDBARJS")*@
+@Scripts.Render("~/Content/DBAR")
+@Scripts.Render("~/Content/UDbootstrap")
+
+@Styles.Render("~/Content/UMTDBARCSS")
+@Styles.Render("~/Content/DatatableCSS")
+@*<script src="~/Scripts/UMTDBAR/DBAR.js"></script>*@
+
+@using (Ajax.BeginForm("ViewDBAR", "DBAR", null, new AjaxOptions { UpdateTargetId = "divDBARList", OnComplete = "searchCompleteDBAR" }, new { @class = "ml15" }))
+{
+    @Html.Hidden("hdnAction")
+    @Html.Hidden("hdnClient")
+    @Html.Hidden("hdnName")
+    @Html.Hidden("hdnEntry")
+
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <label class="dlabel">Client </label>
+                    <label id="errClient" class="elabel">*</label>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FilterClient, new { @id = "txtClient", @class = "txtClient  dtextbox alphanumericonly", @maxlength = "3" })
+                    &nbsp;
+                </td>
+                <td>
+                    <label class="dlabel">Name </label>
+                    <label id="errClient" class="elabel">*</label>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FilterName, new { @id = "txtName", @class = "txtName alphanumericonly dtextbox", @maxlength = "4" })
+                    &nbsp;
+                </td>
+                <td>
+                    <label class="dlabel">Entry </label>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FilterEntry, new { @id = "txtEntry", @class = "txtEntry alphanumericonly dtextbox", @maxlength = "12" })
+                    &nbsp;
+                </td>
+                <td>
+                    <input tabindex="-1" class="button-2 dbtn" id="btnOpen" type="button" value="Open" onclick="CheckValidation()">
+                    &nbsp;
+                    <input tabindex="-1" class="button-2" id="btnSearch" type="submit" value="Open" style="display:none">
+                    <input tabindex="-1" class="button-2 dbtn" id="btnAddNew" type="button" value="Add New" onclick="CreateDBAR('')">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div id="divDBARList">
+        @Html.Partial("~/Views/DBAR/_ViewDBARList.cshtml", Model)
+    </div>
+
+}
+
+<div class="divMessagePopupDialog container">
+    <!-- Modal -->
+    <div class="divMessagePopupDialog modal fade" id="DeleteConfirmation1" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="divMessagePopupDialog modal-content">
+                <div class="divMessagePopupDialog modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 id="messageType" class="divMessagePopupDialog modal-title"></h4>
+
+                </div>
+                <div class="divMessagePopupDialog modal-body">
+                    <div id="message">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divMessagePopupDialog container">
+    <!-- Modal -->
+    <div class="divMessagePopupDialog modal fade" id="DeleteConfirmation" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="divMessagePopupDialog modal-content">
+                <div class="divMessagePopupDialog modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 id="" class="divMessagePopupDialog modal-title">Delete</h4>
+
+                </div>
+                <div class="divDeleteConfirmPopupDialog modal-body">
+                    <div id="">
+                        Are You Sure? You want to delete this record?
+                    </div>
+                </div>
+                <div class=" divDeleteConfirmPopupDialog modal-footer mb20">
+                    <input tabindex="-1" class="button-1 mb12" data-dismiss="modal" id="btnCancel" type="button" value="Cancel">
+                    <input tabindex="-1" class="button-1 mb12" id="btnConfirm" type="button" value="Confirm" onclick="ConfirmDelete('')">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divErrorPopupDialog container">
+    <!-- Modal -->
+    <div class="divErrorPopupDialog modal fade" id="ErrorPopup" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="divErrorPopupDialog modal-content">
+                <div class="divErrorPopupDialog modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 id="messageTypeError" class="divErrorPopupDialog modal-title"></h4>
+
+                </div>
+                <div class="divErrorPopupDialog modal-body">
+                    <div id="messageError">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divPopupDialog container">
+    <!-- Modal -->
+    <div class="divPopupDialog modal fade l20" id="TableModal" role="dialog">
+        <div class="modal-dialog w700 l10">
+            <!-- Modal content-->
+            <div class="divPopupDialog modal-content">
+                <div class="divPopupDialog modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 id="divTableHeader" class="divPopupDialog modal-title"></h4>
+                </div>
+                <div class="divPopupDialog modal-body">
+                    <div id="TableModalContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function CheckValidation() {
+        $("#txtClient").val($("#txtClient").val().toUpperCase());
+        $("#txtName").val($("#txtName").val().toUpperCase());
+        $("#txtEntry").val($("#txtEntry").val().toUpperCase());
+        if ($("#txtClient").val() != "" && $("#txtName").val() != "") {
+            if ($("#txtClient").val() != "" && $("#txtName").val() != "" && $("#txtEntry").val() != "") {
+                $("#ActionType").val("search");
+                $("#btnSearch").click();
+                EditDBAR($("#txtClient").val(), $("#txtName").val(), $("#txtEntry").val())
+            } else {
+                $("#ActionType").val("search");
+                $("#btnSearch").click();
+                return true;
+            }
+
+        } else {
+            return false;
+        }
+    }
+
+    $('#txtName,#txtClient,#txtEntry').on('keydown', function (e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) {
+            CheckValidation();
+            e.preventDefault();
+            return false;
+        }
+    });
+
+</script>

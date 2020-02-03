@@ -1,0 +1,14 @@
+﻿@using Humana.WebClaim.CASUI.Common
+@model ViewParameters
+
+@Html.HiddenFor(m => Model.CurrentPage, new { Value = (Model.CurrentPage.ToString()), id = "CurrentPage" })
+@Html.HiddenFor(m => Model.TotalPages, new { Value = (Model.TotalPages.ToString()), id = "TotalPages" })
+@Html.Hidden("PageSize", Model.PageSize, new { id = "PageSize" })
+@Html.HiddenFor(m => m.ActionType, new { id = "ActionType" })
+@Html.HiddenFor(m => m.SortOrder, new { id = "SortOrder" })
+@Html.HiddenFor(m => m.SortBy, new { id = "SortBy" })
+@Html.HiddenFor(m => m.Message, new { Value = (Model.Message), id = "hdnMessage" })
+@Html.HiddenFor(m => m.MessageType, new { Value = (Model.MessageType), id = "hdnMessageType" })
+
+
+
