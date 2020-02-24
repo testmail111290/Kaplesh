@@ -1,0 +1,941 @@
+{
+        public object Response { get; set; }
+
+        [Display(Name = "GRP")]
+        [ToolTip("Six - digit number assigned to the customer.This field is required." + "\n" +
+            "Note: CAS assigns a zero to the beginning of each group number, but it is insignificant.")]
+        public string mdgroupo { get; set; }
+        public string mdgroupa { get; set; }
+
+        [Display(Name = "CL")]
+        [ToolTip("Two-position class code to identify a plan subclassification within a customer group. This field is required.")]
+        public string mdclaso { get; set; }
+        public string mdclasa { get; set; }
+
+        [Display(Name = "E/D")]
+        [ToolTip("Employee/dependent: A one position code that indicates for whom benefits are payable, and allows the loading of different benefits for the employee and dependents. This field is required. Valid codes are:" + "\n" +
+        "\n" +
+        "E: Employees only" + "\n" +
+        "D: Dependent only" + "\n" +
+        "B: Both employees and dependents")]
+        public string mdeordpo { get; set; }
+        public string mdeordpa { get; set; }
+
+        [Display(Name = "ROLL")]
+        [ToolTip("One-position code that allows Planload to change a contract’s prior effective date to a new effective date.")]
+        public string mdrollo { get; set; }
+        public string mdrolla { get; set; }
+
+        [Display(Name = "HEADINGS")]
+        [ToolTip("1 field label, 4 fields displayed under that label")]
+        public string mdhddi2o { get; set; }
+        public string mdhddi2a { get; set; }
+
+        //heading 1
+
+        public string mdhdbaso { get; set; }
+        public string mdhdbasa { get; set; }
+
+        //heading 2
+
+        public string mdhdmmo { get; set; }
+        public string mdhdmma { get; set; }
+
+        //heading 3
+        public string mdhdcro { get; set; }
+        public string mdhdcra { get; set; }
+
+        public string mditera { get; set; }
+
+
+        private string _mditero = "";
+
+        [ToolTip("CURRENT Current plan iteration~OTHERSALL Prior iteration of the plan")]
+        public string mditero
+        {
+            get
+            {
+                return _mditero;
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _mditero = "       ";
+                }
+                else
+                {
+                    _mditero = Regex.Replace(value, @"\s+", " ").Trim();
+                }
+            }
+        }
+
+        /// <summary>
+        /// ////////////////////Current ///////////////////
+        /// </summary>
+
+        [Display(Name = "MED EFF DT  ")]
+        [ToolTip("Effective date for the group’s current benefits. This field controls the date a group is originally effective. Also can be the effective date of any changes that require rolling the policymaster. This field is required.")]
+        public string MED_EFF_DT { get; set; }
+
+        private string _CURRENT1;
+
+        public string mdedtcmo { get; set; }
+        public string mdedtcdo { get; set; }
+        public string mdedtcyo { get; set; }
+        public string mdedtcma { get; set; }
+        public string mdedtcda { get; set; }
+        public string mdedtcya { get; set; }
+
+        public string CURRENT1
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdedtcmo) && !string.IsNullOrWhiteSpace(mdedtcdo) && !string.IsNullOrWhiteSpace(mdedtcyo))
+                        return _CURRENT1 = string.Concat(mdedtcmo, "/", mdedtcdo, "/", mdedtcyo);
+                    else
+                        return _CURRENT1.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _CURRENT1 = value;
+
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        [Display(Name = "MED CAN DT  ")]
+        //tooltip change
+        [ToolTip("Termination date for the group. This field controls whether a group is cancelled or effective and must be completed in accordance with the information received. In a prior iteration, it is the end date for the benefits in that iteration. This field is required." + "\n" +
+        "Note: Planload does not cancel groups for commercial, medicare, or individual products.")]
+
+
+        public string mdcdtcdo { get; set; }
+        public string mdcdtcda { get; set; }
+
+        public string mdcdtcmo { get; set; }
+        public string mdcdtcma { get; set; }
+
+        public string mdcdtcyo { get; set; }
+        public string mdcdtcya { get; set; }
+        private string _CURRENT2 { get; set; }
+        public string CURRENT2
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdcdtcmo) && !string.IsNullOrWhiteSpace(mdcdtcdo) && !string.IsNullOrWhiteSpace(mdcdtcyo))
+                        return _CURRENT2 = string.Concat(mdcdtcmo, "/", mdcdtcdo, "/", mdcdtcyo);
+                    else
+                        return _CURRENT2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _CURRENT2 = value;
+
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        [Display(Name = "LIFE MAX1")]
+        [ToolTip("Lifetime maximum dollar amount for each member of the group.")]
+        public string mdlfmxco { get; set; }
+        public string mdlfmxca { get; set; }
+
+        [Display(Name = "LIFE MAX ACCUM")]
+        [ToolTip("Type of benefits that accumulate toward the lifetime maximum.")]
+        public string mdlmacco { get; set; }
+        public string mdlmacca { get; set; }
+
+
+
+        [Display(Name = "LIFE MAX2")]
+        [ToolTip("Second lifetime maximum amount in a contract. This field usually applies to POS plans that have a separate lifetime maximum for out of network services.")]
+        public string mdlmx2co { get; set; }
+        public string mdlmx2ca { get; set; }
+
+        [Display(Name = "CHIRO")]
+        [ToolTip("Indicates if the CHIRO cause code is loaded to the cause code schedule and pointing to itself (CHIRO to CHIRO).")]
+        public string mdchipco { get; set; }
+        public string mdchipca { get; set; }
+
+
+
+        [Display(Name = "YEARLY MAX")]
+        [ToolTip("Maximum benefits payable under major medical for benefit period.")]
+        public string mdmmmxco { get; set; }
+        public string mdmmmxca { get; set; }
+
+        [Display(Name = "YEARLY MAX ACCUM")]
+        [ToolTip("Time period for which major medical benefits are accumulated toward the maximum benefits payable.")]
+        public string mdmmmpco { get; set; }
+        public string mdmmmpca { get; set; }
+
+
+        [Display(Name = "MM FORMULA")]
+        [ToolTip("Major medical formula number used to calculate major medical benefits for group members.This entry applies to all typecodes unless a different formula is specified in the typecode record. ")]
+        public string mdmforco { get; set; }
+        public string mdmforca { get; set; }
+
+        [Display(Name = "MM CALC CD")]
+        [ToolTip("Calculation code record used with formula number used to calculate major medical benefits for group number. This entry applies to all typecodes unless a different formula is specified in the type code record.")]
+        public string mdmcalco { get; set; }
+        public string mdmcalca { get; set; }
+
+        [Display(Name = "SURG SCHED")]
+        [ToolTip("Medical payment schedule number used to calculate basic benefits. The state and product for this group determine this number.")]
+        public string mdsschco { get; set; }
+        public string mdsschca { get; set; }
+
+        [Display(Name = "SURG MOD")]
+        [ToolTip("Amount or percentile used from the medical payment schedule. This field also identifies the ZIP code record to use.")]
+        public string mdsmodco { get; set; }
+        public string mdsmodca { get; set; }
+
+
+        [Display(Name = "UCR SCHED")]
+        [ToolTip("Medical payment schedule number used to calculate major medical benefits. This number is the same as the SURG SCHED field entry.")]
+        public string mduschco { get; set; }
+        public string mduschca { get; set; }
+
+        [Display(Name = "UCR SCHED MOD")]
+        [ToolTip("Amount or percentile used from the medical payment schedule. This field also identifies the ZIP code record to use.")]
+        public string mdumodco { get; set; }
+        public string mdumodca { get; set; }
+
+
+        [Display(Name = "ALTERNATE SCHED")]
+        [ToolTip("Schedule number used to calculate HIAA default processing.")]
+
+
+        public string mdvschco { get; set; }
+        public string mdvschca { get; set; }
+
+        [Display(Name = "ALTERNATE SCH MOD")]
+        [ToolTip("Percentile or area of the HIAA provider fee schedule (Default Schedule.) This field also identifies the ZIP code record to use.")]
+
+        public string mdvmodco { get; set; }
+        public string mdvmodca { get; set; }
+
+        [Display(Name = "CPT IV SCHED")]
+        [ToolTip("CPT - 4 schedule used for processing claims for the policy.This field is required." + "\n\n"
+         + "The CPT IV Schedule links to a No Ben table that tells CAS which claims to reject automatically.")]
+        public string mdccscco { get; set; }
+        public string mdccscca { get; set; }
+
+
+        [Display(Name = "CAUSE CD SCHED")]
+        [ToolTip("Five-digit number that houses the cause codes applicable for the group. This field is also referred to as the record pointer number. The record pointer is also known as the CCCI screen. This field contains the lifetime, calendar year, accident rider, and coverage first dollar maximums. This field is required.")]
+        public string mdciscco { get; set; }
+        public string mdciscca { get; set; }
+
+        [Display(Name = "PHY WC SCHED")]
+        [ToolTip("Physician workman’s compensation fee schedule. This field is used only when a group has the workman’s compensation benefit.")]
+
+        public string mdpwcsco { get; set; }
+        public string mdpwcsca { get; set; }
+
+        [Display(Name = "HOSP WC SCHED")]
+        [ToolTip("Hospital workman’s compensation fee schedule. This field is used only when a group has the workman’s compensation benefit.")]
+        public string mdhwcsco { get; set; }
+        public string mdhwcsca { get; set; }
+
+        [Display(Name = "DIAG CD REC")]
+        [ToolTip("Diagnosis code record tells the system which DGCI screen to use for claims processing. Refer to the DGCI Screen Log In document for more information.")]
+
+        public string mddgcrco { get; set; }
+        public string mddgcrca { get; set; }
+
+        [Display(Name = "HOLD HARM IND")]
+        [ToolTip("This field indicates whether hold harmless providers are valid for this policy. Conversion plans and Medicare Supplement plans with LOB 1M are loaded with an N.")]
+        public string mdphhico { get; set; }
+        public string mdphhica { get; set; }
+
+        [Display(Name = "ICD PROC PTR")]
+        [ToolTip("Hospital procedure code record that is used for processing claims.")]
+
+        public string mdicdpco { get; set; }
+        public string mdicdpca { get; set; }
+
+        [Display(Name = "GRACE PERIOD")]
+        [ToolTip("Not currently used.")]
+        public string mdgrcpco { get; set; }
+        public string mdgrcpca { get; set; }
+
+        [Display(Name = "OUT OF AREA SCH")]
+        [ToolTip("Identifies which fee schedule to use for a plan’s out of area members.")]
+        public string mdoascco { get; set; }
+        public string mdoascca { get; set; }
+
+        [Display(Name = "OOA")]
+        [ToolTip("Informs system whether out-of-area is applicable to the group.")]
+        public string mdooaco { get; set; }
+        public string mdooaca { get; set; }
+
+        [Display(Name = "PEND ESC")]
+        [ToolTip("Controls electronic claims first pass eligibility.Supervisor notification via the ESC Pend Approval Form is required to use this field except for a J entry." + "\n" +
+        "Note: This field cannot be updated at the same time as other fields on the PMDI screen.If needed, the PMDI screen must be accessed twice, once to update this field, and again to update all other fields.")]
+        public string mdpescco { get; set; }
+        public string mdpescca { get; set; }
+
+        [Display(Name = "MED S/L INT")]
+        [ToolTip("Indicates when medical and dental benefits are combined and accumulated toward a single stop - loss amount.The valid codes are listed:" + "\n\n"
+        + "Y: Combine medical and dental benefits"
+        + "N: Do not combine benefits"
+        + "Blank: Not applicable")]
+        public string mdslinco { get; set; }
+        public string mdslinca { get; set; }
+
+        [Display(Name = "CODER EXEMPT")]
+        [ToolTip("This field controls whether claims are exempt from claim check logic. The possible values for this field are listed:" + "\n" +
+        "\n" +
+        "C: Bypass Claim Check Only" + "\n" +
+        "B: Bypass Claim Check and Worker Compensation" + "\n" +
+        "W: Bypass Worker Compensation Only" + "\n" +
+        "I: Bypass I-Health Only" + "\n" +
+        "D: Bypass I-Health and Claim Check" + "\n" +
+        "A: Bypass I-Health and Worker Compensation" + "\n" +
+        "N or Blank: No Bypass" + "\n" +
+        "Y: Bypass All")]
+        public string mdccexco { get; set; }
+        public string mdccexca { get; set; }
+
+        [Display(Name = "LFP IND")]
+        [ToolTip("'Y' indicates the ASO plan is a Level funded plan and 'N' indicates it is not")]
+        public string mdlfpdco { get; set; }
+        public string mdlfpdca { get; set; }
+
+        [Display(Name = "COB ACCUM IND")]
+        [ToolTip("")]
+        public string mdaccmco { get; set; }
+        public string mdaccmca { get; set; }
+
+        [Display(Name = "NET DISC IND")]
+        [ToolTip("Net discount indicator applies net discounting method for claims payment.")]
+        public string mdnetdco { get; set; }
+        public string mdnetdca { get; set; }
+
+        [Display(Name = "GRP SPECIFIC 1H")]
+        [ToolTip("Primary hospital network number*")]
+        public string mdgsphco { get; set; }
+        public string mdgsphca { get; set; }
+
+        [Display(Name = "GRP SPECIFIC 1D")]
+        [ToolTip("Primary physician network number. *")]
+        public string mdgspdco { get; set; }
+        public string mdgspdca { get; set; }
+
+        [Display(Name = "GRP SPECIFIC 2H")]
+        [ToolTip("Secondary hospital/institution network number. *")]
+        public string mdgs2hco { get; set; }
+        public string mdgs2hca { get; set; }
+
+        [Display(Name = "GRP SPECIFIC 2D")]
+        [ToolTip("Secondary physician network number. *")]
+        public string mdgs2dco { get; set; }
+        public string mdgs2dca { get; set; }
+
+        [Display(Name = "WRK CMP NETWK (HOSP)")]
+        [ToolTip("Worker’s Compensation Facility Claims use this number to search for a worker’s compensation physician contract file.")]
+        public string mdgs3hco { get; set; }
+        public string mdgs3hca { get; set; }
+
+        [Display(Name = "WRK CMP NETWK (MD)")]
+        [ToolTip("Worker’s Compensation Physician Claims use this number to search for a worker’s compensation physician contract file.")]
+        public string mdgs3dco { get; set; }
+        public string mdgs3dca { get; set; }
+
+        [Display(Name = "DED TYPE")]
+        [ToolTip("Deductible Type field used to indicate whether the plan's deductible is following embedded or aggregate logic.")]
+        public string mdspddco { get; set; }
+        public string mdspddca { get; set; }
+
+
+        /// <summary>
+        /// /////////////////PRIOR1/////////////////////
+        /// </summary>
+        [Display(Name = "PRIOR1")]
+        [ToolTip("Only displays on first PMDI page")]
+
+        private string _PRIOR1 { get; set; }
+
+        public string mdedt1mo { get; set; }
+        public string mdedt1do { get; set; }
+        public string mdedt1yo { get; set; }
+        public string mdedt1ma { get; set; }
+        public string mdedt1da { get; set; }
+        public string mdedt1ya { get; set; }
+        public string PRIOR1
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdedt1mo) && !string.IsNullOrWhiteSpace(mdedt1do) && !string.IsNullOrWhiteSpace(mdedt1yo))
+                        return _PRIOR1 = string.Concat(mdedt1mo, "/", mdedt1do, "/", mdedt1yo);
+                    else
+                        return _PRIOR1.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _PRIOR1 = value;
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+        //MED CAN DT 
+        private string _PRIORCAN2 { get; set; }
+        public string mdcdt1mo { get; set; }
+        public string mdcdt1ma { get; set; }
+        public string mdcdt1do { get; set; }
+        public string mdcdt1da { get; set; }
+        public string mdcdt1yo { get; set; }
+        public string mdcdt1ya { get; set; }
+
+        public string PRIORCAN2
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdcdt1mo) && !string.IsNullOrWhiteSpace(mdcdt1do) && !string.IsNullOrWhiteSpace(mdcdt1yo))
+                        return _PRIORCAN2 = string.Concat(mdcdt1mo, "/", mdcdt1do, "/", mdcdt1yo);
+                    else
+                        return _PRIORCAN2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _PRIORCAN2 = value;
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+
+        //LIFE MAX1
+        public string mdlfmx1o { get; set; }
+        public string mdlfmx1a { get; set; }
+
+        //LIFE MAX ACCUM
+        public string mdlmac1o { get; set; }
+        public string mdlmac1a { get; set; }
+
+        //LIFE MAX2
+        public string mdlmx21o { get; set; }
+        public string mdlmx21a { get; set; }
+        //CHIRO
+        public string mdchip1o { get; set; }
+        public string mdchip1a { get; set; }
+
+
+        //YEARLY MAX
+        public string mdmmmx1o { get; set; }
+        public string mdmmmx1a { get; set; }
+
+        //YEARLY MAX ACCUM
+        public string mdmmmp1o { get; set; }
+        public string mdmmmp1a { get; set; }
+
+
+        //MM FORMULA
+        public string mdmfor1o { get; set; }
+        public string mdmfor1a { get; set; }
+
+
+        //MM CALC CD
+        public string mdmcal1o { get; set; }
+        public string mdmcal1a { get; set; }
+
+
+        // SURG SCHED
+        public string mdssch1o { get; set; }
+        public string mdssch1a { get; set; }
+        //SURG MOD
+        public string mdsmod1o { get; set; }
+        public string mdsmod1a { get; set; }
+
+
+        //UCR SCHED
+        public string mdusch1o { get; set; }
+        public string mdusch1a { get; set; }
+
+        //UCR SCHED MOD
+        public string mdumod1o { get; set; }
+        public string mdumod1a { get; set; }
+
+        //ALTERNATE SCHED
+        public string mdvsch1o { get; set; }
+        public string mdvsch1a { get; set; }
+
+
+        //ALTERNATE SCH MOD
+        public string mdvmod1o { get; set; }
+        public string mdvmod1a { get; set; }
+        //CPT IV SCHED
+        public string mdccsc1o { get; set; }
+        public string mdccsc1a { get; set; }
+        //CAUSE CD SCHED
+        public string mdcisc1o { get; set; }
+        public string mdcisc1a { get; set; }
+
+        //PHY WC SCHED
+        public string mdpwcs1o { get; set; }
+        public string mdpwcs1a { get; set; }
+
+        //HOSP WC SCHED
+        public string mdhwcs1o { get; set; }
+        public string mdhwcs1a { get; set; }
+        //DIAG CD REC
+        public string mddgcr1o { get; set; }
+        public string mddgcr1a { get; set; }
+        //HOLD HARM IND
+        public string mdphhi1o { get; set; }
+        public string mdphhi1a { get; set; }
+
+        //ICD PROC PTR
+        public string mdicdp1o { get; set; }
+        public string mdicdp1a { get; set; }
+        //ICD PROC PTR
+        public string mdgrcp1o { get; set; }
+        public string mdgrcp1a { get; set; }
+
+
+        //OUT OF AREA SCH
+        public string mdoasc1o { get; set; }
+        public string mdoasc1a { get; set; }
+
+        //OOA
+        public string mdooa1o { get; set; }
+        public string mdooa1a { get; set; }
+
+        //PEND ESC
+        public string mdpesc1o { get; set; }
+        public string mdpesc1a { get; set; }
+
+        //MED S/L INT
+        public string mdslin1o { get; set; }
+        public string mdslin1a { get; set; }
+        //CODER EXEMPT
+        public string mdccex1a { get; set; }
+        public string mdccex1o { get; set; }
+
+        //RENEW PER IND
+        public string mdlfpd1o { get; set; }
+        public string mdlfpd1a { get; set; }
+
+        //COB ACCUM IND
+        public string mdaccm1o { get; set; }
+        public string mdaccm1a { get; set; }
+
+
+        //NET DISC IND
+        public string mdnetd1o { get; set; }
+        public string mdnetd1a { get; set; }
+
+        //GRP SPECIFIC 1H
+        public string mdgsph1o { get; set; }
+        public string mdgsph1a { get; set; }
+
+
+        //GRP SPECIFIC 1D
+        public string mdgspd1o { get; set; }
+        public string mdgspd1a { get; set; }
+
+        //GRP SPECIFIC 2H
+        public string mdgs2h1o { get; set; }
+        public string mdgs2h1a { get; set; }
+
+
+        //GRP SPECIFIC 2D
+        public string mdgs2d1o { get; set; }
+        public string mdgs2d1a { get; set; }
+        //WRK CMP NETWK (HOSP)
+        public string mdgs3h1o { get; set; }
+        public string mdgs3h1a { get; set; }
+
+        //WRK CMP NETWK (MD)
+        public string mdgs3d1o { get; set; }
+        public string mdgs3d1a { get; set; }
+        //DED TYPE
+        public string mdspdd1o { get; set; }
+        public string mdspdd1a { get; set; }
+
+
+
+        /// <summary>
+        /// ///////////////////////PRIOR2//////////////////////////////////////////
+        /// </summary>
+        [Display(Name = "PRIOR2")]
+        [ToolTip("Only displays on first PMDI page")]
+        public string _PRIOR2 { get; set; }
+
+        public string mdedt2mo { get; set; }
+        public string mdedt2do { get; set; }
+        public string mdedt2yo { get; set; }
+        public string mdedt2ma { get; set; }
+        public string mdedt2da { get; set; }
+        public string mdedt2ya { get; set; }
+
+
+        public string PRIOR2
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdedt2mo) && !string.IsNullOrWhiteSpace(mdedt2do) && !string.IsNullOrWhiteSpace(mdedt2yo))
+                        return _PRIOR2 = string.Concat(mdedt2mo, "/", mdedt2do, "/", mdedt2yo);
+                    else
+                        return _PRIOR2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _PRIOR2 = value;
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+        //MED CAN DT
+
+        private string _PRIORCAN3 { get; set; }
+        public string mdcdt2mo { get; set; }
+
+        public string mdcdt2ma { get; set; }
+
+
+        public string mdcdt2do { get; set; }
+        public string mdcdt2da { get; set; }
+
+        public string mdcdt2yo { get; set; }
+
+        public string mdcdt2ya { get; set; }
+
+
+
+        public string PRIORCAN3
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mdcdt2mo) && !string.IsNullOrWhiteSpace(mdcdt2do) && !string.IsNullOrWhiteSpace(mdcdt2yo))
+                        return _PRIORCAN3 = string.Concat(mdcdt2mo, "/", mdcdt2do, "/", mdcdt2yo);
+                    else
+                        return _PRIORCAN3.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _PRIORCAN3 = value;
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+            }
+        }
+        //LIFE MAX1    
+        public string mdlfmx2o { get; set; }
+        public string mdlfmx2a { get; set; }
+
+        //LIFE MAX ACCUM
+        public string mdlmac2o { get; set; }
+        public string mdlmac2a { get; set; }
+
+        //LIFE MAX2
+        public string mdlmx22o { get; set; }
+        public string mdlmx22a { get; set; }
+
+        //CHIRO
+        public string mdchip2o { get; set; }
+        public string mdchip2a { get; set; }
+
+        //YEARLY MAX
+        public string mdmmmx2o { get; set; }
+        public string mdmmmx2a { get; set; }
+
+        //YEARLY MAX ACCUM
+        public string mdmmmp2o { get; set; }
+        public string mdmmmp2a { get; set; }
+
+        //MM FORMULA
+        public string mdmfor2o { get; set; }
+        public string mdmfor2a { get; set; }
+
+        //MM CALC CD
+        public string mdmcal2o { get; set; }
+        public string mdmcal2a { get; set; }
+
+        // SURG SCHED
+        public string mdssch2o { get; set; }
+        public string mdssch2a { get; set; }
+
+        //SURG MOD
+        public string mdsmod2o { get; set; }
+        public string mdsmod2a { get; set; }
+
+        //UCR SCHED
+        public string mdusch2o { get; set; }
+        public string mdusch2a { get; set; }
+
+        //UCR SCHED MOD
+        public string mdumod2o { get; set; }
+        public string mdumod2a { get; set; }
+
+        //ALTERNATE SCHED
+        public string mdvsch2a { get; set; }
+        public string mdvsch2o { get; set; }
+
+        //ALTERNATE SCH MOD
+        public string mdvmod2o { get; set; }
+        public string mdvmod2a { get; set; }
+
+        //CPT IV SCHED
+        public string mdccsc2o { get; set; }
+        public string mdccsc2a { get; set; }
+
+        //CAUSE CD SCHED
+        public string mdcisc2o { get; set; }
+        public string mdcisc2a { get; set; }
+
+        //PHY WC SCHED
+        public string mdpwcs2o { get; set; }
+        public string mdpwcs2a { get; set; }
+
+        //HOSP WC SCHED
+        public string mdhwcs2o { get; set; }
+        public string mdhwcs2a { get; set; }
+
+        //DIAG CD REC
+        public string mddgcr2o { get; set; }
+        public string mddgcr2a { get; set; }
+
+        //HOLD HARM IND
+        public string mdphhi2o { get; set; }
+        public string mdphhi2a { get; set; }
+
+        //ICD PROC PTR
+        public string mdicdp2o { get; set; }
+        public string mdicdp2a { get; set; }
+
+        //IGRACE PERIOD
+        public string mdgrcp2a { get; set; }
+        public string mdgrcp2o { get; set; }
+
+        //OUT OF AREA SCH
+        public string mdoasc2o { get; set; }
+        public string mdoasc2a { get; set; }
+
+        //OOA
+        public string mdooa2o { get; set; }
+        public string mdooa2a { get; set; }
+
+        //PEND ESC
+        public string mdpesc2o { get; set; }
+        public string mdpesc2a { get; set; }
+
+        //MED S/L INT
+        public string mdslin2o { get; set; }
+        public string mdslin2a { get; set; }
+
+        //CODER EXEMPT
+        public string mdccex2a { get; set; }
+
+        public string mdccex2o { get; set; }
+        //RENEW PER IND
+        public string mdlfpd2o { get; set; }
+        public string mdlfpd2a { get; set; }
+
+        //COB ACCUM IND
+        public string mdaccm2o { get; set; }
+        public string mdaccm2a { get; set; }
+
+        //NET DISC IND
+        public string mdnetd2o { get; set; }
+        public string mdnetd2a { get; set; }
+
+        //GRP SPECIFIC 1H
+        public string mdgsph2o { get; set; }
+        public string mdgsph2a { get; set; }
+
+        //GRP SPECIFIC 1D
+        public string mdgspd2o { get; set; }
+        public string mdgspd2a { get; set; }
+
+        //GRP SPECIFIC 2H
+        public string mdgs2h2o { get; set; }
+        public string mdgs2h2a { get; set; }
+
+        //GRP SPECIFIC 2D
+        public string mdgs2d2o { get; set; }
+        public string mdgs2d2a { get; set; }
+
+        //WRK CMP NETWK (HOSP)
+        public string mdgs3h2o { get; set; }
+        public string mdgs3h2a { get; set; }
+
+        //WRK CMP NETWK (MD)
+        public string mdgs3d2o { get; set; }
+        public string mdgs3d2a { get; set; }
+
+
+        //DED TYPE
+        public string mdspdd2o { get; set; }
+        public string mdspdd2a { get; set; }
+
+        /// <summary>
+        /// ////////////////////////////////////////////
+        /// </summary>
+        /// 
+        [Display(Name = "ADJ")]
+        [ToolTip("Displays the user ID number of the person who last updated information on the policymaster screens (PMCI, PMDI, PMEI.)")]
+        public string md2adjo { get; set; }
+        public string md2adja { get; set; }
+
+        [Display(Name = "CHG DT")]
+        [ToolTip("Displays the date information was updated on the policymaster screens (PMCI, PMDI, PMEI.)")]
+        public string md2cdto { get; set; }
+        public string md2cdta { get; set; }
+
+
+        //cONTROL LINE
+
+        public string mdctllno { get; set; }
+        public string mdctllna { get; set; }
+
+        //eRROR MSG
+        public string mdmesgo { get; set; }
+        public string mdmesga { get; set; }
+
+    }
+    
+    {
+  "Groupid": "AAAD17",
+  "ClassCode": "02",
+  "Modifier": "B",
+  "Roll": "B",
+  "Headings": [
+    {
+      "Name": "string"
+    }
+  ],
+  "ChangeBy": "VXP3828",
+  "ChangeDate": "02/20/2020",
+  "Contracts": [
+    {
+      "Type": "CURRENT",
+      "ContractDetail": {
+        "MedicalEffectiveDate": "01/01/15",
+        "LifeMax1": "0.00",
+        "LifeMax2": "0.00",
+        "YearlyMax": "0.00",
+        "MojarMedicalFormula": "209",
+        "SurgSchedule": "005",
+        "UcrSchedule": "005",
+        "AlternateSchedule": "050",
+        "CptIVSchedule": "003",
+        "PhysicianWorkmanCompensationSchedule": null,
+        "DiagnosisCodeRecord": "029",
+        "ICDProcPtr": "001",
+        "OutOfAreaSchedule": null,
+        "PendEsc": "D",
+        "CoderExempt": "W",
+        "CobAccumInd": null,
+        "GroupSpecific1H": "9999",
+        "GrouppSpecific2H": "9999",
+        "WorkerCompensationNetworkHospital": null,
+        "MedicalCancelDate": "12/31/15",
+        "LifeMaxAccum": "5",
+        "Chiro": "Y",
+        "YearlyMaxAccum": null,
+        "MajorMedicalCalculationCode": "00193",
+        "SurgMod": "6",
+        "UCRScheduleMod": "005",
+        "AlternateScheduleMod": null,
+        "CauseCodeSchedule": "30792",
+        "HospitalWorkmanCompensationSchedule": null,
+        "HoldHarmlessInd": "Y",
+        "GracePeriod": null,
+        "OOA": "Y",
+        "MedSLInt": "Y",
+        "LfpInd": "Y",
+        "NetDiscountInd": "Y",
+        "GrouppSpecific1D": "2738",
+        "GroupSpecific2D": "2738",
+        "WorkerCompensationNetworkMD": null,
+        "DeductibleType": "N"
+      }
+    }
+  ]
+}
+    
