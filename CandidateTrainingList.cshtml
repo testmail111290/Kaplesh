@@ -1,152 +1,330 @@
-﻿@using CTMS.Models
-@model ViewCandidate
-@{
-    ViewBag.Title = "Training List";
-    
-}
-<h2>
-    Training List</h2>
-<div class="row">
-    <div class="col-sm-12">
-        <ol class="breadcrumb">
-            <li><a href="/Home/Home">
-                <img src="@Url.Content("~/Images/home-icon.png")"></a></li>
-            <li><a href="/candidate/viewcandidate">View Candidate </a></li>
-            <li class="active">@ViewBag.Title</li>
-        </ol>
-    </div>
-</div>
-<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
-@using (Ajax.BeginForm(new AjaxOptions { UpdateTargetId = "divCandidateList", OnBegin = "beginRequest", OnSuccess = "Success", OnComplete = "searchComplete" }))
-{  
-    <div class="row">
-        <div class="col-sm-12">
-            <h2 class="gray-heading">
-                Candidate Detail</h2>
-            <div class="table-bg table-style-new">
-                <div class="table-responsive">
-                    <table class="table half-bottom">
-                   
-                        <tbody>
-                         @if (Model.CandidateList != null && Model.CandidateList.Count() > 0 && @Model.CandidateList[0]!= null)
-                         {
-                            <tr class="no-border">
-                                <td>
-                                    <strong>Candidate Code:</strong>
-                                </td>
-                                <td>@Model.CandidateList[0].CandidateCode
-                                </td>
-                                <td>
-                                    <strong>Candidate Name:</strong>
-                                </td>
-                                <td>@Model.CandidateList[0].CandidateName
-                                </td>
-                            </tr>
-                            <tr class="no-border">
-                                <td>
-                                    <strong>Category Name:</strong>
-                                </td>
-                                <td>@Model.CandidateList[0].CategoryName
-                                </td>
-                                <td>
-                                    <strong>Function Name:</strong>
-                                </td>
-                                <td>@Model.CandidateList[0].FunctionName
-                                </td>
-                            </tr>
-                         }
-                         else
-                         { 
-                             <tr>
-                             <td>No record found.
-                             </td></tr>
-                         }
-                        </tbody>
-                    
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="search-strip   label-height remove-top">
-        <div class="row">
-            <div class="col-sm-12">
-              
-                <div class="search-row  width-auto">
-                    <label>
-                        Training Name:</label></div>
-                <div class="search-row ">
-                    @Html.TextBoxFor(model => model.FilterTrainingName, new { @class = "form-control filter-control", @maxlength = "30" })
-                </div>
-                <div class="search-row  width-auto">
-                    <label>
-                        Program Name:</label></div>
-                <div class="search-row ">
-                    @Html.TextBoxFor(model => model.FilterProgramName, new { @class = "form-control filter-control", @maxlength = "30" })
-                </div>
-                <div class="search-row  width-auto">
-                    <label>
-                        Training Type:</label></div>
-                <div class="search-row ">
-                    @Html.DropDownListFor(model => model.FilterTrainingType, (SelectList)ViewBag.TrainingTypeList, new { @id = "ddlTrainingType", @class = "form-control  filter-control text-left" })
-                </div>
-                <br class="clear" />
-                <div class="text-center button-group">
-                    <input id="btnSubmit" type="submit" value="Search" class="btn remove-bottom" style="display: none" />
-                    <input id="btnSearch" type="button" value="Search" class="btn btn-primary" />
-                    <input id="btnReset" type="button" value="Reset" onclick="resetFilter()" class="btn btn-primary" />
-                    <input id="btnback" class="btn btn-primary" type="button" value="Back" onclick="fncBack();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="divCandidateList">
-        @Html.Partial("_ViewTrainingList", Model)
-    </div>  
-}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
-        var message = '@Model.Message';
-        var messageType = '@Model.MessageType';
-        if (message != '' && messageType != '') {
-            showMessage('divMessage', messageType, message);
+using System;
+using Humana.Claims.CasNextGen.UI.Common.Helpers;
+using Humana.Claims.CasNextGen.UI.Server.BusinessObjects;
+using Humana.Claims.CasNextGen.UI.Website.Models;
+using Humana.Claims.CasNextGen.UI.Common;
+using Website.ControlLines;
+using System.Collections.Generic;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using Server.Interfaces;
+
+namespace Humana.Claims.CasNextGen.UI.Website.Controllers
+{
+    public class PDIController : CasuiBaseController
+    {        
+        public string BaseAPIURL { get; set; }
+        public string ApiKeyName { get; set; }
+        public string ApiKeyValue { get; set; }
+        private const string dateWatermark = "--/--/--";
+        private IAPIServiceManager<Pdi> _serviceManager;
+        
+        public PDIController(IHttpContextAccessor httpContextAccessor, IAPIServiceManager<Pdi> serviceManager) : base(httpContextAccessor)
+        {            
+            BaseAPIURL = ConfigHelper.GetValue(Constants.NextGenPdiAPIBaseURL);
+            ApiKeyName = ConfigHelper.GetValue(Constants.NextGenPdiAPIKeyName);
+            ApiKeyValue = ConfigHelper.GetValue(Constants.NextGenPdiAPIKeyValue);
+            _serviceManager = serviceManager;            
         }
-    });
-    createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
-    function sendToServer() {
-        $("#btnSubmit").click();
-    }
-    function searchComplete(xmlHttpRequest, textStatus) {
-        createFooter("pg_pager", parseInt($("#TotalPages").val()), parseInt($("#PageSize").val()), "ActionType", "CurrentPage", sendToServer);
-        $("a.sort").click(function () { bindSort(this, "SortBy", "SortOrder", "ActionType", sendToServer) });
-        setSortClass("SortBy", "SortOrder");
-        showMessage("divMessage", $("#hdnMessageType").val(), $("#hdnMessage").val());
-        endRequest();
-    }
-    function Success(result) {
-        if (result != null) {
-            if (result.Url) {
-                window.location.href = result.Url;
+        internal Pdi PDIInfo(string controlValue, string userId, string uniqueId)
+        {
+            Pdi pdi = new Pdi()
+            {
+                PDIDto = new PDIDto()
+                {
+                    ClientNumber = string.Empty,
+                    ControlLine = controlValue,
+                    UserId = userId,
+                    UniqueKey = uniqueId
+                }
+            };
+            try
+            {
+                string jsonText = string.Empty;
+                var pdiControlLine = new PDIControlLine(controlValue);                
+                if (pdiControlLine.PageName == "PDI")
+                {
+                    HttpStatusCode code;
+                    var dictHeaders = new Dictionary<string, string>();
+                    dictHeaders.Add(ApiKeyName, ApiKeyValue);
+                    dictHeaders.Add("provider-id", pdiControlLine.ProviderId);
+                    dictHeaders.Add("provider-indicator", pdiControlLine.Indicator);
+                    dictHeaders.Add("provider-multi-address-key", pdiControlLine.Suffix);
+                    var result = _serviceManager.GetAPI($"{BaseAPIURL}/getproviderinfo/getdetails", out code, null, dictHeaders);
+
+                    if (result.PDIDto != null)
+                    {
+                        if (code == HttpStatusCode.OK)
+                        {
+                            pdi.PDIDto = result.PDIDto;
+                            pdi.PDIDto = EditableFieldLogic(pdi.PDIDto);
+                            pdi.PDIDto = ManipulateData(pdi.PDIDto);
+                            pdi.PDIDto.ControlLine = pdiControlLine.GetControlLine();
+                        }
+                        else
+                        {
+                            pdi.PDIDto.ResMsgs = code.ToString();
+                            return pdi;
+                        }
+                    }
+                    else
+                    {
+                        pdi.PDIDto.ResMsgs = code.ToString();
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                pdi.PDIDto.ResMsgs = ex.Message;
+                return pdi;
+            }
+            return pdi;
+        }
+
+        private PDIDto ManipulateData(PDIDto pdidto)
+        {
+            if (string.IsNullOrEmpty(pdidto.CFIEXISTLOB1) && string.IsNullOrEmpty(pdidto.CFIEXISTLOB2) &&
+                string.IsNullOrEmpty(pdidto.CFIEXISTLOB3) && string.IsNullOrEmpty(pdidto.CFIEXISTLOB4) &&
+                string.IsNullOrEmpty(pdidto.CFIEXISTLOB5) && string.IsNullOrEmpty(pdidto.CFIEXISTLOB6) &&
+                string.IsNullOrEmpty(pdidto.CFIEXISTLOB7) && string.IsNullOrEmpty(pdidto.CFIEXISTLOB8) &&
+                string.IsNullOrEmpty(pdidto.CFIEXISTLOB9))
+            {
+                pdidto.CFIEXISTLOB = "NO CFI";
+            }
+            else
+            {
+                pdidto.CFIEXISTLOB = "CFI EXIST LOB";
+            }
+
+            pdidto.TIN_EFF_DT = ParseDate(pdidto.TIN_EFF_DT);
+            pdidto.EFF = ParseDate(pdidto.EFF);
+            pdidto.CHANGE_DT = ParseDate(pdidto.CHANGE_DT);
+            pdidto.EFF2 = ParseDate(pdidto.EFF2);
+            pdidto.EFF_DT = ParseDate(pdidto.EFF_DT);
+            pdidto.EFF_DT_1 = ParseDate(pdidto.EFF_DT_1);
+            pdidto.EFF_DT_2 = ParseDate(pdidto.EFF_DT_2);
+            pdidto.EFF_DT_AVG1 = ParseDate(pdidto.EFF_DT_AVG1);
+            pdidto.EFF_DT_AVG2 = ParseDate(pdidto.EFF_DT_AVG2);
+            pdidto.EFF_DT_C = ParseDate(pdidto.EFF_DT_C);
+            pdidto.EFF_DT_C_AVG = ParseDate(pdidto.EFF_DT_C_AVG);
+            pdidto.EFF_DT_C_HST = ParseDate(pdidto.EFF_DT_C_HST);
+            pdidto.EFF_DT_HST1 = ParseDate(pdidto.EFF_DT_HST1);
+            pdidto.EFF_DT_HST2 = ParseDate(pdidto.EFF_DT_HST2);
+            pdidto.CBED = ParseDate(pdidto.CBED);
+            pdidto.CBSD = ParseDate(pdidto.CBSD);
+
+            return pdidto;
+        }
+
+        private string ParseDate(string date)
+        {
+            return !string.IsNullOrEmpty(date) ? DateTime.Parse(date).ToString("MM/dd/yy") : dateWatermark;
+        }
+        private PDIDto EditableFieldLogic(PDIDto pdidto)
+        {
+            if (pdidto.PdiFlag == "H")
+            {
+                #region ---Hospital---
+                //Header
+                pdidto.isEditable_TYPE = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_STATUS = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_RC = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Provider Address
+                pdidto.isEditable_PVD_NAME = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR2 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR3 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR4 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_CITY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_STATE = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_ZIP = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_COUNTY = Utilities.Cssclass("-", "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PHONE = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+
+                pdidto.isEditable_ALPHA_KEY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_TAX_ID_NUMBER = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_TXNMY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+
+                pdidto.isEditable_ALSO_KNOWN_AS = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_MHEBET_GROUP_NO = Utilities.Cssclass("-", "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_LICENSURE_NO = Utilities.Cssclass("-", "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_NATL_PROV_ID = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_UC_ZIP = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+
+                pdidto.isEditable_APLY_TAX = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                //Provider Specialty
+                pdidto.isEditable_SPEC_CD1 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD2 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD3 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD4 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Provider Indicators
+                pdidto.isEditable_ESC = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_SEND = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_PEND = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CBSD = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_NO_PAY = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Major_Class_Cd = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_VCH = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                //pdidto.isEditable_VCHSEND = Utilities.Cssclass(ResponseHosp.pvrsnd1a, "first-data", "first-data-desable");
+                pdidto.isEditable_MCID = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Esc_First_Name = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_Esc_Last_Name = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_INP_Per = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_WTHLD = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_P = Utilities.Cssclass("-", "first-data", "first-data-desable");
+
+                pdidto.isEditable_CE = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_W9 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_AUTPIND = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CBED = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF2 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_PROC = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_Credit_Balance = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_MEDSPWV = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_OP_Per = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_FINA = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_ADMOV = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CB = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_PAPER_NOTI = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_MARKET = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_DIAG = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_TIN_EFF_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SEND_480 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Vendor = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Pay_Circle = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_UPDT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_UPDT_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Hospital Room Information
+                pdidto.isEditable_Number_Of_Beds = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_C = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_1 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE3 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_C_HST = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_HST = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_HST1 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_HST2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_HST2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_HST3 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_C_AVG = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_AVG = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_AVG1 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_AVG2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_EFF_DT_AVG2 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+                pdidto.isEditable_RATE_AVG3 = Utilities.Cssclass("-", "textbox-pdi", "first-data-desable");
+
+                //Provider Indicators
+                pdidto.isEditable_SEND_LTR = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                pdidto.isEditable_Comment1 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                pdidto.isEditable_Comment2 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                pdidto.isEditable_Comment3 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                #endregion
+            }
+            else if (pdidto.PdiFlag == "P")
+            {
+                #region---Physician----
+
+                //Header                
+                pdidto.isEditable_TYPE = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_STATUS = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_RC = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Provider Address
+                pdidto.isEditable_PVD_NAME = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR2 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR3 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_ADDR4 = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_CITY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_STATE = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_ZIP = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_COUNTY = Utilities.Cssclass("-", "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PHONE = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+
+                pdidto.isEditable_ALPHA_KEY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_TAX_ID_NUMBER = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_TXNMY = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+
+                pdidto.isEditable_ALSO_KNOWN_AS = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_PVD_GROUP_NO = Utilities.Cssclass("-", "LeftTextCheckTo", "LeftTextCheckToDe");
+                pdidto.isEditable_PVD_GROUP_NO_IND = Utilities.Cssclass("-", "RightTextCheckTo", "RightTextCheckToDe");
+                pdidto.isEditable_LICENSURE_NO = Utilities.Cssclass("-", "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_NATL_PROV_ID = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_UC_ZIP = Utilities.Cssclass(string.Empty, "first-data-Provider", "first-data-desable");
+                pdidto.isEditable_APLY_TAX = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Provider Specialty
+                pdidto.isEditable_SPEC_CD1 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD2 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD3 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SPEC_CD4 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                //Provider Indicators
+                pdidto.isEditable_ESC = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_SEND = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_PEND = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CBSD = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_NO_PAY = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Major_Class_Cd = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_VCH = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                //pdidto.isEditable_VCHSEND = Utilities.Cssclass(ResponsePhys.pvrsnd2a, "first-data", "first-data-desable");
+                pdidto.isEditable_MCID = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Esc_First_Name = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_Esc_Last_Name = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_WTHLD = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_P = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_CE = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_W9 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_AUTP = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CBED = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_EFF2 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_PROC = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Credit_Balance = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_MEDSPWVR = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_GRP = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_FINA = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_ADMOV = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CB = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_PAPER_NOTI = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_MARKET = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_DIAG = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_TIN_EFF_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SEND_480 = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_Vendor = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_UPDT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_UPDT_DT = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+
+                pdidto.isEditable_FOC_FROM_DT = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_FOC_TO_DT = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_CHECK_TO = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_CHECK_TO_IND = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_VCH1 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_VCH2 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_PVD_CYCLE = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_CLNPTH = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SITE_C = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SITE_P1 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_SITE_P2 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+                pdidto.isEditable_SCOPE_C = Utilities.Cssclass(string.Empty, "first-data", "first-data-desable");
+                pdidto.isEditable_SCOPE_P1 = Utilities.Cssclass("-", "first-data", "first-data-desable");
+
+                pdidto.isEditable_Comment1 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                pdidto.isEditable_Comment2 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                pdidto.isEditable_Comment3 = Utilities.Cssclass(string.Empty, "textbox-bgComment", "first-data-desable textbox-bgComment");
+                #endregion
+            }
+
+            return pdidto;
         }
     }
-    $("#btnSearch").click(function () {
-
-        $("#ActionType").val("search");
-        sendToServer();
-    });
-    function resetFilter() {
-        $(".filter-control").val("");
-        $("#ddlTrainingType").val(0);
-        $("#ActionType").val("search");
-        $("#CurrentPage").val("1");
-        sendToServer();
-    }
-
-    function fncBack() {
-
-        window.location = '/candidate/viewcandidate';
-    }
-</script>
+}
