@@ -1,17 +1,13 @@
 @model CasNextGen.UI.Website.Models.MpcModel
 @using  CasNextGen.UI.Common
 @using  CasNextGen.UI.Common.Utilities
-<input type="hidden" class="error-message" value="1" id="MPCPage" />
+<input type="hidden" class="error-message" value="2" id="MPCPage" />
 <div class="container" style="top:4px">
     <script src="~/Scripts/Custom/Payment.js"></script>
-    <script src="~/Scripts/Custom/ControlLine.js"></script>
-    <script src="~/Scripts/Custom/PageScripts/Mpc.js"></script>
 
     @using (Html.BeginForm())
     {
-        <input type="hidden" value="MPC1" id="ViewName" />
-
-
+        <input type="hidden" value="MPC2DivAccordianClaimHdrInfo3" id="ViewName" />
         <input type="hidden" class="error-message" value="1" id="MPCPage" />
         <input type="hidden" value="@Html.Raw(Model.ControlLine)" id="controlLine" />
         <div id="MPC-fixed-rows" style="position:fixed; background-color:#eeeeee; z-index:99;">
@@ -88,12 +84,22 @@
                     </h3>
                 </div>
             </div>
+            @*<div class="row" id="divfreetext" style="background-color:#eeeeee">
+                    <div class="col-md-12" style="padding-left:0px;">
+                        <h3 class="magentaHeaderStyle" style="background-color:#000000;color:#ff0000">
+                            <input type="hidden" value="@Html.Raw(Model.MpcDto.mpfto)" id="hdnMPPError" />
+                            <span id="spanfreetext">
+                                @Html.DisplayFor(model => model.MpcDto.mpfto)
+                            </span>
+                        </h3>
+                    </div>
+                </div>*@
         </div>
         @:<div id="MPC-scrollable-content">
             <div id="ClaimHdrInfo">
                 <div class="row">
                     <div class="col-md-12" style="padding-left:0px">
-                        <h3 class="headerCollapseStyleClaimHeader">Claim Header Information<img id="accImg1" src="~/icons/Minus.png" class="up-down"></h3>
+                        <h3 class="headerCollapseStyleClaimHeader">Claim Header Information Second <img id="accImg1" src="~/icons/Minus.png" class="up-down"></h3>
                     </div>
                 </div>
 
@@ -133,8 +139,6 @@
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.PatientIDNumber, new { @maxlength = "17", @class = "Model.MpcDto.ClaimHeaderInformation.mpptacta", @style = "width:177px;" })
                                 </td>
                             </tr>
-
-
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -165,13 +169,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber )
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber)
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber, new { @maxlength = "9", @style = "width:82px;", @class = "Model.MpcDto.ClaimHeaderInformation.mpprova" })
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber, TESTmpprov1o", @maxlength = "1", @style = "width:24px;", @class = "Model.MpcDto.ClaimHeaderInformation.mpprov1a" })@*Pooja*@
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber, new { title = "TESTmpprov1o", @maxlength = "1", @style = "width:24px;", @class = "Model.MpcDto.ClaimHeaderInformation.mpprov1a" })@*Pooja*@
                                 </td>
                             </tr>
+
+
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -209,6 +215,8 @@
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.Facility, new { @maxlength = "11", @class = "Model.MpcDto.ClaimHeaderInformation.mpfacila" })
                                 </td>
                             </tr>
+
+
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -231,19 +239,19 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.PhysicianIdentifyingNumber)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.StartingDate)
                                 </td>
                                 <td>
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.PhysicianIdentifyingNumber, new { @maxlength = "14", @class = "Model.MpcDto.ClaimHeaderInformation.mpapna" })
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.StartingDate, new { @maxlength = "14", @class = "Model.MpcDto.ClaimHeaderInformation.mpapna" })
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.AccidentDate)
                                 </td>
                                 <td>
-                                    @*@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber)*@
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber, new { @maxlength = "10", @class = "Model.MpcDto.ClaimHeaderInformation.mpchecka" })
+                                    @*@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.AccidentDate)*@
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AccidentDate, new { @maxlength = "10", @class = "Model.MpcDto.ClaimHeaderInformation.mpchecka" })
                                 </td>
                             </tr>
                         </table>
@@ -268,18 +276,18 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.SrcCode)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.EndingDate)
                                 </td>
-                                <td class=@Model.MpcDto.ClaimHeaderInformation.SrcCode>
-                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.SrcCode)
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.EndingDate>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.EndingDate)
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.TransactionCode)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.AccidentType)
                                 </td>
                                 <td>
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.TransactionCode, new { @maxlength = "1", @class = "Model.MpcDto.mptrana", @style = "width:35px;" })
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AccidentType, new { @maxlength = "1", @class = "Model.MpcDto.mptrana", @style = "width:35px;" })
                                 </td>
                             </tr>
                         </table>
@@ -340,6 +348,14 @@
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.FacilityAdmissionDate, new { @maxlength = "8", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmmma````````````````````````````````Datefield" })
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.NpiNumber)
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.NpiNumber>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.NpiNumber)
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -352,6 +368,14 @@
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AdmissionHours, new { @maxlength = "2", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmhra" })
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.ParDirected)
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.ParDirected>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.ParDirected)
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -362,6 +386,14 @@
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AdmitType, new { @maxlength = "1", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmtpa" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.SourceCodeDigit)
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.SourceCodeDigit>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.SourceCodeDigit)
                                 </td>
                             </tr>
                         </table>
@@ -422,7 +454,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode1)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode1, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx1a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode1, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode1 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode1)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode1, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode1 })
                                     </td>
                                 </tr>
                                 <tr>
@@ -430,7 +470,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode2)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode2, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx2a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode2, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode2 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode2)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode2, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode2 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -444,7 +492,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode3)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode3, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx3a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode3, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode3 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode3)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode3, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode3 })
                                     </td>
                                 </tr>
                                 <tr>
@@ -452,7 +508,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode4)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode4, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx4a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode4, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode4 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode4)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode4, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode4 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -466,7 +530,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode5)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode5, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx5a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode5, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode5 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode5)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode5, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode5 })
                                     </td>
                                 </tr>
                                 <tr>
@@ -474,7 +546,15 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode6)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode6, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx6a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode6, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode6 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode6)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode6, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode6 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -482,34 +562,25 @@
                     </div>
                     <div class="col-md-2">
                         <table class="first-data">
-                            <tr>
-                                <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode7)
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode7, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx7a " })
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8)
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx8a " })
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-2">
-                        <table class="first-data">
-                            <tr>
-                                <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9)
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx9a " })
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode7, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode7 })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode7)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode7, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode7 })
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -517,10 +588,48 @@
                             <tbody>
                                 <tr>
                                     <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode8 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode8)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode8, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode8 })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.DiagnosticCode9 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode9)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PresentOnAdmissionCode9, new { @maxlength = "1", @class = Model.MpcDto.ClaimCodes.PresentOnAdmissionCode9 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PrincipalDiagnosticCode)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PrincipalDiagnosticCode, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpaddxa " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PrincipalDiagnosticCode, new { @maxlength = "7", @class = Model.MpcDto.ClaimCodes.PrincipalDiagnosticCode })
                                     </td>
                                 </tr>
                                 <tr>
@@ -528,7 +637,7 @@
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.InternationalClassificationDisease)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.InternationalClassificationDisease, new { @maxlength = "2", @class = "Model.MpcDto.ClaimCodes.mpicda " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.InternationalClassificationDisease, new { @maxlength = "2", @class = Model.MpcDto.ClaimCodes.InternationalClassificationDisease })
                                     </td>
                                 </tr>
                             </tbody>
@@ -541,25 +650,24 @@
                         <h3 style="margin-top:4px; margin-bottom:6px;" class="border_bottom"></h3>
                     </div>
                 </div>
-
                 <div class="row codestextbox" id="DivAccordianHdrCode3">
                     <div class="col-md-2">
-                        <table class="first-data ">
+                        <table class="first-data">
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode1)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode1)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode1, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc1a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode1, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode1 })
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate1)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode2)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate1, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm1a Datefield" })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode2, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode2 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -570,40 +678,18 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode2)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode3)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode2, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc2a " })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate2)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate2, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm2a Datefield" })
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-2">
-                        <table class="first-data">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode3 })
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode3, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc3a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode3, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode3 })
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate3)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode4)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate3, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm3a Datefield" })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode4, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode4 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -614,41 +700,18 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode4)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode5)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode4, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc4a " })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode5, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode5 })
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate4
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode6)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate4, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm4a Datefield" })
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-2">
-                        <table class="first-data">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode5)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode5, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc5a " })
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate5)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate5, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm5a Datefield" })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode6, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode6 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -659,41 +722,38 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode6)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode7)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode6, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc6a " })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate6)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate6, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm6a Datefield" })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode7, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode7 })
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <div class="row" id="DivAccordianHdrCode4">
-                    <div class="col-md-12" style="padding-left:0px">
-                        <h3 style="margin-top:4px; margin-bottom:6px;" class=" border_bottom"></h3>
-                    </div>
-                </div>
-
-                <div class="row codestextbox" id="DivAccordianHdrCode5">
                     <div class="col-md-2">
                         <table class="first-data">
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode)
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode8)
                                     </td>
                                     <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode, new { @maxlength = "6", @class = "Model.MpcDto.ClaimCodes.mpcausea" })
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode8, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode8 })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode9)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode9, new { @maxlength = "6", @class = Model.MpcDto.ClaimCodes.CauseCode9 })
                                     </td>
                                 </tr>
                             </tbody>
@@ -727,13 +787,12 @@
                                     @Html.TextBoxFor(model => model.MpcDto.OtherDetails.InformationRecievedDate, new { @maxlength = "8", @class = "Model.MpcDto.OtherDetails.mpairmma Datefield" })
                                 </td>
                             </tr>
-                            @*<tr>
-                                     <td>
-                                         @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.mprecdto,
-                                TESTmprecdto" })
-                                     </td>
-                                     <td>@Html.DisplayFor(model => model.MpcDto.OtherDetails.RCDT)</td>
-                                 </tr>*@
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.ReceiptDate)
+                                </td>
+                                <td>@Html.DisplayFor(model => model.MpcDto.OtherDetails.ReceiptDate)</td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-md-2">
@@ -807,20 +866,6 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.OriginalClaimNumber)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.OriginalClaimNumber, new { @maxlength = "15", @class = "Model.MpcDto.OtherDetails.mpreflma", @style = "width:136px;" })
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-2">
-                        <table class="first-data">
-                            <tbody>
-                                <tr>
-                                    <td>
                                         @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.AddPayIndicator)
                                     </td>
                                     <td>
@@ -835,62 +880,74 @@
 
                 <div class="row" id="DivAccordianOtherDetail2">
                     <div class="col-md-12" style="overflow-x:auto;">
-                        <table class="Tabform first-data" id="TabMpcDetails">
+                        <table class="Tabform first-data gridData" id="TabMpcDetails">
                             <tbody>
-                                .
-                                .
                                 <tr>
                                     <th title="Row Action"></th>
-                                    <th title="First DOS (mm/dd/yy) for the claim line item.">FIRST</th>
-                                    <th title="Last DOS (mm/dd) for the claim line item.">LAST</th>
-                                    <th title="A one-position code identifying the institution, office, or mode of treatment.">
-                                        @Html.TextBox("T", null,
-                                            new
-                                            {
-                                                @maxlength = "1",
-                                                @style = "width:32px !important;text-align:center;",
-                                                @class = "Model.MpcDto.OtherDetails.mpappta EditableHeader"
-                                            })
-                                    </th>
-                                    <th title="Service type code describing the medical service being billed on the claim line.">TYPE 1</th>
-                                    <th title="CPT-4 type code describing the medical service billed on the claim line.">TYPE 2</th>
+                                    <th title="Service type code describing the medical service being billed on the claim line.">TYPE1</th>
+                                    <th title="CPT-4 type code describing the medical service billed on the claim line.">TYPE2</th>
                                     <th title="Dollar amount charged for the claim line item.">CHARGE</th>
                                     <th title="Number of medical services or confinement days billed on the claim line. The field displays up to 99,999 units.">NO</th>
                                     <th title="Three-position explanation code identifying the reason a claim is pended or denied.">
-                                        @Html.TextBox("EX", null, new
-                                                        {
-                                                            @maxlength = "3",
-                                                            @style = "width:40px !important;text-align:center;"
-                                            ,
-                                                            @class = "Model.MpcDto.OtherDetails.mpappexa EditableHeader"
+                                        @Html.TextBox("EX", "EX", new
+                                   {
+                                       @maxlength = "3",
+                                       @style = "width:40px !important;text-align:center;",
 
-                                                        })
+                                       @class = "EX" + " EditableHeader"
+                                   })
+
+
                                     </th>
                                     <th title="Specifies the payee for the claim line paid or specifies pended, denied, or updated history actions. Refer to the Payee Codes document for a list of valid codes.">
-                                        @Html.TextBox("P", null, new
-                                            {
-                                                @maxlength = "1",
-                                                @style = "width:32px !important;text-align:center;",
-                                                @class = "Model.MpcDto.OtherDetails.mpapppa EditableHeader"
+                                        @Html.TextBox("P", "P", new
+                                   {
+                                       @maxlength = "1",
+                                       @style = "width:32px !important;text-align:center;",
 
-                                            })
-
+                                       @class = "P" + " EditableHeader"
+                                   })
 
                                     </th>
-                                    <th title="Amount paid as a basic medical benefit for the claim line.">BASIC</th>
-                                    <th title="Amount paid as a major medical benefit for the claim line.">MAJ MED</th>
+                                    <th title="A two-digit modifier to define the type of service.">MOD</th>
+                                    <th title="CPT modifier.">M2</th>
+                                    <th title="CPT modifier.">M3</th>
+                                    <th title="CPT modifier.">M4</th>
+                                    <th title="If referencing CMS-1500 form, in a note use in cross reference box 21 A-L is related to box 24E when determining the correct pointer.">DP</th>
                                     <th title="Amount paid out of the claimant’s credit reserve.">CR RS</th>
                                     <th title="Two-position code used for overriding normal processing situations. Refer to the Overrides Codes document for a list of codes.">
-                                        @Html.TextBox("OV", null, new
-                                                            {
-                                                                @maxlength = "2",
-                                                                @style = "width:40px !important;text-align:center;",
-                                                                @class = "Model.MpcDto.OtherDetails.mpappova EditableHeader"
+                                        @Html.TextBox("OV", "OV", new
+                                   {
+                                       @maxlength = "2",
+                                       @style = "width:40px !important;text-align:center;",
+                                       @class = "OV" + " EditableHeader"
+                                   })
 
-                                            })
+                                    </th>
+                                    <th title="Type a 1 in the field when the claim is for services rendered by a nonpar facility and a nonpar provider authorization has been approved.&#013;Type a 1 or 2 when processing claims where the Payee code is 6 . See Mentor for more details.">
+                                        @Html.TextBox("N", "N", new
+                                   {
+                                       @maxlength = "1",
+                                       @style = "width:32px !important;text-align:center;",
+
+                                       @class = "N" + " EditableHeader"
+                                   })
 
 
                                     </th>
+
+                                    <th title="Pricing indicator, which is a two-digit code representing special payment processes. See Mentor for list of codes.">
+                                        @Html.TextBox("PI", null, new
+                                   {
+                                       @maxlength = "2",
+                                       @style = "width:40px !important;text-align:center;",
+
+                                       @class = "PI" + " EditableHeader"
+                                   })
+
+                                    </th>
+                                    <th title="Displays the actual payment amount, based on the provider contract file for the line.">CFPY</th>
+                                    <th title="Indicates the follow-up days for each service.">FD</th>
                                 </tr>
                                 @if (Model != null)
                                 {
@@ -910,47 +967,69 @@
                                         var MajorBenefitAmount = "MajorBenefitAmount_" + i.ToString();
                                         var CreditReserveAmount = "CreditReserveAmount_" + i.ToString();
                                         var Overriding = "Overriding_" + i.ToString();
-
-
-
-
+                                        var TypeOfServiceModifier = "TypeOfServiceModifier_" + i.ToString();
+                                        var CptModifier2 = "CptModifier2_" + i.ToString();
+                                        var CptModifier3 = "CptModifier3_" + i.ToString();
+                                        var CptModifier4 = "CptModifier4_" + i.ToString();
+                                        var DeterminingCorrectPointer = "DeterminingCorrectPointer_" + i.ToString();
+                                        var N = "N_" + i.ToString();
+                                        var PricingIndicator = "PricingIndicator_" + i.ToString();
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="selectedRow" title="Copy Service Line or press Ctrl + S" /><br />
+                                                <input type="checkbox" class="selectedRow" /><br />
                                                 <img src="~/icons/paste.ico" width="18" height="18" class="pasteRow" title="Paste Service Line(s) starting here or press Ctrl + D" tabindex="-1">
                                             </td>
-                                            <td>@Html.TextBoxFor(modelItem => item.FirstDOS, new { @id = FirstDOS, @maxlength = "8", @class = "item.mp1fdta  Tabtextboxinput-md-lg2 Datefield" })</td>
                                             <td>
-                                                @Html.TextBoxFor(modelItem => item.LastDOS, new { @id = LastDOS, @maxlength = "5", @class = "item.mp1ldta  Tabtextboxinput-md-lg2 Datefield1" })
-                                            </td>
-                                            <td>
-                                                @Html.TextBoxFor(modelItem => item.OnePositionCode, new { @id = OnePositionCode, @maxlength = "1", @class = "item.mp1pota + gridtextboxT  Tabtextboxinput-md" })
+                                                @*@Html.TextBoxFor(modelItem => item.mp1typ12o, new { @id = "Mpctypeo", @maxlength = "6", @class = item.mp1typ12a + " textbox-md" })*@
+                                                @Html.TextBoxFor(modelItem => item.ServiceTypeCode, new { @id = ServiceTypeCode, @name = "Mpctypeo", @maxlength = "6", @class = item.ServiceTypeCode + " textbox-md" })
                                             </td>
                                             <td>
-                                                @Html.TextBoxFor(modelItem => item.ServiceTypeCode, new { @id = ServiceTypeCode, @name = "Mpctypeo", @maxlength = "6", @class = "item.mp1typea  Tabtextboxinput-md-lg2" })
-                                            </td>
-                                            <td>@Html.TextBoxFor(modelItem => item.CptTypeCode, new { @id = CptTypeCode, @maxlength = "5", @class = "item.mp1type2a  Tabtextboxinput-md-lg2" })</td>
-                                            <td style="white-space:nowrap;">
-                                                $@Html.TextBoxFor(modelItem => item.Charge, new { @id = Charge, @maxlength = "8", @class = "item.mp1chgda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                                @Html.TextBoxFor(modelItem => item.CptTypeCode, new { @id = CptTypeCode, @maxlength = "5", @class = item.CptTypeCode + " textbox-md" })
                                             </td>
                                             <td>
-                                                @Html.TextBoxFor(modelItem => item.NumberOfMedicalServices, new { @id = NumberOfMedicalServices, @maxlength = "7", @class = "item.mp1noa  Tabtextboxinput-md-lg2 ClsMpc1PMaskMoney" })
-                                            <td>
-                                                @Html.TextBoxFor(modelItem => item.ExplanationCode, new { @id = ExplanationCode, @maxlength = "3", @class = "item.mp1exa + gridtextboxEX1  Tabtextboxinput-md" })
+                                                $@Html.TextBoxFor(modelItem => item.Charge, new { @id = Charge, @maxlength = "8", @class = item.Charge + " Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
                                             </td>
                                             <td>
-                                                @Html.TextBoxFor(modelItem => item.PayeeCode, new { @id = PayeeCode, @maxlength = "1", @class = "item.mp1pca + gridtextboxP1  Tabtextboxinput-md" })
-                                            <td style="white-space:nowrap;">
-                                                $@Html.TextBoxFor(modelItem => item.BasicBenefitAmount, new { @id = BasicBenefitAmount, @maxlength = "8", @class = "item.mp1basda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
-                                            </td>
-                                            <td style="white-space:nowrap;">
-                                                $@Html.TextBoxFor(modelItem => item.MajorBenefitAmount, new { @id = MajorBenefitAmount, @maxlength = "8", @class = "item.mp1mmda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
-                                            </td>
-                                            <td style="white-space:nowrap;">
-                                                $@Html.TextBoxFor(modelItem => item.CreditReserveAmount, new { @id = CreditReserveAmount, @maxlength = "8", @class = "item.mp1cra  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                                @Html.TextBoxFor(modelItem => item.NumberOfMedicalServices, new { @id = NumberOfMedicalServices, @maxlength = "7", @class = item.NumberOfMedicalServices + " Tabtextboxinput-md-lg2 ClsMpc1PMaskMoney" })
                                             </td>
                                             <td>
-                                                @Html.TextBoxFor(modelItem => item.Overriding, new { @id = Overriding, @maxlength = "2", @class = "item.mp1ova + gridtextboxOV  Tabtextboxinput-md" })
+                                                @Html.TextBoxFor(modelItem => item.ExplanationCode, new { @id = ExplanationCode, @maxlength = "3", @class = item.ExplanationCode + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.PayeeCode, new { @id = PayeeCode, @maxlength = "1", @class = item.PayeeCode + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.TypeOfServiceModifier, new { @id = TypeOfServiceModifier, @maxlength = "2", @class = item.TypeOfServiceModifier + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.CptModifier2, new { @id = CptModifier2, @maxlength = "2", @class = item.CptModifier2 + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.CptModifier3, new { @id = CptModifier3, @maxlength = "2", @class = item.CptModifier3 + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.CptModifier4, new { @id = CptModifier4, @maxlength = "2", @class = item.CptModifier4 + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.DeterminingCorrectPointer, new { @id = DeterminingCorrectPointer, @maxlength = "1", @class = item.DeterminingCorrectPointer + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                $@Html.TextBoxFor(modelItem => item.CreditReserveAmount, new { @id = CreditReserveAmount, @maxlength = "8", @class = item.CreditReserveAmount + " Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.Overriding, new { @id = Overriding, @maxlength = "2", @class = item.Overriding + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.N, new { @id = N, @maxlength = "1", @class = item.N + " Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.PricingIndicator, new { @id = PricingIndicator, @maxlength = "2", @class = item.PricingIndicator + "Tabtextboxinput-md" })
+                                            </td>
+                                            <td class=@item.ContractPaymentAmount>
+                                                @Html.DisplayFor(modelItem => item.ContractPaymentAmount, new { @disabled = "disabled", @maxlength = "6", @class = item.ContractPaymentAmount })
+                                            </td>
+                                            <td class=item.mp1flup2a>
+                                                @Html.DisplayFor(modelItem => item.FollowUpDaysIndicator, new { @maxlength = "6", @class = item.FollowUpDaysIndicator })
                                             </td>
                                         </tr>
                                         i++;
@@ -958,7 +1037,6 @@
                                 }
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -1004,15 +1082,22 @@
                                 </td>
                             </tr>
                             <tr>
+                                @*<td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].mpn1asdo, new { title = "TESTmpn1asdo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].AS_AMOUNT_P1, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn1asda })
+                                    </td>*@
                                 <td>
                                     @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity)
                                 </td>
                                 <td style="padding-left:16px;">
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn1cita  textboxinput-lg6" })
+                                    @*@Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].mpn1sto, new { title = "TESTmpn1sto", @style = "margin:0px 8px 0px 8px;" }) Pooja*@
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn1sta", @style = "width:35px;" })
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderState, TESTmpn1zipo", @style = "margin-left:8px;" })
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderState)
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderZipCode, new { @maxlength = "9", @class = "Model.MpcDto.ProviderDetails[0].mpn1zipa" })
@@ -1020,13 +1105,14 @@
                             </tr>
                             <tr>
                                 <td>
+                                    info%
                                     @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ParCode)
                                 </td>
                                 <td style="padding:0px 16px 0px 16px;">
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ParCode, new { @maxlength = "1", @class = "Model.MpcDto.ProviderDetails[0].mpn1para" })
                                 </td>
                                 <td>
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { title = "TESTmpn1pto" })
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn1pta" })@*Check*@
@@ -1068,12 +1154,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                @*<td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].mpn2asdo, new { title = "TESTmpn2asdo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].AS_AMOUNT_M1, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn2asda })
+                                    </td>*@
                                 <td>
                                     @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity)
                                 </td>
                                 <td style="padding-left:16px;">
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn2cita  textboxinput-lg6" })
-                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity)
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { title = "TESTmpn2sto", @style = "margin:0px 8px 0px 8px;" })
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn2sta", @style = "width:35px;" })
@@ -1114,9 +1206,11 @@
                     </div>
                 </div>
             }
+
         @:</div>
     }
 </div>
+
 <style>
     .errorcls {
         border: 2px solid #8c0108 !important;
