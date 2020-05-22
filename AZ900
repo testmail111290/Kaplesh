@@ -27,227 +27,338 @@ namespace CasNextGen.UI.Common.DataTransferObjects.Mpc
     public class ClaimHeaderInformation
     {
         [Display(Name = "VG")]
+        [ToolTip("A one-position code (blank or Y) indicating whether the group is a virgin group (a group not previously covered from any other healthcare plan). When the field is blank, the group is a takeover group and possible pre-existing is investigated on an individual basis. When the field contains a Y, the group is considered a virgin group, and the entire group is subject to pre-existing conditions.")]
         public string VirginGroup { get; set; }
         [Display(Name = "OOA")]
+        [ToolTip("A one-position code (Y or N) indicating whether the service is out-of-area.")]
         public string OutOfArea { get; set; }
         [Display(Name = "GRP")]
+        [ToolTip("Six-position number assigned to the Customer. CAS assigns a zero to the beginning of each group number; the zero is insignificant.")]
         public string GroupNumber { get; set; }
-        [Display(Name = "CL")]
+        [Display(Name = "CL")
+            [ToolTip("Two-position class number identifying a plan subclassification within a customer group.")]
         public string ClassNumber { get; set; }
         [Display(Name = "GEDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the group.")]
         public string CoverageDate { get; set; }
         [Display(Name = "PL")]
+        [ToolTip("Four-position number indicating the type of plan under which the member’s group is covered.")]
         public string PlanType { get; set; }
         [Display(Name = "DOB")]
+        [ToolTip("DOB (mm/dd/yy) of the member/dependent.")]
         public string SubscriberDob { get; set; }
         [Display(Name = "EDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the member and/or any dependents listed.")]
         public string SubscriberCoverageDate { get; set; }
         [Display(Name = "CDT")]
+        [ToolTip("Date (mm/dd/yy) that medical coverage was canceled for the member and any dependents listed. The field contains 99/99/99 when coverage remains active.")]
         public string CoverageCancelDate { get; set; }
         [Display(Name = "OED")]
+        [ToolTip("The original date (mm/dd/yy) of continuous medical coverage.")]
         public string OriginalCoverageDate { get; set; }
         [Display(Name = "CRRSV")]
+        [ToolTip("Accumulated amount of current year credit reserve savings for the member/dependent.")]
         public string CreditReserveSaving { get; set; }
         [Display(Name = "YR")]
+        [ToolTip("Year to which the credit reserve total applies.")]
         public string CreditReserveYear { get; set; }
         [Display(Name = "DED")]
+        [ToolTip("Total annual amount applied to the individual (member or dependent) medical deductible for all claims incurred in the deductible period.")]
         public string IndividualDeductibleAmount { get; set; }
         [Display(Name = "FDED")]
+        [ToolTip("Amount applied to the family deductible in the deductible period.")]
         public string FamilyDeductibleAmount { get; set; }
-        [Display(Name = "MR")]  
+        [Display(Name = "MR")]
+        [ToolTip("Total member responsibility that applies to the claim. Includes copayment, deductible, coinsurance, and member responsibility-related denials.")]
         public string MemberResponsibility { get; set; }    //First Screen Field
 
         [Display(Name = "ATT PHY")]
+        [ToolTip("Identifying number of the licensed physician who normally is expected for certifying and recertifying the medical necessity of the services rendered. The provider who has primary responsibility for the patient’s medical care and treatment (block 76 on the UB-04 form). See Mentor for types of data that may appear.")]
         public string PhysicianIdentifyingNumber { get; set; }   //First Screen Field
 
         [Display(Name = "SRC")]
+        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
         public string SrcCode { get; set; } //First Screen Field
         [Display(Name = "LOB")]
+        [ToolTip("LOB code. A two-digit code taken from the CAS Policy Master File indicating the type of group policy. Refer to the Line of Business Descriptions document for a description of LOB codes.")]
         public string LOB { get; set; }
         [Display(Name = "PAT")]
+        [ToolTip("Patient’s ID number assigned from the provider for facilitating retrieval of the patient’s records (both medical and payment records).")]
         public string PatientIDNumber { get; set; }
         [Display(Name = "PROV")]
+        [ToolTip("Provider’s nine-digit ID number contained in the Provider File. Only one provider’s charges can be processed on each payment screen.")]
         public string ProviderIDNumber { get; set; }
         [Display(Name = "FAC")]
+        [ToolTip("Facility")]
         public string Facility { get; set; }
         [Display(Name = "CHK")]
+        [ToolTip("The check number of the check used for paying the claim.")]
         public string CheckNumber { get; set; } //First Screen Field
         [Display(Name = "TRN")]
+        [ToolTip("Adjustment transaction code indicating partial or total reversal transactions. The Adjustment Coordinator completes the field when completing an adjustment or a reversal transaction." + "\n" +
+        "Note: Refer to the Transaction Codes document.")]
         public string TransactionCode { get; set; } //First Screen Field
         [Display(Name = "TOB")]
+        [ToolTip("Code indicating the specific type of bill (inpatient, outpatient, interim, and so forth). The number is located in block four on the UB-04 form. Refer to the Type of Bill Codes document for valid codes.")]
         public string TypeofBill { get; set; } 
         [Display(Name = "ADDT")]
+        [ToolTip("Date of admission to the facility (located in block 12 of the UB-04 form). Complete the field when processing facility claims with a POT code 1, 6, B, C, or F.")]
         public string FacilityAdmissionDate { get; set; }
-        [Display(Name = "HR")] 
-
+        [Display(Name = "HR")]
+        [ToolTip("Hour of admission to the facility (block 13 on the UB-04 form). Hour is military time. Valid entries are 00 through 23. Type 99 in the field when the hour of admission is unknown.")]
         public string AdmissionHours { get; set; }  
         [Display(Name = "TYP")]
+        [ToolTip("Admit type (block 14 on the UB-04 form). Code indicating the prior of the admission. Valid codes are:" + "\n" +
+        "\n" +
+        "1 – Emergency" + "\n" +
+        "2 – Urgent" + "\n" +
+        "3 – Elective" + "\n" +
+        "4 – Newborn" + "\n" +
+        "9 – Information not available")]
         public string AdmitType { get; set; }
         [Display(Name = "SR")]
+        [ToolTip("Code indicating the source of the admission being billed (block 15 on the UB-04 field). Refer to the Source of Admission Codes document for valid codes.")]
         public string AdmissionSource { get; set; }
         [Display(Name = "DISDT")]
+        [ToolTip("Date of discharge from the facility (block 6 on the UB-04 form).")]
         public string FacilityDischargeDate { get; set; }
         [Display(Name = "ST")]
+        [ToolTip("A code indicating the patient’s status as of the discharge date (block 17 on the UB-04 form). Refer to the Discharge Status Codes document for valid codes.")]
         public string PatientStatus { get; set; }
         [Display(Name = "D1")]
+        [ToolTip("Starting date (mm/yy) from which the deductible period amount begins to accumulate")]
         public string StartingDate { get; set; }        //Extended Field 
         [Display(Name = "D2")]
+        [ToolTip("Ending date (mm/yy) after which the deductible amounts for the individual and family return to $0")]
         public string EndingDate { get; set; }          //Extended Field
         [Display(Name = "INDT")]
+        [ToolTip("The date the accident or injury occurred. Required field to be completed on all claims that are accident-related, regardless of whether an INJ INV edit is generated.")]
         public string AccidentDate { get; set; }        //Extended Field
         [Display(Name = "AC")]
+        [ToolTip("Code indicating the type of accident.Required field to be completed on all claims that are accident - related, regardless of whether an INJ INV edit is generated." + "\n" +
+                 "This table lists the CMS occurrence codes which indicate that the billed services are due to an accident or injury.It also has descriptions of those codes and the corresponding CAS code that is used.See Mentor for specific codes.")]
         public string AccidentType { get; set; }        //Extended Field
         [Display(Name = "REF-NPI")]
+        [ToolTip("")]
         public string NpiNumber { get; set; }           //Extended Field
         [Display(Name = "PD")]
+        [ToolTip("")]
         public string ParDirected { get; set; }         //Extended Field
         [Display(Name = "SRC")]
+        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
         public string SourceCodeDigit { get; set; }     //Extended Field
 
     }
     public class ClaimCodes
     {
         [Display(Name = "DIAG 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode1 { get; set; }
         [Display(Name = "DIAG 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode3 { get; set; }
-        [Display(Name = "DIAG 5")] 
-
+        [Display(Name = "DIAG 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode5 { get; set; }
         [Display(Name = "DIAG 7")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode7 { get; set; }
         [Display(Name = "DIAG 8")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode8 { get; set; }
         [Display(Name = "DIAG 9")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode9 { get; set; }
         [Display(Name = "DIAG 2")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode2 { get; set; }
         [Display(Name = "DIAG 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode4 { get; set; }
         [Display(Name = "DIAG 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
         public string DiagnosticCode6 { get; set; }
         [Display(Name = "ADX")]
+        [ToolTip("Principal ICD-9-CM/ICD-10-CM diagnostic code (block 69 on the UB-04 form).")]
         public string PrincipalDiagnosticCode { get; set; }
         [Display(Name = "PRC 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural codes.")]
         public string ProcedureCode1 { get; set; }
         [Display(Name = "PRC 2")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
         public string ProcedureCode2 { get; set; }
         [Display(Name = "PRC 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
         public string ProcedureCode3 { get; set; }
         [Display(Name = "PRC 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
         public string ProcedureCode4 { get; set; }
         [Display(Name = "PRC 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
         public string ProcedureCode5 { get; set; }
         [Display(Name = "PRC 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
         public string ProcedureCode6 { get; set; }
         [Display(Name = "ICD")]
+        [ToolTip("International Classification of Diseases (ICD-9 or ICD-10).")]
         public string InternationalClassificationDisease { get; set; }
         [Display(Name = "DATE 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
         public string OccurrenceDate1 { get; set; }
         [Display(Name = "DATE 2")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
         public string OccurrenceDate2 { get; set; }
         [Display(Name = "DATE 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
         public string OccurrenceDate3 { get; set; }
         [Display(Name = "DATE 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
         public string OccurrenceDate4 { get; set; }
         [Display(Name = "DATE 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
         public string OccurrenceDate5 { get; set; }
         [Display(Name = "DATE 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
         public string OccurrenceDate6 { get; set; }
         [Display(Name = "CAUSE ")]
+        [ToolTip("The cause code associated with the type of service. Different cause codes are processed on separate payment screens. Refer to the Cause Codes document for a list of valid codes and their descriptions.")]
         public string CauseCode { get; set; }
         [Display(Name = "POA 1")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode1 { get; set; } //Extended Field
         [Display(Name = "POA 2")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode2 { get; set; } //Extended Field
         [Display(Name = "POA 3")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode3 { get; set; } //Extended Field
         [Display(Name = "POA 4")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode4 { get; set; } //Extended Field
         [Display(Name = "POA 5")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode5 { get; set; } //Extended Field
         [Display(Name = "POA 6")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode6 { get; set; } //Extended Field
         [Display(Name = "POA 7")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode7 { get; set; } //Extended Field
         [Display(Name = "POA 8")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode8 { get; set; } //Extended Field
         [Display(Name = "POA 9")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
         public string PresentOnAdmissionCode9 { get; set; } //Extended Field
         [Display(Name = "CAUSE 1")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode1 { get; set; }  //Extended Field
+
         [Display(Name = "CAUSE 2")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode2 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 3")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode3 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 4")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode4 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 5")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode5 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 6")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode6 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 7")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode7 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 8")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode8 { get; set; }  //Extended Field
         [Display(Name = "CAUSE 9")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
         public string CauseCode9 { get; set; }  //Extended Field
     }
     public class OtherDetails
     {
 
         [Display(Name = "ATH#")]
+        [ToolTip("The authorization number assigned from the Preadmission Review Department. The number is found on the PRI screen when preadmission notification is made. When there is no preadmission record, type 9999 in the ATH# field and for pending the claim.")]
         public string AuthorizationNumber { get; set; }
 
         [Display(Name = "REF#")]
+        [ToolTip("The referral number given from the PCP for allowing payment of other services performed for one of their members.")]
         public string ReferralNumber { get; set; }
 
         [Display(Name = "OI")]
+        [ToolTip("OI. Valid indicators are:" + "\n" +
+        "\n" +
+        "P – Standard COB – Service not covered from the Primary Carrier" + "\n" +
+        "M – Medicare – Service not covered from Medicare" + "\n" +
+        "R – Used for bypassing the INV OI edit on Medicare Supplement claims")]
         public string OtherInsurance { get; set; }
 
 
         [Display(Name = "WVR")]
+        [ToolTip("Waiver number.")]
         public string WaiverNumber { get; set; }
 
         [Display(Name = "RFLM")]
+        [ToolTip("The original microfilmed claim number. Used when a new claim number is generated.")]
         public string OriginalClaimNumber { get; set; }//First Screen Field
 
         [Display(Name = "ADPY")]
+        [ToolTip("An Add Pay indicator is used whenever a claim is reprocessed or adjusted. The indicator Y is manually typed in the ADPY field when a claim was previously denied and is being reprocessed and/or adjusted." + "\n" +
+        "Example: Claim denied for Special Investigations.")]
         public string AddPayIndicator { get; set; }
 
         [Display(Name = "AIRDT")]
+        [ToolTip("Date more information was received.")]
         public string InformationRecievedDate { get; set; }
 
-        [Display(Name = "DRG")] 
+        [Display(Name = "DRG")]
+        [ToolTip("DRG number assigned to the claim.")]
         public string DiagnosisRelatedGroupNumber { get; set; }
         [Display(Name = "DEF")]
+        [ToolTip("Indicates the deficiency code when the claim is found to have a deficiency. Refer to the TXSB418 document for a list of codes and their descriptions.")]
         public string DeficiencyCode { get; set; }
             //First Screen Field
         [Display(Name = "COB")]
+        [ToolTip("COB. Indicates claimant’s other healthcare plan coverage status.")]
         public string OtherPlanCoverageStatus { get; set; }
 
         [Display(Name = "RCDT")]
+        [ToolTip("Receipt date (yyyymmdd) for the claim being paid.")]
         public string ReceiptDate { get; set; } //Extended Field
     }
     public class ProviderDetails
     {
         [Display(Name = "NAME")]
+        [ToolTip("")]
         public string ProviderName { get; set; }
         [Display(Name = "DEGREE")]
+        [ToolTip("Degree of provider, when applicable.")]
         public string ProviderDegree { get; set; }
         [Display(Name = "SPECIALTY")]
+        [ToolTip("Specialty of provider, when applicable.")]
         public string ProviderSpecialty { get; set; }
         [Display(Name = "ADDRESS")]
+        [ToolTip("")]
         public string ProviderAddress { get; set; }
         [Display(Name = "CITY")]
+        [ToolTip("")]
         public string ProviderCity { get; set; }
         [Display(Name = "ST")]
+        [ToolTip("")]
         public string ProviderState { get; set; }
         [Display(Name = "ZIP")]
+        [ToolTip("")]
         public string ProviderZipCode { get; set; }
         [Display(Name = "PAR")]
+        [ToolTip("One-position field displaying the par code.")]
         public string ParCode { get; set; }
         [Display(Name = "TYPE")]
+        [ToolTip("Two-position field displaying the provider type code.")]
         public string ProviderTypeCode { get; set; }
           
     }
