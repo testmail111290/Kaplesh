@@ -1,4 +1,2067 @@
-Understand cloud concepts (15-20%)
-Describe the Differences between Infrastructure-as-a-service (IaaS), Platform-as-a-service (PaaS) and Software-as-a-service (SaaS)
-Describe the Differences between Public, Private and Hybrid Cloud Models
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace Humana.WebClaim.CASUI.Common
+{
+    public class MPCDto : BaseDto
+    {
+        string[] strarray = null;
+        private List<MPCDetailDto> mpcDetail = null;
+        public string isMJI { get; set; }
+        public MPCDto()
+        {
+            mpcDetail = new List<MPCDetailDto>();
+
+            hdnmpappto = false;
+            hdnmpappexo = false;
+            hdnmpapppo = false;
+            hdnmpappovo = false;
+
+            hdnmpappex2o = false;
+            hdnmpappp2o = false;
+            hdnmpappov2o = false;
+            hdnmpappn2o = false;
+            hdnmaapppi2o = false;
+        }
+        public List<MPCDetailDto> MpcDetails
+        {
+            get { return mpcDetail; }
+            set { mpcDetail = value; }
+        }
+        public MPCErrorDto mpcErrrorDto { get; set; }
+
+        public object Response { get; set; }
+
+        public string mpctllno { get; set; }
+
+        public string lti_hotkey { get; set; }
+        public string ebi_hotkey { get; set; }
+        public string dmi_hotkey { get; set; }
+
+        public string ahi_hotkey { get; set; }
+        public string cbi_hotkey { get; set; }
+
+        #region---MPC First Screen
+
+        ////Missing feilds
+        //public string mp1noo { get; set; }
+
+        ///// ////////////////////////
+
+        [Display(Name = "CLAIM")]
+        [ToolTip("Unique identifier of a claim document. This position requires reentry of the claim number for verification. Must match the claim number on the command line.")]
+        public string mpclnoo { get; set; }
+        public string mpclnoa { get; set; }
+
+        [Display(Name = "TOTAL CHARGE")]
+        [ToolTip("Total charges from the claim document. Use for verification of the claim line entries. Must match the total of all claim line charges.")]
+        public string mptchdlo { get; set; }
+        public string mptchcto { get; set; }
+        public string mptchdla { get; set; }
+        public string mptchcta { get; set; }
+
+        private string _TOTAL_CHARGE;
+        public string TOTAL_CHARGE
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(mptchdlo) && !string.IsNullOrWhiteSpace(mptchcto))
+                        //return _TOTAL_CHARGE = string.Concat(mptchdlo.TrimStart('0'), ".", mptchcto);
+                        return _TOTAL_CHARGE = string.Concat(mptchdlo, ".", mptchcto);
+                    else                        
+                        return _TOTAL_CHARGE = mptchdlo;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                _TOTAL_CHARGE = value;
+                if (string.IsNullOrEmpty(this.mptchdlo))
+                {
+                    strarray = Utilities.SplitString(_TOTAL_CHARGE, '.');
+                    if (strarray.Length == 2)
+                    {
+                        this.mptchdlo = Utilities.ModelToUpperTrim(strarray[0]);
+                        this.mptchcto = Utilities.ModelToUpperTrim(strarray[1]);
+                    }
+                    else
+                    {
+                        this.mptchdlo = Utilities.ModelToUpperTrim(_TOTAL_CHARGE);
+                    }
+                }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+        }
+
+        [Display(Name = "EDITS")]
+        [ToolTip("Information and instructional messages displayed for assisting the user during the payment process.")]
+        public string mpmsgo { get; set; }
+        public string mpmsga { get; set; }
+
+        [Display(Name = "ELIGIBILITY MESSAGES")]
+        [ToolTip("This displays anything in the MRI screen's Comments field. Possible messages that would display here: 'Deceased' or 'Katrin' or 'Out of Service member'.")]
+        public string mpfto { get; set; }
+        public string mpfta { get; set; }
+
+        [Display(Name = "VG")]
+        [ToolTip("A one-position code (blank or Y) indicating whether the group is a virgin group (a group not previously covered from any other healthcare plan). When the field is blank, the group is a takeover group and possible pre-existing is investigated on an individual basis. When the field contains a Y, the group is considered a virgin group, and the entire group is subject to pre-existing conditions.")]
+        public string mptlo { get; set; }
+        public string mptla { get; set; }
+
+        [Display(Name = "OOA")]
+        [ToolTip("A one-position code (Y or N) indicating whether the service is out-of-area.")]
+        public string mpoareao { get; set; }
+        public string mpoareaa { get; set; }
+
+        [Display(Name = "GRP")]
+        [ToolTip("Six-position number assigned to the Customer. CAS assigns a zero to the beginning of each group number; the zero is insignificant.")]
+        public string mpgrpo { get; set; }
+        public string mpgrpa { get; set; }
+
+        [Display(Name = "CL")]
+        [ToolTip("Two-position class number identifying a plan subclassification within a customer group.")]
+        public string mpclso { get; set; }
+        public string mpclsa { get; set; }
+
+        [Display(Name = "GEDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the group.")]
+        public string mpefdtgo { get; set; }
+        public string mpefdtga { get; set; }
+
+        [Display(Name = "PL")]
+        [ToolTip("Four-position number indicating the type of plan under which the member’s group is covered.")]
+        public string mpplano { get; set; }
+        public string mpplana { get; set; }
+
+        [Display(Name = "DOB")]
+        [ToolTip("DOB (mm/dd/yy) of the member/dependent.")]
+        public string mpdobo { get; set; }
+        public string mpdoba { get; set; }
+
+        [Display(Name = "EDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the member and/or any dependents listed.")]
+        public string mpeffo { get; set; }
+        public string mpeffa { get; set; }
+
+        [Display(Name = "CDT")]
+        [ToolTip("Date (mm/dd/yy) that medical coverage was canceled for the member and any dependents listed. The field contains 99/99/99 when coverage remains active.")]
+        public string mpcano { get; set; }
+        public string mpcana { get; set; }
+
+
+        [Display(Name = "OED")]
+        [ToolTip("The original date (mm/dd/yy) of continuous medical coverage.")]
+        public string mpoedo { get; set; }
+        public string mpoeda { get; set; }
+
+        [Display(Name = "CRRSV")]
+        [ToolTip("Accumulated amount of current year credit reserve savings for the member/dependent.")]
+        public string mpcro { get; set; }
+        public string mpcra { get; set; }
+
+        [Display(Name = "YR")]
+        [ToolTip("Year to which the credit reserve total applies.")]
+        public string mpyro { get; set; }
+        public string mpyra { get; set; }
+
+        [Display(Name = "COB")]
+        [ToolTip("COB. Indicates claimant’s other healthcare plan coverage status.")]
+        public string mpcobo { get; set; }
+        public string mpcoba { get; set; }
+
+        [Display(Name = "DED")]
+        [ToolTip("Total annual amount applied to the individual (member or dependent) medical deductible for all claims incurred in the deductible period.")]
+        public string mpindddo { get; set; }
+        public string mpinddda { get; set; }
+
+        [Display(Name = "FDED")]
+        [ToolTip("Amount applied to the family deductible in the deductible period.")]
+        public string mpfamddo { get; set; }
+        public string mpfamdda { get; set; }
+
+        [Display(Name = "MR")]
+        [ToolTip("Total member responsibility that applies to the claim. Includes copayment, deductible, coinsurance, and member responsibility-related denials.")]
+        public string mpmlifeo { get; set; }
+        public string mpmlifea { get; set; }
+
+        [Display(Name = "AIRDT")]
+        mpfacilo
+        [ToolTip("Date more information was received.")]
+        public string mpairmmo { get; set; }
+        public string mpairddo { get; set; }
+        public string mpairyyo { get; set; }
+
+        public string mpairmma { get; set; }
+        public string mpairdda { get; set; }
+        public string mpairyya { get; set; }
+        private string _AIRDT;
+        public string AIRDT
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mpairmmo) && !string.IsNullOrEmpty(mpairddo) && !string.IsNullOrEmpty(mpairyyo))
+                        return _AIRDT = string.Concat(mpairmmo.Trim(),"/", mpairddo.Trim(),"/", mpairyyo.Trim()).FormatDate();
+                    else
+                        return _AIRDT.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _AIRDT = value;
+                    if (string.IsNullOrEmpty(this.mpairmmo))
+                    {
+                        strarray = Utilities.SplitString(_AIRDT, '/');
+                        if (strarray.Length == 3)
+                        {
+                            this.mpairmmo = Utilities.ModelToUpperTrim(strarray[0]);
+                            this.mpairddo = Utilities.ModelToUpperTrim(strarray[1]);
+                            this.mpairyyo = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "DRG")]
+        [ToolTip("DRG number assigned to the claim.")]
+        public string mpdrgcdo { get; set; }
+        public string mpdrgcda { get; set; }
+
+        [Display(Name = "SRC")]
+        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
+        public string mpsrceo { get; set; }
+        public string mpsrcea { get; set; }
+
+        [Display(Name = "LOB")]
+        [ToolTip("LOB code. A two-digit code taken from the CAS Policy Master File indicating the type of group policy. Refer to the Line of Business Descriptions document for a description of LOB codes.")]
+        public string mplobo { get; set; }
+        public string mploba { get; set; }
+
+        [Display(Name = "PAT")]
+        [ToolTip("Patient’s ID number assigned from the provider for facilitating retrieval of the patient’s records (both medical and payment records).")]
+        public string mpptacto { get; set; }
+        public string mpptacta { get; set; }
+
+        [Display(Name = "PROV")]
+        [ToolTip("Provider’s nine-digit ID number contained in the Provider File. Only one provider’s charges can be processed on each payment screen.")]
+        public string mpprovo { get; set; }
+        [ToolTip("A single letter alphabetic code used for differentiating multiple providers that work in the same office and use the same TIN. Letters A through Z are used in the field. The field is blank when no alphabetic suffix is available. The first space is completed, when applicable.")]
+        public string mpprov1o { get; set; }
+
+        public string mpprova { get; set; }
+        public string mpprov1a { get; set; }
+
+        [Display(Name = "FAC")]
+        [ToolTip("Facility")]
+        public string mpfacilo { get; set; }
+        public string mpfacila { get; set; }
+
+        [Display(Name = "CHK")]
+        [ToolTip("The check number of the check used for paying the claim.")]
+        public string mpchecko { get; set; }
+        public string mpchecka { get; set; }
+
+        [Display(Name = "TRN")]
+        [ToolTip("Adjustment transaction code indicating partial or total reversal transactions. The Adjustment Coordinator completes the field when completing an adjustment or a reversal transaction." + "\n" +
+        "Note: Refer to the Transaction Codes document.")]
+        public string mptrano { get; set; }
+        public string mptrana { get; set; }
+
+        [Display(Name = "TOB")]
+        [ToolTip("Code indicating the specific type of bill (inpatient, outpatient, interim, and so forth). The number is located in block four on the UB-04 form. Refer to the Type of Bill Codes document for valid codes.")]
+        public string mptobo { get; set; }
+        public string mptoba { get; set; }
+
+        [Display(Name = "ADDT")]
+        [ToolTip("Date of admission to the facility (located in block 12 of the UB-04 form). Complete the field when processing facility claims with a POT code 1, 6, B, C, or F.")]
+        public string mpadmmmo { get; set; }
+        public string mpadmddo { get; set; }
+        public string mpadmyyo { get; set; }
+
+        public string mpadmmma { get; set; }
+        public string mpadmdda { get; set; }
+        public string mpadmyya { get; set; }
+        private string _ADDT;
+        public string ADDT
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpadmmmo) && !string.IsNullOrEmpty(mpadmddo) && !string.IsNullOrEmpty(mpadmyyo))
+                        return _ADDT = string.Concat(mpadmmmo.Trim(),"/" ,mpadmddo.Trim(), "/", mpadmyyo.Trim()).FormatDate();
+                    else
+                        return _ADDT.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _ADDT = value;
+                    if (string.IsNullOrEmpty(mpadmmmo))
+                    {
+                        strarray = Utilities.SplitString(_ADDT, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpadmmmo = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpadmddo = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpadmyyo = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+
+        }
+
+        [Display(Name = "HR")]
+        [ToolTip("Hour of admission to the facility (block 13 on the UB-04 form). Hour is military time. Valid entries are 00 through 23. Type 99 in the field when the hour of admission is unknown.")]
+        public string mpadmhro { get; set; }
+        public string mpadmhra { get; set; }
+
+        [Display(Name = "TYP")]
+        [ToolTip("Admit type (block 14 on the UB-04 form). Code indicating the prior of the admission. Valid codes are:" + "\n" +
+        "\n" +
+        "1 – Emergency" + "\n" +
+        "2 – Urgent" + "\n" +
+        "3 – Elective" + "\n" +
+        "4 – Newborn" + "\n" +
+        "9 – Information not available")]
+        public string mpadmtpo { get; set; }
+        public string mpadmtpa { get; set; }
+
+        [Display(Name = "SR")]
+        [ToolTip("Code indicating the source of the admission being billed (block 15 on the UB-04 field). Refer to the Source of Admission Codes document for valid codes.")]
+        public string mpadmsro { get; set; }
+        public string mpadmsra { get; set; }
+
+        [Display(Name = "DISDT")]
+        [ToolTip("Date of discharge from the facility (block 6 on the UB-04 form).")]
+        public string mpdismmo { get; set; }
+        public string mpdisddo { get; set; }
+        public string mpdisyyo { get; set; }
+
+        public string mpdismma { get; set; }
+        public string mpdisdda { get; set; }
+        public string mpdisyya { get; set; }
+        private string _DISDT;
+        public string DISDT
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mpdismmo) && !string.IsNullOrEmpty(mpdisddo) && !string.IsNullOrEmpty(mpdisyyo))
+                        return _DISDT = string.Concat(mpdismmo.Trim(), "/", mpdisddo.Trim(), "/", mpdisyyo.Trim()).FormatDate();
+                    else
+                        return _DISDT.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DISDT = value;
+                    if (string.IsNullOrEmpty(mpdismmo))
+                    {
+                        strarray = Utilities.SplitString(_DISDT, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpdismmo = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpdisddo = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpdisyyo = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "ST")]
+        [ToolTip("A code indicating the patient’s status as of the discharge date (block 17 on the UB-04 form). Refer to the Discharge Status Codes document for valid codes.")]
+        public string mpdischo { get; set; }
+        public string mpdischa { get; set; }
+
+        [Display(Name = "ADX")]
+        [ToolTip("Principal ICD-9-CM/ICD-10-CM diagnostic code (block 69 on the UB-04 form).")]
+        public string mpaddxo { get; set; }
+        public string mpaddxa { get; set; }
+
+        [Display(Name = "DEF")]
+        [ToolTip("Indicates the deficiency code when the claim is found to have a deficiency. Refer to the TXSB418 document for a list of codes and their descriptions.")]
+        public string mpdefo { get; set; }
+        public string mpdefa { get; set; }
+
+        [Display(Name = "DIAG 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx1o { get; set; }
+        public string mpdx1a { get; set; }
+
+        [Display(Name = "DIAG 2")] DATE 2
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx2o { get; set; }
+        public string mpdx2a { get; set; }
+
+        [Display(Name = "DIAG 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx3o { get; set; }
+        public string mpdx3a { get; set; }
+
+        [Display(Name = "DIAG 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx4o { get; set; }
+        public string mpdx4a { get; set; }
+
+        [Display(Name = "DIAG 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx5o { get; set; }
+        public string mpdx5a { get; set; }
+
+        [Display(Name = "DIAG 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx6o { get; set; }
+        public string mpdx6a { get; set; }
+
+        [Display(Name = "DIAG 7")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx7o { get; set; }
+        public string mpdx7a { get; set; }
+
+        [Display(Name = "DIAG 8")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx8o { get; set; }
+        public string mpdx8a { get; set; }
+
+        [Display(Name = "DIAG 9")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx9o { get; set; }
+        public string mpdx9a { get; set; }
+        
+        [Display(Name = "CAUSE")]
+        [ToolTip("The cause code associated with the type of service. Different cause codes are processed on separate payment screens. Refer to the Cause Codes document for a list of valid codes and their descriptions.")]
+        public string mpcauseo { get; set; }
+        public string mpcausea { get; set; }
+
+        [Display(Name = "ATT PHY")]
+        [ToolTip("Identifying number of the licensed physician who normally is expected for certifying and recertifying the medical necessity of the services rendered. The provider who has primary responsibility for the patient’s medical care and treatment (block 76 on the UB-04 form). See Mentor for types of data that may appear.")]
+        public string mpapno { get; set; }
+        public string mpapna { get; set; }
+
+        [Display(Name = "PRC 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural codes.")]
+        public string mpproc1o { get; set; }
+        public string mpproc1a { get; set; }
+
+        [Display(Name = "DATE 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
+        public string mppcmm1o { get; set; }
+        public string mppcdd1o { get; set; }
+        public string mppcyy1o { get; set; }
+        public string mppcmm1a { get; set; }
+        public string mppcdd1a { get; set; }
+        public string mppcyy1a { get; set; }
+        private string _DATE_1;
+        public string DATE_1
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm1o) && !string.IsNullOrEmpty(mppcdd1o) && !string.IsNullOrEmpty(mppcyy1o))
+                        return _DATE_1 = string.Concat(mppcmm1o.Trim(), "/", mppcdd1o.Trim(), "/", mppcyy1o.Trim()).FormatDate();
+                    else
+                        return _DATE_1.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_1 = value;
+                    if (string.IsNullOrEmpty(mppcmm1o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_1, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mppcmm1o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mppcdd1o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mppcyy1o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "PRC 2")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
+        public string mpproc2o { get; set; }
+        public string mpproc2a { get; set; }
+
+        [Display(Name = "DATE 2")]
+        
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
+        public string mppcmm2o { get; set; }
+        public string mppcdd2o { get; set; }
+        public string mppcyy2o { get; set; }
+        public string mppcmm2a { get; set; }
+        public string mppcdd2a { get; set; }
+        public string mppcyy2a { get; set; }
+        private string _DATE_2;
+
+        public string DATE_2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm2o) && !string.IsNullOrEmpty(mppcdd2o) && !string.IsNullOrEmpty(mppcyy2o))
+                        return _DATE_2 = string.Concat(mppcmm2o.Trim(), "/", mppcdd2o.Trim(), "/", mppcyy2o.Trim()).FormatDate();
+                    else
+                        return _DATE_2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_2 = value;
+                    if (string.IsNullOrEmpty(mppcmm2o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_2, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mppcmm2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mppcdd2o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mppcyy2o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "PAGE")]
+        [ToolTip("Displays the current page out of the total pages for the payment screen")]
+        public string mpcurro { get; set; }
+        public string mpcurra { get; set; }
+        //[Display(Name = "S")]
+        //[ToolTip("First two digits of the source code are the origination of the claim.")]
+        //public string mpcurro { get; set; }
+        //public string mpcurra { get; set; }
+
+        [Display(Name = "PRC 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
+        public string mpproc3o { get; set; }
+        public string mpproc3a { get; set; }
+
+        [Display(Name = "DATE 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
+        public string mppcmm3o { get; set; }
+        public string mppcdd3o { get; set; }
+        public string mppcyy3o { get; set; }
+
+        public string mppcmm3a { get; set; }
+        public string mppcdd3a { get; set; }
+        public string mppcyy3a { get; set; }
+        private string _DATE_3;
+
+        public string DATE_3
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm3o) && !string.IsNullOrEmpty(mppcdd3o) && !string.IsNullOrEmpty(mppcyy3o))
+                        return _DATE_3 = string.Concat(mppcmm3o.Trim(), "/", mppcdd3o.Trim(), "/", mppcyy3o.Trim()).FormatDate();
+                    else
+                        return _DATE_3.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_3 = value;
+                    if (string.IsNullOrEmpty(mppcmm3o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_3, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mppcmm3o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mppcdd3o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mppcyy3o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "PRC 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
+        public string mpproc4o { get; set; }
+        mpproc5o
+        public string mpproc4a { get; set; }
+
+        [Display(Name = "DATE 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
+        public string mppcmm4o { get; set; }
+        public string mppcdd4o { get; set; }
+        public string mppcyy4o { get; set; }
+
+        public string mppcmm4a { get; set; }
+        public string mppcdd4a { get; set; }
+        public string mppcyy4a { get; set; }
+        private string _DATE_4;
+
+        public string DATE_4
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm4o) && !string.IsNullOrEmpty(mppcdd4o) && !string.IsNullOrEmpty(mppcyy4o))
+                        return _DATE_4 = string.Concat(mppcmm4o.Trim(), "/", mppcdd4o.Trim(), "/", mppcyy4o.Trim()).FormatDate();
+                    else
+                        return _DATE_4.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_4 = value;
+                    if (string.IsNullOrEmpty(mppcmm4o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_4, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mppcmm4o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mppcdd4o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mppcyy4o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "PRC 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
+        public string mpproc5o { get; set; }
+        public string mpproc5a { get; set; }
+
+        [Display(Name = "DATE 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
+        public string mppcmm5o { get; set; }
+        public string mppcdd5o { get; set; }
+        public string mppcyy5o { get; set; }
+
+        public string mppcmm5a { get; set; }
+        public string mppcdd5a { get; set; }
+        public string mppcyy5a { get; set; }
+        private string _DATE_5;
+        public string DATE_5
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm5o) && !string.IsNullOrEmpty(mppcdd5o) && !string.IsNullOrEmpty(mppcyy5o))
+                        return DATE_5 = string.Concat(mppcmm5o.Trim(), "/", mppcdd5o.Trim(), "/", mppcyy5o.Trim()).FormatDate();
+                    else
+                        return _DATE_5.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_5 = value;
+                    if (string.IsNullOrEmpty(this.mppcmm5o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_5, '/');
+                        if (strarray.Length == 3)
+                        {
+                            this.mppcmm5o = Utilities.ModelToUpperTrim(strarray[0]);
+                            this.mppcdd5o = Utilities.ModelToUpperTrim(strarray[1]);
+                            this.mppcyy5o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "PRC 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
+        public string mpproc6o { get; set; }
+        public string mpproc6a { get; set; }
+
+        [Display(Name = "DATE 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
+        public string mppcmm6o { get; set; }
+        public string mppcdd6o { get; set; }
+        public string mppcyy6o { get; set; }
+
+        public string mppcmm6a { get; set; }
+        public string mppcdd6a { get; set; }
+        public string mppcyy6a { get; set; }
+        private string _DATE_6;
+        public string DATE_6
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mppcmm6o) && !string.IsNullOrEmpty(mppcdd6o) && !string.IsNullOrEmpty(mppcyy6o))
+                        return _DATE_6 = string.Concat(mppcmm6o.Trim(), "/", mppcdd6o.Trim(), "/", mppcyy6o.Trim()).FormatDate();
+                    else
+                        return _DATE_6.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DATE_6 = value;
+                    if (string.IsNullOrEmpty(this.mppcmm6o))
+                    {
+                        strarray = Utilities.SplitString(_DATE_6, '/');
+                        if (strarray.Length == 3)
+                        {
+                            this.mppcmm6o = Utilities.ModelToUpperTrim(strarray[0]);
+                            this.mppcdd6o = Utilities.ModelToUpperTrim(strarray[1]);
+                            this.mppcyy6o = Utilities.ModelToUpperTrim(strarray[2]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "ICD")]
+        [ToolTip("International Classification of Diseases (ICD-9 or ICD-10).")]
+        public string mpicdo { get; set; }
+        public string mpicda { get; set; }
+
+        [Display(Name = "ATH#")]
+        [ToolTip("The authorization number assigned from the Preadmission Review Department. The number is found on the PRI screen when preadmission notification is made. When there is no preadmission record, type 9999 in the ATH# field and for pending the claim.")]
+        public string mpautho { get; set; }
+        public string mpautha { get; set; }
+
+        [Display(Name = "REF#")]
+        [ToolTip("The referral number given from the PCP for allowing payment of other services performed for one of their members.")]
+        public string mprefo { get; set; }
+        public string mprefa { get; set; }
+
+        [Display(Name = "OI")]
+        [ToolTip("OI. Valid indicators are:" + "\n" +
+        "\n" +
+        "P – Standard COB – Service not covered from the Primary Carrier" + "\n" +
+        "M – Medicare – Service not covered from Medicare" + "\n" +
+        "R – Used for bypassing the INV OI edit on Medicare Supplement claims")]
+        public string mpoio { get; set; }
+        public string mpoia { get; set; }
+
+        [Display(Name = "WVR")]
+        [ToolTip("Waiver number.")]
+        public string mpwavo { get; set; }
+        public string mpwava { get; set; }
+
+        [Display(Name = "RFLM")]
+        [ToolTip("The original microfilmed claim number. Used when a new claim number is generated.")]
+        public string mpreflmo { get; set; }
+        public string mpreflma { get; set; }
+
+        [Display(Name = "ADPY")]
+        [ToolTip("An Add Pay indicator is used whenever a claim is reprocessed or adjusted. The indicator Y is manually typed in the ADPY field when a claim was previously denied and is being reprocessed and/or adjusted." + "\n" +
+        "Example: Claim denied for Special Investigations.")]
+        public string mpadpyo { get; set; }
+        public string mpadpya { get; set; }
+
+        [Display(Name = "RCDT")]
+        [ToolTip("Receipt date (yyyymmdd) for the claim being paid.")]
+        public string mprecdto { get; set; }
+        public string mprecdta { get; set; }
+
+        private string _RCDT;
+        public string RCDT
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mprecdto))
+                    {
+                        if (mprecdto.Length > 7)
+                        {
+                            string dtY = mprecdto.Substring(0, 4);
+                            string dtM = mprecdto.Substring(4, 2);
+                            string dtD = mprecdto.Substring(6, 2);
+                            return _RCDT = string.Concat(dtM, "/", dtD, "/", dtY);
+                        }
+                        return _RCDT;
+                    }
+                    else
+                        return _RCDT;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _RCDT = value;
+                    if (string.IsNullOrEmpty(mprecdto))
+                    {
+                        strarray = Utilities.SplitString(_RCDT, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mprecdto = string.Concat
+                                (
+                                    Convert.ToString(strarray[3]), 
+                                    Convert.ToString(strarray[1]), 
+                                    Convert.ToString(strarray[2])
+                                );
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        /// <summary>
+        /// /////PROVIDER//////
+        /// </summary>
+        [Display(Name = "NAME")]
+        [ToolTip("")]
+        public string mpn1nmo { get; set; }
+        public string mpn1nma { get; set; }
+
+        [Display(Name = "ADDRESS")]
+        [ToolTip("")]
+        public string mpn1addo { get; set; }
+        public string mpn1adda { get; set; }
+
+        [Display(Name = "AS AMOUNT")]
+        [ToolTip("")]
+        public string mpn1asdo { get; set; }
+        public string mpn1asda { get; set; }
+        public string mpn1asco { get; set; }
+        public string mpn1asca { get; set; }
+        private string _AS_AMOUNT_P1;
+        public string AS_AMOUNT_P1
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mpn1asdo))
+                        return _AS_AMOUNT_P1 = string.Concat(mpn1asdo , "." , mpn1asco);
+                    else
+                        return _AS_AMOUNT_P1 = mpn1asdo;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _AS_AMOUNT_P1 = value;
+                    if (string.IsNullOrEmpty(mpn1asdo))
+                    {
+                        strarray = Utilities.SplitString(_AS_AMOUNT_P1, '.');
+                        if (strarray.Length == 2)
+                        {
+                            mpn1asdo = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpn1asco = Utilities.ModelToUpperTrim(strarray[1]);
+                        }
+                        else
+                        {
+                            mpn1asdo = Utilities.ModelToUpperTrim(_AS_AMOUNT_P1);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "CITY")]
+        [ToolTip("")]
+        public string mpn1cito { get; set; }
+        public string mpn1cita { get; set; }
+
+        [Display(Name = "ST")]
+        [ToolTip("")]
+        public string mpn1sto { get; set; }
+        public string mpn1sta { get; set; }
+
+        [Display(Name = "ZIP")]
+        [ToolTip("")]
+        public string mpn1zipo { get; set; }
+        public string mpn1zipa { get; set; }
+
+        [Display(Name = "PAR")]
+        [ToolTip("One-position field displaying the par code.")]
+        public string mpn1paro { get; set; }
+        public string mpn1para { get; set; }
+
+        [Display(Name = "TYPE")]
+        [ToolTip("Two-position field displaying the provider type code.")]
+        public string mpn1pto { get; set; }
+        public string mpn1pta { get; set; }
+
+        [Display(Name = "DEGREE")]
+        [ToolTip("Degree of provider, when applicable.")]
+        public string mpn1dego { get; set; }
+        public string mpn1dega { get; set; }
+
+        [Display(Name = "SPECIALTY")]
+        [ToolTip("Specialty of provider, when applicable.")]
+        public string mpn1spco { get; set; }
+        public string mpn1spca { get; set; }
+        /// <summary>
+        /// ////MEMBER///////
+        /// </summary>
+
+        [Display(Name = "NAME")]
+        [ToolTip("")]
+        public string mpn2nmo { get; set; }
+        public string mpn2nma { get; set; }
+
+        [Display(Name = "ADDRESS")]
+        [ToolTip("")]
+        public string mpn2addo { get; set; }
+        public string mpn2adda { get; set; }
+
+        [Display(Name = "AS AMOUNT")]
+        [ToolTip("")]
+        public string mpn2asdo { get; set; }
+        public string mpn2asda { get; set; }
+        public string mpn2asco { get; set; }
+        public string mpn2asca { get; set; }
+
+        private string _AS_AMOUNT_M1;
+        public string AS_AMOUNT_M1
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mpn2asdo))
+                        return _AS_AMOUNT_M1 = string.Concat(mpn2asdo , "." , mpn2asco);
+                    else
+                        return _AS_AMOUNT_M1 = mpn2asdo;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _AS_AMOUNT_M1 = value;
+                    if (string.IsNullOrEmpty(mpn2asdo))
+                    {
+                        strarray = Utilities.SplitString(_AS_AMOUNT_M1, '.');
+                        if (strarray.Length == 2)
+                        {
+                            mpn2asdo = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpn2asco = Utilities.ModelToUpperTrim(strarray[1]);
+                        }
+                        else
+                        {
+                            mpn2asdo = Utilities.ModelToUpperTrim(_AS_AMOUNT_M1);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }            
+        }
+
+        [Display(Name = "CITY")]
+        [ToolTip("")]
+        public string mpn2cito { get; set; }
+        public string mpn2cita { get; set; }
+
+        [Display(Name = "ST")]
+        [ToolTip("")]
+        public string mpn2sto { get; set; }
+        public string mpn2sta { get; set; }
+
+        [Display(Name = "ZIP")]
+        [ToolTip("")]
+        public string mpn2zipo { get; set; }
+        public string mpn2zipa { get; set; }
+
+        [Display(Name = "PAR")]
+        [ToolTip("One-position field displaying the par code.")]
+        public string mpn2paro { get; set; }
+        public string mpn2para { get; set; }
+
+        [Display(Name = "TYPE")]
+        [ToolTip("Two-position field displaying the member type code.")]
+        public string mpn2pto { get; set; }
+        public string mpn2pta { get; set; }
+
+        [Display(Name = "DEGREE")]
+        [ToolTip("")]
+        public string mpn2dego { get; set; }
+        public string mpn2dega { get; set; }
+
+        [Display(Name = "SPECIALTY")]
+        [ToolTip("")]
+        public string mpn2spco { get; set; }
+        public string mpn2spca { get; set; }
+
+        [Display(Name = "PCP ID")]
+        [ToolTip("")]
+        public string mpdup1o { get; set; }
+        mpn1nmo
+        public string mpdup1a { get; set; }
+
+        #endregion
+        public string mpappto { get; set; }
+        public string mpappta { get; set; }
+        public string mpappexo { get; set; }
+        public string mpappexa { get; set; }
+        public string mpapppo { get; set; }
+        public string mpapppa { get; set; }
+        public string mpappovo { get; set; }
+        public string mpappova { get; set; }
+
+        public bool hdnmpappto { get; set; }
+        public bool hdnmpappexo { get; set; }
+        public bool hdnmpapppo { get; set; }
+        public bool hdnmpappovo { get; set; }
+
+        #region---MPC Second Screen
+
+        [Display(Name = "CLAIM")]
+        [ToolTip("Unique identifier of a claim document. This position requires reentry of the claim number for verification. Must match the claim number on the command line.")]
+        public string mpclno2o { get; set; }
+        public string mpclno2a { get; set; }
+
+        [Display(Name = "TOTAL CHARGE")]
+        [ToolTip("Total charges from the claim document. Use for verification of the claim line entries. Must match the total of all claim line charges.")]
+        public string mptchdl2o { get; set; }
+        public string mptchct2o { get; set; }
+        public string mptchdl2a { get; set; }
+        public string mptchct2a { get; set; }
+        private string _TOTAL_CHARGE_P2;
+        public string TOTAL_CHARGE_P2
+        {
+            get
+            {
+                try
+                {
+
+                    if (!string.IsNullOrWhiteSpace(mptchdl2o) && !string.IsNullOrWhiteSpace(mptchct2o))
+                        //return _TOTAL_CHARGE_P2 = string.Concat(mptchdl2o.TrimStart('0'), ".", mptchct2o);
+                        return _TOTAL_CHARGE_P2 = string.Concat(mptchdl2o, ".", mptchct2o);
+                    else                        
+                        return _TOTAL_CHARGE_P2 = mptchdl2o;
+
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try {
+                    _TOTAL_CHARGE_P2 = value;
+                    if (string.IsNullOrEmpty(mptchdl2o))
+                    {
+                        strarray = Utilities.SplitString(_TOTAL_CHARGE_P2, '.');
+                        if (strarray.Length == 2)
+                        {
+                            mptchdl2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mptchct2o = Utilities.ModelToUpperTrim(strarray[1]);
+                        }
+                        else
+                        {
+                            mptchdl2o = Utilities.ModelToUpperTrim(_TOTAL_CHARGE_P2);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "EDITS")]
+        [ToolTip("Information and instructional messages displayed for assisting the user during the payment process.")]
+        public string mpmsg2o { get; set; }
+        public string mpmsg2a { get; set; }
+
+        [Display(Name = "ELIGIBILITY MESSAGES")]
+        [ToolTip("This displays anything in the MRI screen's Comments field. Possible messages that would display here: 'Deceased' or 'Katrin' or 'Out of Service member'.")]
+        public string mpft2o { get; set; }
+        public string mpft2a { get; set; }
+
+        [Display(Name = "VG")]
+        [ToolTip("A one-position code (blank or Y) indicating whether the group is a virgin group (a group not previously covered from any other healthcare plan). When the field is blank, the group is a takeover group and possible pre-existing is investigated on an individual basis. When the field contains a Y, the group is considered a virgin group, and the entire group is subject to pre-existing conditions.")]
+        public string mptl2o { get; set; }
+        public string mptl2a { get; set; }
+
+        [Display(Name = "OOA")]
+        [ToolTip("A one-position code (Y or N) indicating whether the service is out-of-area.")]
+        public string mpoarea2o { get; set; }
+        public string mpoarea2a { get; set; }
+
+        [Display(Name = "GRP")]
+        [ToolTip("Six-position number assigned to the Customer. CAS assigns a zero to the beginning of each group number; the zero is insignificant.")]
+        public string mpgrp2o { get; set; }
+        public string mpgrp2a { get; set; }
+
+        [Display(Name = "CL")]
+        [ToolTip("Two-position class number identifying a plan subclassification within a customer group.")]
+        public string mpcls2o { get; set; }
+        public string mpcls2a { get; set; }
+
+        [Display(Name = "GEDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the group.")]
+        public string mpefdtg2o { get; set; }
+        public string mpefdtg2a { get; set; }
+
+        [Display(Name = "PL")]
+        [ToolTip("Four-position number indicating the type of plan under which the member’s group is covered.")]
+        public string mpplan2o { get; set; }
+        public string mpplan2a { get; set; }
+
+        [Display(Name = "DOB")]
+        [ToolTip("DOB (mm/dd/yy) of the member/dependent.")]
+        public string mpdob2o { get; set; }
+        public string mpdob2a { get; set; }
+
+        [Display(Name = "EDT")]
+        [ToolTip("Date (mm/dd/yy) medical coverage began for the member and/or any dependents listed.")]
+        public string mpeff2o { get; set; }
+        public string mpeff2a { get; set; }
+
+        [Display(Name = "CDT")]
+        [ToolTip("Date (mm/dd/yy) that medical coverage was canceled for the member and any dependents listed. The field contains 99/99/99 when coverage remains active.")]
+        public string mpcan2o { get; set; }
+        public string mpcan2a { get; set; }
+
+        [Display(Name = "OED")]
+        [ToolTip("The original date (mm/dd/yy) of continuous medical coverage.")]
+        public string mpoed2o { get; set; }
+        public string mpoed2a { get; set; }
+
+        [Display(Name = "CRRSV")]
+        [ToolTip("Accumulated amount of current year credit reserve savings for the member/dependent.")]
+        public string mpcr2o { get; set; }
+        public string mpcr2a { get; set; }
+
+        [Display(Name = "YR")]
+        [ToolTip("Year to which the credit reserve total applies.")]
+        public string mpyr2o { get; set; }
+        public string mpyr2a { get; set; }
+
+        [Display(Name = "COB")]
+        [ToolTip("COB. Indicates claimant’s other healthcare plan coverage status.")]
+        public string mpcob2o { get; set; }
+        public string mpcob2a { get; set; }
+
+        [Display(Name = "DED")]
+        [ToolTip("Total annual amount applied to the individual (member or dependent) medical deductible for all claims incurred in the deductible period.")]
+        public string mpinddd2o { get; set; }
+        public string mpinddd2a { get; set; }
+
+        [Display(Name = "FDED")]
+        [ToolTip("Amount applied to the family deductible in the deductible period.")]
+        public string mpfamdd2o { get; set; }
+        public string mpfamdd2a { get; set; }
+
+        [Display(Name = "M1")]
+        [ToolTip("")]
+        public string mpmlife2o { get; set; }
+        public string mpmlife2a { get; set; }
+
+
+        //[Display(Name = "MR")]
+        //[ToolTip("Total member responsibility that applies to the claim. Includes copayment, deductible, coinsurance, and member responsibility-related denials.")]
+        //public string mpmlifeo { get; set; }
+        //public string mpmlifea { get; set; }
+
+        [Display(Name = "AIRDT")]
+        [ToolTip("Date more information was received.")]
+        public string mpairmm2o { get; set; }
+
+        public string mpairdd2o { get; set; }
+
+        public string mpairyy2o { get; set; }
+
+        public string mpairmm2a { get; set; }
+
+        public string mpairdd2a { get; set; }
+
+        public string mpairyy2a { get; set; }
+        private string _AIRDT_P2;
+        public string AIRDT_P2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpairmm2o) && !string.IsNullOrEmpty(mpairdd2o) && !string.IsNullOrEmpty(mpairyy2o))
+                        return _AIRDT_P2 = string.Concat(mpairmm2o.Trim(), "/", mpairdd2o.Trim(),  "/", mpairyy2o.Trim()).FormatDate();
+                    else
+                        return _AIRDT_P2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try {
+                    _AIRDT_P2 = value;
+                    if (string.IsNullOrEmpty(mpairmm2o))
+                    {
+                        strarray = Utilities.SplitString(_AIRDT_P2, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpairmm2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpairdd2o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpairyy2o = Utilities.ModelToUpperTrim(strarray[2]);
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "D1")]
+        [ToolTip("Starting date (mm/yy) from which the deductible period amount begins to accumulate")]
+        public string mpdd12o { get; set; }
+        public string mpdd12a { get; set; }
+
+        [Display(Name = "D2")]
+        [ToolTip("Ending date (mm/yy) after which the deductible amounts for the individual and family return to $0")]
+        public string mpdd22o { get; set; }
+        public string mpdd22a { get; set; }
+
+
+        [Display(Name = "LOB")]
+        [ToolTip("LOB code. A two-digit code taken from the CAS Policy Master File indicating the type of group policy. Refer to the Line of Business Descriptions document for a description of LOB codes.")]
+        public string mplob2o { get; set; }
+        public string mplob2a { get; set; }
+
+        [Display(Name = "PAT")]
+        [ToolTip("Patient’s ID number assigned from the provider for facilitating retrieval of the patient’s records (both medical and payment records).")]
+        public string mpptact2o { get; set; }
+        public string mpptact2a { get; set; }
+
+        [Display(Name = "PROV")]
+        [ToolTip("Provider’s nine-digit ID number contained in the Provider File. Only one provider’s charges can be processed on each payment screen.")]
+        public string mpprov2o { get; set; }
+        public string mpprov12o { get; set; }
+
+        public string mpprov2a { get; set; }
+        public string mpprov12a { get; set; }
+
+
+        [Display(Name = "-- (Provider Suffix)")]
+        [ToolTip("A single letter alphabetic code used for differentiating multiple providers that work in the same office and use the same TIN. Letters A through Z are used in the field. The field is blank when no alphabetic suffix is available. The first space is completed, when applicable.")]
+        public string PROVIDER_NAME { get; set; }
+
+        [Display(Name = "FAC")]
+        [ToolTip("Facility")]
+        public string mpfacil2o { get; set; }
+        public string mpfacil2a { get; set; }
+
+        [Display(Name = "INDT")]
+        [ToolTip("The date the accident or injury occurred. Required field to be completed on all claims that are accident-related, regardless of whether an INJ INV edit is generated.")]
+        public string mpinjmm2o { get; set; }
+        public string mpinjdd2o { get; set; }
+        public string mpinjyy2o { get; set; }
+
+        public string mpinjmm2a { get; set; }
+        public string mpinjdd2a { get; set; }
+        public string mpinjyy2a { get; set; }
+        private string _INDT;
+        public string INDT
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpinjmm2o) && !string.IsNullOrEmpty(mpinjdd2o) && !string.IsNullOrEmpty(mpinjyy2o))
+                        return _INDT = string.Concat(mpinjmm2o.Trim(), "/", mpinjdd2o.Trim(), "/", mpinjyy2o.Trim()).FormatDate();
+                    else
+                        return _INDT.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try {
+                    _INDT = value;
+                    if (string.IsNullOrEmpty(mpinjmm2o))
+                    {
+                        strarray = Utilities.SplitString(_INDT, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpinjmm2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpinjdd2o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpinjyy2o = Utilities.ModelToUpperTrim(strarray[2]);
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "AC")]
+        [ToolTip("Code indicating the type of accident.Required field to be completed on all claims that are accident - related, regardless of whether an INJ INV edit is generated." + "\n" +
+                 "This table lists the CMS occurrence codes which indicate that the billed services are due to an accident or injury.It also has descriptions of those codes and the corresponding CAS code that is used.See Mentor for specific codes.")]
+        public string mpacc2o { get; set; }
+        public string mpacc2a { get; set; }
+
+        [Display(Name = "TOB")]
+        [ToolTip("Code indicating the specific type of bill (inpatient, outpatient, interim, and so forth). The number is located in block four on the UB-04 form. Refer to the Type of Bill Codes document for valid codes.")]
+        public string mptob2o { get; set; }
+        public string mptob2a { get; set; }
+
+        [Display(Name = "ADDT")]
+        [ToolTip("Date of admission to the facility (located in block 12 of the UB-04 form). Complete the field when processing facility claims with a POT code 1, 6, B, C, or F.")]
+        public string mpadmmm2o { get; set; }
+        public string mpadmdd2o { get; set; }
+        public string mpadmyy2o { get; set; }
+
+        public string mpadmmm2a { get; set; }
+        public string mpadmdd2a { get; set; }
+        public string mpadmyy2a { get; set; }
+        private string _ADDT_P2;
+        public string ADDT_P2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpadmmm2o) && !string.IsNullOrEmpty(mpadmdd2o) && !string.IsNullOrEmpty(mpadmyy2o))
+                        return _ADDT_P2 = string.Concat(mpadmmm2o.Trim(), "/", mpadmdd2o.Trim(), "/", mpadmyy2o.Trim()).FormatDate();
+                    else
+                        return _ADDT_P2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _ADDT_P2 = value;
+                    if (string.IsNullOrEmpty(mpadmmm2o))
+                    {
+                        strarray = Utilities.SplitString(_ADDT_P2, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpadmmm2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpadmdd2o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpadmyy2o = Utilities.ModelToUpperTrim(strarray[2]);
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "HR")]
+        [ToolTip("Hour of admission to the facility (block 13 on the UB-04 form). Hour is military time. Valid entries are 00 through 23. Type 99 in the field when the hour of admission is unknown.")]
+        public string mpadmhr2o { get; set; }
+        public string mpadmhr2a { get; set; }
+
+        [Display(Name = "TYP")]
+        [ToolTip("Admit type (block 14 on the UB-04 form). Code indicating the prior of the admission. Valid codes are:" + "\n" +
+        "\n" +
+        "1 – Emergency" + "\n" +
+        "2 – Urgent" + "\n" +
+        "3 – Elective" + "\n" +
+        "4 – Newborn" + "\n" +
+        "9 – Information not available")]
+        public string mpadmtp2o { get; set; }
+        public string mpadmtp2a { get; set; }
+
+        [Display(Name = "SR")]
+        [ToolTip("Code indicating the source of the admission being billed (block 15 on the UB-04 field). Refer to the Source of Admission Codes document for valid codes.")]
+        public string mpadmsr2o { get; set; }
+        public string mpadmsr2a { get; set; }
+
+        [Display(Name = "DISDT")]
+        [ToolTip("Date of discharge from the facility (block 6 on the UB-04 form).")]
+        public string mpdismm2o { get; set; }
+        public string mpdisdd2o { get; set; }
+        public string mpdisyy2o { get; set; }
+
+        public string mpdismm2a { get; set; }
+        public string mpdisdd2a { get; set; }
+        public string mpdisyy2a { get; set; }
+        private string _DISDT_P2;
+        public string DISDT_P2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpdismm2o) && !string.IsNullOrEmpty(mpdisdd2o) && !string.IsNullOrEmpty(mpdisyy2o))
+                        return _DISDT_P2 = string.Concat(mpdismm2o.Trim(), "/", mpdisdd2o.Trim(), "/", mpdisyy2o.Trim()).FormatDate();
+                    else
+                        return _DISDT_P2.FormatDate();
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _DISDT_P2 = value;
+                    if (string.IsNullOrEmpty(mpdismm2o))
+                    {
+                        strarray = Utilities.SplitString(_DISDT_P2, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mpdismm2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpdisdd2o = Utilities.ModelToUpperTrim(strarray[1]);
+                            mpdisyy2o = Utilities.ModelToUpperTrim(strarray[2]);
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "ST")]
+        [ToolTip("A code indicating the patient’s status as of the discharge date (block 17 on the UB-04 form). Refer to the Discharge Status Codes document for valid codes.")]
+        public string mpdisch2o { get; set; }
+        public string mpdisch2a { get; set; }
+
+        [Display(Name = "ADX")]
+        [ToolTip("Principal ICD-9-CM/ICD-10-CM diagnostic code (block 69 on the UB-04 form).")]
+        public string mpaddx2o { get; set; }
+        public string mpaddx2a { get; set; }
+
+        [Display(Name = "DEF")]
+        [ToolTip("Indicates the deficiency code when the claim is found to have a deficiency. Refer to the TXSB418 document for a list of codes and their descriptions.")]
+        public string mpdef2o { get; set; }
+        public string mpdef2a { get; set; }
+
+        [Display(Name = "DIAG 1")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx12o { get; set; }
+        public string mpdx12a { get; set; }
+
+        [Display(Name = "POA 1")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa12o { get; set; }
+        public string mppoa12a { get; set; }
+
+        [Display(Name = "DIAG 2")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx22o { get; set; }
+        public string mpdx22a { get; set; }
+
+        [Display(Name = "POA 2")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa22o { get; set; }
+        public string mppoa22a { get; set; }
+
+        [Display(Name = "DIAG 3")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx32o { get; set; }
+        public string mpdx32a { get; set; }
+
+        [Display(Name = "POA 3")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa32o { get; set; }
+        public string mppoa32a { get; set; }
+
+        [Display(Name = "DIAG 4")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx42o { get; set; }
+        public string mpdx42a { get; set; }
+
+        [Display(Name = "POA 4")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa42o { get; set; }
+        public string mppoa42a { get; set; }
+
+        [Display(Name = "DIAG 5")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx52o { get; set; }
+        public string mpdx52a { get; set; }
+
+        [Display(Name = "POA 5")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa52o { get; set; }
+        public string mppoa52a { get; set; }
+
+        [Display(Name = "DIAG 6")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx62o { get; set; }
+        public string mpdx62a { get; set; }
+
+        [Display(Name = "POA 6")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa62o { get; set; }
+        public string mppoa62a { get; set; }
+
+        [Display(Name = "DIAG 7")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx72o { get; set; }
+        public string mpdx72a { get; set; }
+
+        [Display(Name = "POA 7")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa72o { get; set; }
+        public string mppoa72a { get; set; }
+
+        [Display(Name = "DIAG 8")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx82o { get; set; }
+        public string mpdx82a { get; set; }
+
+        [Display(Name = "POA 8")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa82o { get; set; }
+        public string mppoa82a { get; set; }
+
+        [Display(Name = "DIAG 9")]
+        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
+        public string mpdx92o { get; set; }
+        public string mpdx92a { get; set; }
+
+        [Display(Name = "POA 9")]
+        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
+        public string mppoa92o { get; set; }
+        public string mppoa92a { get; set; }
+
+        //[Display(Name = "CZ")]
+        //[ToolTip("The cause code associated with the type of service. Different cause codes are processed on separate payment screens. Refer to the Cause Codes document for a list of valid codes and their descriptions.")]
+        //public string mpcauseo { get; set; }
+        //public string mpcausea { get; set; }
+
+        //[Display(Name = "ATT PHY")]
+        //[ToolTip("Identifying number of the licensed physician who normally is expected for certifying and recertifying the medical necessity of the services rendered.The provider who has primary responsibility for the patient’s medical care and treatment(block 76 on the UB - 04 form).The field can include any of the following: APN DCN - 12 digits IPA comments advising Humana how to pay a claim CCP Reference number IPAR number Case number System generated heading(MACESS, Non - Tran, DIG, WB) Z which indicates patient responsibility has been bypassed for an adjusted claim.")]
+        //public string mpapno { get; set; }
+        //public string mpapna { get; set; }
+
+        [Display(Name = "ICD")]
+        [ToolTip("International Classification of Diseases (ICD-9 or ICD-10).")]
+        public string mpicd2o { get; set; }
+        public string mpicd2a { get; set; }
+
+
+        [Display(Name = "REF-NPI")]
+        [ToolTip("")]
+        public string mrefnpio { get; set; }
+        public string mrefnpia { get; set; }
+
+        [Display(Name = "PD")]
+        [ToolTip("")]
+        public string mpdo { get; set; }
+        public string mpda { get; set; }
+
+        [Display(Name = "DRG")]
+        [ToolTip("Diagnosis-related group.")]
+        public string mpdrgcd2o { get; set; }
+        public string mpdrgcd2a { get; set; }
+
+        [Display(Name = "SRC")]
+        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
+        public string mpsrce2o { get; set; }
+        public string mpsrce2a { get; set; }
+
+
+        [Display(Name = "PAGE")]
+        [ToolTip("Displays the current page out of the total pages for the payment screen")]
+        public string mpcurr2o { get; set; }
+        public string mpcurr2a { get; set; }
+
+        [Display(Name = "CAUSE 1")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause1o { get; set; }
+        public string mpcause1a { get; set; }
+
+        [Display(Name = "CAUSE 2")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause2o { get; set; }
+        public string mpcause2a { get; set; }
+
+        [Display(Name = "CAUSE 3")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause3o { get; set; }
+        public string mpcause3a { get; set; }
+
+        [Display(Name = "CAUSE 4")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause4o { get; set; }
+        public string mpcause4a { get; set; }
+
+        [Display(Name = "CAUSE 5")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause5o { get; set; }
+        public string mpcause5a { get; set; }
+
+        [Display(Name = "CAUSE 6")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause6o { get; set; }
+        public string mpcause6a { get; set; }
+
+
+        [Display(Name = "CAUSE 7")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause7o { get; set; }
+        public string mpcause7a { get; set; }
+
+        [Display(Name = "CAUSE 8")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause8o { get; set; }
+        public string mpcause8a { get; set; }
+
+        [Display(Name = "CAUSE 9")]
+        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
+        public string mpcause9o { get; set; }
+        public string mpcause9a { get; set; }
+
+        [Display(Name = "ATH#")]
+        [ToolTip("The authorization number assigned from the Preadmission Review Department. The number is found on the PRI screen when preadmission notification is made. When there is no preadmission record, type 9999 in the ATH# field and for pending the claim.")]
+        public string mpauth2o { get; set; }
+        public string mpauth2a { get; set; }
+
+        [Display(Name = "REF#")]
+        [ToolTip("The referral number given from the PCP for allowing payment of other services performed for one of their members.")]
+        public string mpref2o { get; set; }
+        public string mpref2a { get; set; }
+
+        [Display(Name = "OI")]
+        [ToolTip("OI. Valid indicators are:" + "\n" +
+        "\n" +
+        "P – Standard COB – Service not covered from the Primary Carrier" + "\n" +
+        "M – Medicare – Service not covered from Medicare" + "\n" +
+        "R – Used for bypassing the INV OI edit on Medicare Supplement claims")]
+        public string mpoi2o { get; set; }
+        public string mpoi2a { get; set; }
+
+        [Display(Name = "WVR")]
+        [ToolTip("Waiver number.")]
+        public string mpwav2o { get; set; }
+        public string mpwav2a { get; set; }
+
+        [Display(Name = "RFLM")]
+        [ToolTip("The original microfilmed claim number. Used when a new claim number is generated.")]
+        public string mpreflm2o { get; set; }
+        public string mpreflm2a { get; set; }
+
+        [Display(Name = "ADPY")]
+        [ToolTip("An Add Pay indicator is used whenever a claim is reprocessed or adjusted. The indicator Y is manually typed in the ADPY field when a claim was previously denied and is being reprocessed and/or adjusted." + "\n" +
+        "Example: Claim denied for Special Investigations.")]
+        public string mpadpy2o { get; set; }
+        public string mpadpy2a { get; set; }
+
+        [Display(Name = "RCDT")]
+        [ToolTip("Receipt date (yyyymmdd) for the claim being paid.")]
+        public string mprcdt2o { get; set; }
+        public string mprcdt2a { get; set; }
+
+        private string _RCDT2;
+        public string RCDT2
+        {
+            get
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(mprcdt2o))
+                    {
+                        if (mprcdt2o.Length > 7)
+                        {
+                            string dtY = mprcdt2o.Substring(0, 4);
+                            string dtM = mprcdt2o.Substring(4, 2);
+                            string dtD = mprcdt2o.Substring(6, 2);
+                            return _RCDT2 = string.Concat(dtM, "/", dtD, "/", dtY);
+                        }
+                        return _RCDT2;
+                    }
+                    else
+                        return _RCDT2;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+            set
+            {
+                try
+                {
+                    _RCDT2 = value;
+                    if (string.IsNullOrEmpty(mprcdt2o))
+                    {
+                        strarray = Utilities.SplitString(_RCDT2, '/');
+                        if (strarray.Length == 3)
+                        {
+                            mprecdto = string.Concat
+                                (
+                                    Convert.ToString(strarray[3]),
+                                    Convert.ToString(strarray[1]),
+                                    Convert.ToString(strarray[2])
+                                );
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+        /// <summary>
+        /// ////PROVIDER//////
+        /// </summary>
+        [Display(Name = "NAME")]
+        [ToolTip("")]
+        public string mpn1nm2o { get; set; }
+        public string mpn1nm2a { get; set; }
+
+        [Display(Name = "ADDRESS")]
+        [ToolTip("")]
+        public string mpn1add2o { get; set; }
+        public string mpn1add2a { get; set; }
+
+        [Display(Name = "AS AMOUNT")]
+        [ToolTip("")]
+        public string mpn1asd2o { get; set; }
+        public string mpn1asd2a { get; set; }
+        public string mpn1asc2o { get; set; }
+        public string mpn1asc2a { get; set; }
+
+        private string _AS_AMOUNT_P2;
+        public string AS_AMOUNT_P2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpn1asd2o))
+                        return _AS_AMOUNT_P2 = string.Concat(mpn1asd2o , "." , mpn1asc2o);
+                    else
+                        return _AS_AMOUNT_P2 = mpn1asd2o;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try
+                {
+                    _AS_AMOUNT_P2 = value;
+                    if (string.IsNullOrEmpty(mpn1asd2o))
+                    {
+                        strarray = Utilities.SplitString(_AS_AMOUNT_P2, '.');
+                        if (strarray.Length == 2)
+                        {
+                            mpn1asd2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpn1asc2o = Utilities.ModelToUpperTrim(strarray[1]);
+                        }
+                        else
+                        {
+                            mpn1asd2o = Utilities.ModelToUpperTrim(_AS_AMOUNT_P2);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            
+            }
+        }
+
+        [Display(Name = "CITY")]
+        [ToolTip("")]
+        public string mpn1cit2o { get; set; }
+        public string mpn1cit2a { get; set; }
+
+        [Display(Name = "ST")]
+        [ToolTip("")]
+        public string mpn1st2o { get; set; }
+        public string mpn1st2a { get; set; }
+
+        [Display(Name = "ZIP")]
+        [ToolTip("")]
+        public string mpn1zip2o { get; set; }
+        public string mpn1zip2a { get; set; }
+
+
+        [Display(Name = "PAR")]
+        [ToolTip("One-position field displaying the par code.")]
+        public string mpn1par2o { get; set; }
+        public string mpn1par2a { get; set; }
+
+        [Display(Name = "TYPE")]
+        [ToolTip("Two-position field displaying the provider type code.")]
+        public string mpn1pt2o { get; set; }
+        public string mpn1pt2a { get; set; }
+
+        [Display(Name = "DEGREE")]
+        [ToolTip("Degree of provider, when applicable.")]
+        public string mpn1deg2o { get; set; }
+        public string mpn1deg2a { get; set; }
+
+        [Display(Name = "SPECIALTY")]
+        [ToolTip("Specialty of provider, when applicable.")]
+        public string mpn1spc2o { get; set; }
+        public string mpn1spc2a { get; set; }
+        /// <summary>
+        /// //////////////////////////////Member////////////////////
+        /// </summary>
+        [Display(Name = "NAME")]
+        [ToolTip("")]
+        public string mpn2nm2o { get; set; }
+        public string mpn2nm2a { get; set; }
+
+        [Display(Name = "ADDRESS")]
+        [ToolTip("")]
+        public string mpn2add2o { get; set; }
+        public string mpn2add2a { get; set; }
+
+        [Display(Name = "AS AMOUNT")]
+        [ToolTip("")]
+        public string mpn2asd2o { get; set; }
+        public string mpn2asd2a { get; set; }
+        public string mpn2asc2o { get; set; }
+        public string mpn2asc2a { get; set; }
+        private string _AS_AMOUNT_M2;
+        public string AS_AMOUNT_M2
+        {
+            get
+            {
+                try {
+                    if (!string.IsNullOrEmpty(mpn2asd2o))
+                        return _AS_AMOUNT_M2 = string.Concat(mpn2asd2o , "." , mpn2asc2o);
+                    else
+                        return _AS_AMOUNT_M2 = mpn2asd2o;
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+
+            }
+            set
+            {
+                try {
+                    _AS_AMOUNT_M2 = value;
+                    if (string.IsNullOrEmpty(mpn2asd2o))
+                    {
+                        strarray = Utilities.SplitString(_AS_AMOUNT_M2, '.');
+                        if (strarray.Length == 2)
+                        {
+                            mpn2asd2o = Utilities.ModelToUpperTrim(strarray[0]);
+                            mpn2asc2o = Utilities.ModelToUpperTrim(strarray[1]);
+                        }
+                        else
+                        {
+                            mpn2asd2o = Utilities.ModelToUpperTrim(_AS_AMOUNT_M2);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw ;
+                }
+            }
+        }
+
+        [Display(Name = "CITY")]
+        [ToolTip("")]
+        public string mpn2cit2o { get; set; }
+        public string mpn2cit2a { get; set; }
+
+        [Display(Name = "ST")]
+        [ToolTip("")]
+        public string mpn2st2o { get; set; }
+        public string mpn2st2a { get; set; }
+
+        [Display(Name = "ZIP")]
+        [ToolTip("")]
+        public string mpn2zip2o { get; set; }
+        public string mpn2zip2a { get; set; }
+
+        [Display(Name = "PAR")]
+        [ToolTip("One-position field displaying the par code.")]
+        public string mpn2par2o { get; set; }
+        public string mpn2par2a { get; set; }
+
+        [Display(Name = "TYPE")]
+        [ToolTip("Two-position field displaying the provider type code.")]
+        public string mpn2pt2o { get; set; }
+        public string mpn2pt2a { get; set; }
+
+        [Display(Name = "DEGREE")]
+        [ToolTip("")]
+        public string mpn2deg2o { get; set; }
+        public string mpn2deg2a { get; set; }
+
+        [Display(Name = "SPECIALTY")]
+        [ToolTip("")]
+        public string mpn2spc2o { get; set; }
+        public string mpn2spc2a { get; set; }
+
+        [Display(Name = "PCP ID")]
+        [ToolTip("")]
+        public string mpdup12o { get; set; }
+        public string mpdup12a { get; set; }
+
+
+        #endregion
+
+        public string mpappex2o { get; set; }
+        public string mpappex2a { get; set; }
+
+        public string mpappp2o { get; set; }
+        public string mpappp2a { get; set; }
+        public string mpappov2o { get; set; }
+        public string mpappov2a { get; set; }
+
+        public string mpappn2o { get; set; }
+        public string mpappn2a { get; set; }
+        public string maapppi2o { get; set; }
+        public string maapppi2a { get; set; }
+
+        public bool hdnmpappex2o { get; set; }
+        public bool hdnmpappp2o { get; set; }
+        public bool hdnmpappov2o { get; set; }
+        public bool hdnmpappn2o { get; set; }
+        public bool hdnmaapppi2o { get; set; }
+
+    }
+}
