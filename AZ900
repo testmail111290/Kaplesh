@@ -1,428 +1,1419 @@
-using Humana.Claims.CasNextGen.UI.Common;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+@model CasNextGen.UI.Website.Models.MpcModel
+@using  CasNextGen.UI.Common
+@using  CasNextGen.UI.Common.Utilities
+<input type="hidden" class="error-message" value="1" id="MPCPage" />
+<div class="container" style="top:4px">
+    <script src="~/Scripts/Custom/Payment.js"></script>
+    <script src="~/Scripts/Custom/ControlLine.js"></script>
+    <script src="~/Scripts/Custom/PageScripts/Mpc.js"></script>
 
-namespace CasNextGen.UI.Common.DataTransferObjects.Mpc
-{
-
-    public class MpcDto : BaseDto
+    @using (Html.BeginForm())
     {
-        [Display(Name = "PAGE")]
-        public string PageNumber{ get; set; }
-        [Display(Name = "CLAIM")]
-        public string ClaimNumber { get; set; }
-        [Display(Name = "TOTAL CHARGE")]
-        public string TotalCharge { get; set; }
+        <input type="hidden" value="MPC1" id="ViewName" />
 
-        public ClaimHeaderInformation ClaimHeaderInformation { get; set; }
-        public ClaimCodes ClaimCodes { get; set; }
-        public OtherDetails OtherDetails { get; set; }
-        public List<ProviderDetails> ProviderDetails { get; set; }
-        [Display(Name = "PCP ID")]
-        public string PcpId { get; set; }
-        public List<ServiceLine> ServiceLine { get; set; }
-        public Pagination Pagination { get; set; }
-        public List<Edit> Edits { get; set; }
+
+        <input type="hidden" class="error-message" value="1" id="MPCPage" />
+        <input type="hidden" value="@Html.Raw(Model.ControlLine)" id="controlLine" />
+        <div id="MPC-fixed-rows" style="position:fixed; background-color:#eeeeee; z-index:99;">
+            <div class="row textboxinput-md-lg2" id="ClaimHeader" style="background-color:#eeeeee; ">
+                <div class="col-md-3">
+                    <table class="first-data">
+                        <tr>
+                            <td>
+                                @Html.LabelWithToolTipFor(model => model.MpcDto.PageNumber, new
+                           {
+                               title = "TESTmpcurro",
+                               @style = "font-weight:bold;text-transform:uppercase;"
+                           })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.MpcDto.PageNumber)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-7">
+                    <table class="first-data" style="float:right">
+                        <tr>
+                            <td>
+                                @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimNumber,
+                            new { title = "TESTmpclnoo" })
+                            </td>
+                            <td style="padding:0px 16px 0px 16px;">
+                                @Html.TextBoxFor(model => model.MpcDto.ClaimNumber, new { @maxlength = "15", @class = "Model.MpcDto.mpclnoa", @style = "width:136px;" })
+                            </td>
+                            <td>
+                                @Html.LabelWithToolTipFor(model => model.MpcDto.TotalCharge,
+                            new { title = "TESTmptchdlo" })
+                            </td>
+                            <td>
+                                $@Html.TextBoxFor(model => model.MpcDto.TotalCharge, new { @maxlength = "9", @class = "Model.MpcDto.mptchdla + ClsMpcMaskMoney1", @style = "text-align:right;" })
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-2">
+                    <p title="Click To Collapse/Expand" style="color: rgb(72, 70, 65); margin-bottom: 0px;margin-top:4px;
+                    float: right; cursor: pointer;" onclick="a_onClick()"><span id="ExpCol">Collapse All</span><img id="hideShowAll" src="~/icons/Colapse.png"></p>
+                </div>
+            </div>
+
+            <div class="row" id="divedits" style="background-color:#eeeeee">
+                <div class="col-md-12" style="padding-left:0px;">
+                    <h3 class="magentaHeaderStyle" style="background-color:#000000;color:#ff0000">
+                        Edits
+                        @if (Model.MpcDto.Edits != null)
+                        {
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                                @Html.HiddenFor(model => model.MpcDto.Edits[0].EditValue, new { id = "mpmsg31o" })
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                            <span class=@(Model.MpcDto.Edits[0].EditType == "8" ? "editHard" : "editSoft")>
+                                @Html.DisplayFor(model => model.MpcDto.Edits[0].EditValue)
+                            </span>
+                        }
+                    </h3>
+                </div>
+            </div>
+        </div>
+        @:<div id="MPC-scrollable-content">
+            <div id="ClaimHdrInfo">
+                <div class="row">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 class="headerCollapseStyleClaimHeader">Claim Header Information<img id="accImg1" src="~/icons/Minus.png" class="up-down"></h3>
+                    </div>
+                </div>
+
+                <div class="row textboxinput-md-lg2" id="DivAccordianClaimHdrInfo1">
+
+                    <div class="col-md-3" style="width: 20%;">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.VirginGroup,
+                    new { title = "TESTmptlo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.VirginGroup>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.VirginGroup)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.SubscriberDob,
+                    new { title = "TESTmpdobo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.SubscriberDob>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.SubscriberDob)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.IndividualDeductibleAmount,
+                    new { title = "TESTmpindddo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.IndividualDeductibleAmount>
+                                    $@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.IndividualDeductibleAmount)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.PatientIDNumber,
+                    new { title = "TESTmpptacto" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.PatientIDNumber, new { @maxlength = "17", @class = "Model.MpcDto.ClaimHeaderInformation.mpptacta", @style = "width:177px;" })
+                                </td>
+                            </tr>
+
+
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.OutOfArea,
+                    new { title = "TESTmpoareao" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.OutOfArea>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.OutOfArea)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.SubscriberCoverageDate,
+                    new { title = "TESTmpeffo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.SubscriberCoverageDate>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.SubscriberCoverageDate)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.FamilyDeductibleAmount,
+                    new { title = "TESTmpfamddo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.FamilyDeductibleAmount>
+                                    $@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.FamilyDeductibleAmount)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber,
+                    new { title = "TESTmpprovo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber, new { @maxlength = "9", @style = "width:82px;", @class = "Model.MpcDto.ClaimHeaderInformation.mpprova" })
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.ProviderIDNumber, new { title = "TESTmpprov1o", @maxlength = "1", @style = "width:24px;", @class = "Model.MpcDto.ClaimHeaderInformation.mpprov1a" })@*Pooja*@
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.GroupNumber,
+                    new { title = "TESTmpgrpo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.GroupNumber>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.GroupNumber)
+                                    @Html.HiddenFor(model => model.MpcDto.ClaimHeaderInformation.GroupNumber)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CoverageCancelDate,
+                    new { title = "TESTmpcano" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.CoverageCancelDate>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CoverageCancelDate)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.MemberResponsibility,
+                   new { title = "TESTmpmlifeo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.MemberResponsibility>
+                                    $@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.MemberResponsibility)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.Facility,
+                   new { title = "TESTmpfacilo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.Facility, new { @maxlength = "11", @class = "Model.MpcDto.ClaimHeaderInformation.mpfacila" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.ClassNumber,
+                    new { title = "TESTmpclso" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.ClassNumber>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.ClassNumber)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.OriginalCoverageDate,
+                   new { title = "TESTmpoedo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.OriginalCoverageDate>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.OriginalCoverageDate)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.PhysicianIdentifyingNumber,
+                   new { title = "TESTmpapno", @style = "width:51px;" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.PhysicianIdentifyingNumber, new { @maxlength = "14", @class = "Model.MpcDto.ClaimHeaderInformation.mpapna" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber,
+                   new { title = "TESTmpchecko" })
+                                </td>
+                                <td>
+                                    @*@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber)*@
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.CheckNumber, new { @maxlength = "10", @class = "Model.MpcDto.ClaimHeaderInformation.mpchecka" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CoverageDate,
+                    new { title = "TESTmpefdtgo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.CoverageDate>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CoverageDate)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CreditReserveSaving,
+                   new { title = "TESTmpcro" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.CreditReserveSaving>
+                                    $@Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CreditReserveSaving)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.SrcCode,
+                   new { title = "TESTmpsrceo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.SrcCode>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.SrcCode)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.TransactionCode,
+                   new { title = "TESTmptrano" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.TransactionCode, new { @maxlength = "1", @class = "Model.MpcDto.mptrana", @style = "width:35px;" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-1">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.PlanType,
+                    new { title = "TESTmpplano" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.PlanType>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.PlanType)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.CreditReserveYear,
+                   new { title = "TESTmpyro" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.CreditReserveYear>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.CreditReserveYear)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.LOB,
+                    new { title = "TESTmplobo" })
+                                </td>
+                                <td class=@Model.MpcDto.ClaimHeaderInformation.LOB>
+                                    @Html.DisplayFor(model => model.MpcDto.ClaimHeaderInformation.LOB)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.TypeofBill,
+                    new { title = "TESTmptobo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.TypeofBill, new { @maxlength = "3", @class = "Model.MpcDto.mptoba", @style = "width:43px;" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" id="DivAccordianClaimHdrInfo2">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 style="margin-top:4px; margin-bottom:6px;" class="border_bottom"></h3>
+                    </div>
+                </div>
+
+                <div class="row textboxinput-md-lg2" id="DivAccordianClaimHdrInfo3">
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.FacilityAdmissionDate,
+                     new { title = "TESTmpadmmmo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.FacilityAdmissionDate, new { @maxlength = "8", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmmma````````````````````````````````Datefield" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.AdmissionHours,
+                    new { title = "TESTmpadmhro" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AdmissionHours, new { @maxlength = "2", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmhra" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.AdmitType,
+                   new { title = "TESTmpadmtpo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AdmitType, new { @maxlength = "1", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmtpa" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.AdmissionSource,
+                   new { title = "TESTmpadmsro" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.AdmissionSource, new { @maxlength = "1", @class = "Model.MpcDto.ClaimHeaderInformation.mpadmsra" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.FacilityDischargeDate,
+                   new { title = "TESTmpdismmo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.FacilityDischargeDate, new { @maxlength = "8", @class = "Model.MpcDto.ClaimHeaderInformation.mpdismmaDatefield" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimHeaderInformation.PatientStatus,
+                    new { title = "TESTmpdischo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimHeaderInformation.PatientStatus, new { @maxlength = "2", @class = "Model.MpcDto.ClaimHeaderInformation.mpdischa " })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div id="HdrCode">
+                <div class="row">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 class="headerCollapseStyleCodes">Codes<img id="Img2" src="~/icons/Minus.png" class="up-down"></h3>
+                    </div>
+                </div>
+                <div class="row codestextbox" id="DivAccordianHdrCode1">
+                    <div class="col-md-2">
+                        <table class="first-data ">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode1,
+                   new { title = "TESTmpdx1o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode1, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx1a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode2,
+                   new { title = "TESTmpdx2o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode2, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx2a " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode3,
+                   new { title = "TESTmpdx3o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode3, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx3a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode4,
+                   new { title = "TESTmpdx4o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode4, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx4a " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode5,
+                   new { title = "TESTmpdx5o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode5, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx5a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode6,
+                   new { title = "TESTmpdx6o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode6, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx6a " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode7,
+                   new { title = "TESTmpdx7o" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode7, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx7a " })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8,
+                   new { title = "TESTmpdx8o" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode8, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx8a " })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9,
+                   new { title = "TESTmpdx9o" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.DiagnosticCode9, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpdx9a " })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.PrincipalDiagnosticCode,
+                    new { title = "TESTmpaddxo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.PrincipalDiagnosticCode, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpaddxa " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.InternationalClassificationDisease,
+                   new { title = "TESTmpicdo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.InternationalClassificationDisease, new { @maxlength = "2", @class = "Model.MpcDto.ClaimCodes.mpicda " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" id="DivAccordianHdrCode2">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 style="margin-top:4px; margin-bottom:6px;" class="border_bottom"></h3>
+                    </div>
+                </div>
+
+                <div class="row codestextbox" id="DivAccordianHdrCode3">
+                    <div class="col-md-2">
+                        <table class="first-data ">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode1,
+                   new { title = "TESTmpproc1o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode1, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc1a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate1,
+                   new { title = "TESTmppcmm1o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate1, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm1a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode2,
+                   new { title = "TESTmpproc2o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode2, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc2a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate2,
+                   new { title = "TESTmppcmm2o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate2, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm2a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode3,
+                   new { title = "TESTmpproc3o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode3, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc3a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate3,
+                   new { title = "TESTmppcmm3o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate3, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm3a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode4,
+                   new { title = "TESTmpproc4o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode4, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc4a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate4,
+                   new { title = "TESTmppcmm4o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate4, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm4a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode5,
+                   new { title = "TESTmpproc5o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode5, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc5a " })
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate5,
+                   new { title = "TESTmppcmm5o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate5, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm5a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.ProcedureCode6,
+                   new { title = "TESTmpproc6o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.ProcedureCode6, new { @maxlength = "7", @class = "Model.MpcDto.ClaimCodes.mpproc6a " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.OccurrenceDate6,
+                   new { title = "TESTmppcmm6o" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.OccurrenceDate6, new { @maxlength = "8", @class = "Model.MpcDto.ClaimCodes.mppcmm6a Datefield" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" id="DivAccordianHdrCode4">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 style="margin-top:4px; margin-bottom:6px;" class=" border_bottom"></h3>
+                    </div>
+                </div>
+
+                <div class="row codestextbox" id="DivAccordianHdrCode5">
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.ClaimCodes.CauseCode,
+                   new { title = "TESTmpcauseo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.ClaimCodes.CauseCode, new { @maxlength = "6", @class = "Model.MpcDto.ClaimCodes.mpcausea" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="OtherDetail">
+                <div class="row">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 class="headerCollapseStyleOtherDetails">Other Details<img id="Img9" src="~/icons/Minus.png" class="up-down"></h3>
+                    </div>
+                </div>
+                <div class="row textbox-md" id="DivAccordianOtherDetail1">
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.AuthorizationNumber, new { title = "TESTmpautho" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.OtherDetails.AuthorizationNumber, new { @maxlength = "6", @class = "Model.MpcDto.OtherDetails.mpautha " })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.InformationRecievedDate,
+                   new { title = "TESTmpairmmo" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.OtherDetails.InformationRecievedDate, new { @maxlength = "8", @class = "Model.MpcDto.OtherDetails.mpairmma Datefield" })
+                                </td>
+                            </tr>
+                            @*<tr>
+                                     <td>
+                                         @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.mprecdto,
+                                new { title = "TESTmprecdto" })
+                                     </td>
+                                     <td>@Html.DisplayFor(model => model.MpcDto.OtherDetails.RCDT)</td>
+                                 </tr>*@
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.ReferralNumber,
+                   new { title = "TESTmprefo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.ReferralNumber, new { @maxlength = "6", @class = "Model.MpcDto.OtherDetails.mprefa" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.DiagnosisRelatedGroupNumber,
+                   new { title = "TESTmpdrgcdo" })
+                                    </td>
+                                    <td class=@Model.MpcDto.OtherDetails.DiagnosisRelatedGroupNumber>
+                                        @Html.DisplayFor(model => model.MpcDto.OtherDetails.DiagnosisRelatedGroupNumber)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.OtherInsurance,
+                   new { title = "TESTmpoio" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.OtherInsurance, new { @maxlength = "1", @class = "Model.MpcDto.OtherDetails.mpoia" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.DeficiencyCode,
+                    new { title = "TESTmpdefo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.DeficiencyCode, new { @maxlength = "3", @class = "Model.MpcDto.OtherDetails.mpdefa " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.WaiverNumber,
+                   new { title = "TESTmpwavo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.WaiverNumber, new { @maxlength = "10", @class = "Model.MpcDto.OtherDetails.mpwava " })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.OtherPlanCoverageStatus,
+                   new { title = "TESTmpcobo" })
+                                    </td>
+                                    <td class=@Model.MpcDto.OtherDetails.OtherPlanCoverageStatus>
+                                        @Html.DisplayFor(model => model.MpcDto.OtherDetails.OtherPlanCoverageStatus)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.OriginalClaimNumber,
+                   new { title = "TESTmpreflmo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.OriginalClaimNumber, new { @maxlength = "15", @class = "Model.MpcDto.OtherDetails.mpreflma", @style = "width:136px;" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table class="first-data">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.LabelWithToolTipFor(model => model.MpcDto.OtherDetails.AddPayIndicator,
+                   new { title = "TESTmpadpyo" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.MpcDto.OtherDetails.AddPayIndicator, new { @maxlength = "1", @class = "Model.MpcDto.OtherDetails.mpadpya " })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="row" id="DivAccordianOtherDetail2">
+                    <div class="col-md-12" style="overflow-x:auto;">
+                        <table class="Tabform first-data" id="TabMpcDetails">
+                            <tbody>
+                                .
+                                .
+                                <tr>
+                                    <th title="Row Action"></th>
+                                    <th title="First DOS (mm/dd/yy) for the claim line item.">FIRST</th>
+                                    <th title="Last DOS (mm/dd) for the claim line item.">LAST</th>
+                                    <th title="A one-position code identifying the institution, office, or mode of treatment.">
+                                        @Html.TextBox("T", null,
+                                            new
+                                            {
+                                                @maxlength = "1",
+                                                @style = "width:32px !important;text-align:center;",
+                                                @class = "Model.MpcDto.OtherDetails.mpappta EditableHeader"
+                                            })
+                                    </th>
+                                    <th title="Service type code describing the medical service being billed on the claim line.">TYPE 1</th>
+                                    <th title="CPT-4 type code describing the medical service billed on the claim line.">TYPE 2</th>
+                                    <th title="Dollar amount charged for the claim line item.">CHARGE</th>
+                                    <th title="Number of medical services or confinement days billed on the claim line. The field displays up to 99,999 units.">NO</th>
+                                    <th title="Three-position explanation code identifying the reason a claim is pended or denied.">
+                                        @Html.TextBox("EX", null, new
+                                                        {
+                                                            @maxlength = "3",
+                                                            @style = "width:40px !important;text-align:center;"
+                                            ,
+                                                            @class = "Model.MpcDto.OtherDetails.mpappexa EditableHeader"
+
+                                                        })
+                                    </th>
+                                    <th title="Specifies the payee for the claim line paid or specifies pended, denied, or updated history actions. Refer to the Payee Codes document for a list of valid codes.">
+                                        @Html.TextBox("P", null, new
+                                            {
+                                                @maxlength = "1",
+                                                @style = "width:32px !important;text-align:center;",
+                                                @class = "Model.MpcDto.OtherDetails.mpapppa EditableHeader"
+
+                                            })
+
+
+                                    </th>
+                                    <th title="Amount paid as a basic medical benefit for the claim line.">BASIC</th>
+                                    <th title="Amount paid as a major medical benefit for the claim line.">MAJ MED</th>
+                                    <th title="Amount paid out of the claimant’s credit reserve.">CR RS</th>
+                                    <th title="Two-position code used for overriding normal processing situations. Refer to the Overrides Codes document for a list of codes.">
+                                        @Html.TextBox("OV", null, new
+                                                            {
+                                                                @maxlength = "2",
+                                                                @style = "width:40px !important;text-align:center;",
+                                                                @class = "Model.MpcDto.OtherDetails.mpappova EditableHeader"
+
+                                            })
+
+
+                                    </th>
+                                </tr>
+                                @if (Model != null)
+                                {
+                                    int i = 1;
+                                    foreach (var item in Model.MpcDto.ServiceLine)
+                                    {
+                                        var FirstDOS = "FirstDOS_" + i.ToString();
+                                        var LastDOS = "LastDOS_" + i.ToString();
+                                        var OnePositionCode = "OnePositionCode_" + i.ToString();
+                                        var ServiceTypeCode = "ServiceTypeCode_" + i.ToString();
+                                        var CptTypeCode = "CptTypeCode_" + i.ToString();
+                                        var Charge = "Charge_" + i.ToString();
+                                        var NumberOfMedicalServices = "NumberOfMedicalServices_" + i.ToString();
+                                        var ExplanationCode = "ExplanationCode_" + i.ToString();
+                                        var PayeeCode = "PayeeCode_" + i.ToString();
+                                        var BasicBenefitAmount = "BasicBenefitAmount_" + i.ToString();
+                                        var MajorBenefitAmount = "MajorBenefitAmount_" + i.ToString();
+                                        var CreditReserveAmount = "CreditReserveAmount_" + i.ToString();
+                                        var Overriding = "Overriding_" + i.ToString();
+
+
+
+
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="selectedRow" title="Copy Service Line or press Ctrl + S" /><br />
+                                                <img src="~/icons/paste.ico" width="18" height="18" class="pasteRow" title="Paste Service Line(s) starting here or press Ctrl + D" tabindex="-1">
+                                            </td>
+                                            <td>@Html.TextBoxFor(modelItem => item.FirstDOS, new { @id = FirstDOS, @maxlength = "8", @class = "item.mp1fdta  Tabtextboxinput-md-lg2 Datefield" })</td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.LastDOS, new { @id = LastDOS, @maxlength = "5", @class = "item.mp1ldta  Tabtextboxinput-md-lg2 Datefield1" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.OnePositionCode, new { @id = OnePositionCode, @maxlength = "1", @class = "item.mp1pota + gridtextboxT  Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.ServiceTypeCode, new { @id = ServiceTypeCode, @name = "Mpctypeo", @maxlength = "6", @class = "item.mp1typea  Tabtextboxinput-md-lg2" })
+                                            </td>
+                                            <td>@Html.TextBoxFor(modelItem => item.CptTypeCode, new { @id = CptTypeCode, @maxlength = "5", @class = "item.mp1type2a  Tabtextboxinput-md-lg2" })</td>
+                                            <td style="white-space:nowrap;">
+                                                $@Html.TextBoxFor(modelItem => item.Charge, new { @id = Charge, @maxlength = "8", @class = "item.mp1chgda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.NumberOfMedicalServices, new { @id = NumberOfMedicalServices, @maxlength = "7", @class = "item.mp1noa  Tabtextboxinput-md-lg2 ClsMpc1PMaskMoney" })
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.ExplanationCode, new { @id = ExplanationCode, @maxlength = "3", @class = "item.mp1exa + gridtextboxEX1  Tabtextboxinput-md" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.PayeeCode, new { @id = PayeeCode, @maxlength = "1", @class = "item.mp1pca + gridtextboxP1  Tabtextboxinput-md" })
+                                            <td style="white-space:nowrap;">
+                                                $@Html.TextBoxFor(modelItem => item.BasicBenefitAmount, new { @id = BasicBenefitAmount, @maxlength = "8", @class = "item.mp1basda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                            </td>
+                                            <td style="white-space:nowrap;">
+                                                $@Html.TextBoxFor(modelItem => item.MajorBenefitAmount, new { @id = MajorBenefitAmount, @maxlength = "8", @class = "item.mp1mmda  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                            </td>
+                                            <td style="white-space:nowrap;">
+                                                $@Html.TextBoxFor(modelItem => item.CreditReserveAmount, new { @id = CreditReserveAmount, @maxlength = "8", @class = "item.mp1cra  Tabtextboxinput-md-lg2 ClsMpcMaskMoney", @style = "text-align:right;" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(modelItem => item.Overriding, new { @id = Overriding, @maxlength = "2", @class = "item.mp1ova + gridtextboxOV  Tabtextboxinput-md" })
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="ProvDetails">
+                <div class="row">
+                    <div class="col-md-12" style="padding-left:0px">
+                        <h3 class="headerCollapseStyle">Provider Details<img id="Img9" src="~/icons/Minus.png" class="up-down"></h3>
+                    </div>
+                </div>
+
+
+                <div class="row" id="DivAccordianProvDetails">
+                    <div class="col-md-6">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderName, new { title = "TESTmpn1nmo" })
+                                </td>
+                                <td colspan="4">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderName, new { @maxlength = "30", @class = "Model.MpcDto.ProviderDetails[0].mpn1nma", @style = "width:100%;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderDegree, new { title = "TESTmpn1dego" })
+                                </td>
+                                <td style="padding:0px 16px 0px 16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderDegree, new { @maxlength = "3", @class = "Model.MpcDto.ProviderDetails[0].mpn1dega" })
+                                </td>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderSpecialty, new { title = "TESTmpn1spco" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderSpecialty, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn1spca" })
+                                </td>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderAddress, new { title = "TESTmpn1addo" })
+                                </td>
+                                <td colspan="4">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderAddress, new { @maxlength = "30", @class = "Model.MpcDto.ProviderDetails[0].mpn1adda", @style = "width:100%;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { title = "TESTmpn1cito" })
+                                </td>
+                                <td style="padding-left:16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn1cita  textboxinput-lg6" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn1sta", @style = "width:35px;" })
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { title = "TESTmpn1zipo", @style = "margin-left:8px;" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderZipCode, new { @maxlength = "9", @class = "Model.MpcDto.ProviderDetails[0].mpn1zipa" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ParCode, new { title = "TESTmpn1paro" })
+                                </td>
+                                <td style="padding:0px 16px 0px 16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ParCode, new { @maxlength = "1", @class = "Model.MpcDto.ProviderDetails[0].mpn1para" })
+                                </td>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { title = "TESTmpn1pto" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn1pta" })@*Check*@
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <table class="first-data">
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderName, new { title = "TESTmpn2nmo" })
+                                </td>
+                                <td colspan="4">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderName, new { @maxlength = "30", @class = "Model.MpcDto.ProviderDetails[0].mpn2nma", @style = "width:100%;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderDegree, new { title = "TESTmpn2dego" })
+                                </td>
+                                <td style="padding:0px 16px 0px 16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderDegree, new { @maxlength = "3", @class = "Model.MpcDto.ProviderDetails[0].mpn2dega" })
+                                </td>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderSpecialty, new { title = "TESTmpn2spco" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderSpecialty, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn2spca", @style = "width:100%;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderAddress, new { title = "TESTmpn2addo" })
+                                </td>
+                                <td colspan="4">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderAddress, new { @maxlength = "30", @class = "Model.MpcDto.ProviderDetails[0].mpn2adda", @style = "width:100%;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { title = "TESTmpn2cito" })
+                                </td>
+                                <td style="padding-left:16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { @maxlength = "15", @class = "Model.MpcDto.ProviderDetails[0].mpn2cita  textboxinput-lg6" })
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderCity, new { title = "TESTmpn2sto", @style = "margin:0px 8px 0px 8px;" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn2sta", @style = "width:35px;" })
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderState, new { title = "TESTmpn2zipo", @style = "margin-left:8px;" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderZipCode, new { @maxlength = "9", @class = "Model.MpcDto.ProviderDetails[0].mpn2zipa" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ParCode, new { title = "TESTmpn2paro" })
+                                </td>
+                                <td style="padding:0px 16px 0px 16px;">
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ParCode, new { @maxlength = "1", @class = "Model.MpcDto.ProviderDetails[0].mpn2para" })
+                                </td>
+                                <td>
+                                    @Html.LabelWithToolTipFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { title = "TESTmpn2pto" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.MpcDto.ProviderDetails[0].ProviderTypeCode, new { @maxlength = "2", @class = "Model.MpcDto.ProviderDetails[0].mpn2pta" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            if (!string.IsNullOrWhiteSpace(Model.MpcDto.PcpId))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="first-data">
+                            <tr>
+                                <td>@Html.LabelWithToolTipFor(model => model.MpcDto.PcpId, new { title = "TESTmpdup1o", @style = "font-weight:bold;" })</td>
+                                <td style="font-weight:bold;">@Html.DisplayFor(model => model.MpcDto.PcpId)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            }
+        @:</div>
     }
-    public class ClaimHeaderInformation
-    {
-        [Display(Name = "VG")]
-        [ToolTip("A one-position code (blank or Y) indicating whether the group is a virgin group (a group not previously covered from any other healthcare plan). When the field is blank, the group is a takeover group and possible pre-existing is investigated on an individual basis. When the field contains a Y, the group is considered a virgin group, and the entire group is subject to pre-existing conditions.")]
-        public string VirginGroup { get; set; }
-        [Display(Name = "OOA")]
-        [ToolTip("A one-position code (Y or N) indicating whether the service is out-of-area.")]
-        public string OutOfArea { get; set; }
-        [Display(Name = "GRP")]
-        [ToolTip("Six-position number assigned to the Customer. CAS assigns a zero to the beginning of each group number; the zero is insignificant.")]
-        public string GroupNumber { get; set; }
-        [Display(Name = "CL")
-            [ToolTip("Two-position class number identifying a plan subclassification within a customer group.")]
-        public string ClassNumber { get; set; }
-        [Display(Name = "GEDT")]
-        [ToolTip("Date (mm/dd/yy) medical coverage began for the group.")]
-        public string CoverageDate { get; set; }
-        [Display(Name = "PL")]
-        [ToolTip("Four-position number indicating the type of plan under which the member’s group is covered.")]
-        public string PlanType { get; set; }
-        [Display(Name = "DOB")]
-        [ToolTip("DOB (mm/dd/yy) of the member/dependent.")]
-        public string SubscriberDob { get; set; }
-        [Display(Name = "EDT")]
-        [ToolTip("Date (mm/dd/yy) medical coverage began for the member and/or any dependents listed.")]
-        public string SubscriberCoverageDate { get; set; }
-        [Display(Name = "CDT")]
-        [ToolTip("Date (mm/dd/yy) that medical coverage was canceled for the member and any dependents listed. The field contains 99/99/99 when coverage remains active.")]
-        public string CoverageCancelDate { get; set; }
-        [Display(Name = "OED")]
-        [ToolTip("The original date (mm/dd/yy) of continuous medical coverage.")]
-        public string OriginalCoverageDate { get; set; }
-        [Display(Name = "CRRSV")]
-        [ToolTip("Accumulated amount of current year credit reserve savings for the member/dependent.")]
-        public string CreditReserveSaving { get; set; }
-        [Display(Name = "YR")]
-        [ToolTip("Year to which the credit reserve total applies.")]
-        public string CreditReserveYear { get; set; }
-        [Display(Name = "DED")]
-        [ToolTip("Total annual amount applied to the individual (member or dependent) medical deductible for all claims incurred in the deductible period.")]
-        public string IndividualDeductibleAmount { get; set; }
-        [Display(Name = "FDED")]
-        [ToolTip("Amount applied to the family deductible in the deductible period.")]
-        public string FamilyDeductibleAmount { get; set; }
-        [Display(Name = "MR")]
-        [ToolTip("Total member responsibility that applies to the claim. Includes copayment, deductible, coinsurance, and member responsibility-related denials.")]
-        public string MemberResponsibility { get; set; }    //First Screen Field
-
-        [Display(Name = "ATT PHY")]
-        [ToolTip("Identifying number of the licensed physician who normally is expected for certifying and recertifying the medical necessity of the services rendered. The provider who has primary responsibility for the patient’s medical care and treatment (block 76 on the UB-04 form). See Mentor for types of data that may appear.")]
-        public string PhysicianIdentifyingNumber { get; set; }   //First Screen Field
-
-        [Display(Name = "SRC")]
-        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
-        public string SrcCode { get; set; } //First Screen Field
-        [Display(Name = "LOB")]
-        [ToolTip("LOB code. A two-digit code taken from the CAS Policy Master File indicating the type of group policy. Refer to the Line of Business Descriptions document for a description of LOB codes.")]
-        public string LOB { get; set; }
-        [Display(Name = "PAT")]
-        [ToolTip("Patient’s ID number assigned from the provider for facilitating retrieval of the patient’s records (both medical and payment records).")]
-        public string PatientIDNumber { get; set; }
-        [Display(Name = "PROV")]
-        [ToolTip("Provider’s nine-digit ID number contained in the Provider File. Only one provider’s charges can be processed on each payment screen.")]
-        public string ProviderIDNumber { get; set; }
-        [Display(Name = "FAC")]
-        [ToolTip("Facility")]
-        public string Facility { get; set; }
-        [Display(Name = "CHK")]
-        [ToolTip("The check number of the check used for paying the claim.")]
-        public string CheckNumber { get; set; } //First Screen Field
-        [Display(Name = "TRN")]
-        [ToolTip("Adjustment transaction code indicating partial or total reversal transactions. The Adjustment Coordinator completes the field when completing an adjustment or a reversal transaction." + "\n" +
-        "Note: Refer to the Transaction Codes document.")]
-        public string TransactionCode { get; set; } //First Screen Field
-        [Display(Name = "TOB")]
-        [ToolTip("Code indicating the specific type of bill (inpatient, outpatient, interim, and so forth). The number is located in block four on the UB-04 form. Refer to the Type of Bill Codes document for valid codes.")]
-        public string TypeofBill { get; set; } 
-        [Display(Name = "ADDT")]
-        [ToolTip("Date of admission to the facility (located in block 12 of the UB-04 form). Complete the field when processing facility claims with a POT code 1, 6, B, C, or F.")]
-        public string FacilityAdmissionDate { get; set; }
-        [Display(Name = "HR")]
-        [ToolTip("Hour of admission to the facility (block 13 on the UB-04 form). Hour is military time. Valid entries are 00 through 23. Type 99 in the field when the hour of admission is unknown.")]
-        public string AdmissionHours { get; set; }  
-        [Display(Name = "TYP")]
-        [ToolTip("Admit type (block 14 on the UB-04 form). Code indicating the prior of the admission. Valid codes are:" + "\n" +
-        "\n" +
-        "1 – Emergency" + "\n" +
-        "2 – Urgent" + "\n" +
-        "3 – Elective" + "\n" +
-        "4 – Newborn" + "\n" +
-        "9 – Information not available")]
-        public string AdmitType { get; set; }
-        [Display(Name = "SR")]
-        [ToolTip("Code indicating the source of the admission being billed (block 15 on the UB-04 field). Refer to the Source of Admission Codes document for valid codes.")]
-        public string AdmissionSource { get; set; }
-        [Display(Name = "DISDT")]
-        [ToolTip("Date of discharge from the facility (block 6 on the UB-04 form).")]
-        public string FacilityDischargeDate { get; set; }
-        [Display(Name = "ST")]
-        [ToolTip("A code indicating the patient’s status as of the discharge date (block 17 on the UB-04 form). Refer to the Discharge Status Codes document for valid codes.")]
-        public string PatientStatus { get; set; }
-        [Display(Name = "D1")]
-        [ToolTip("Starting date (mm/yy) from which the deductible period amount begins to accumulate")]
-        public string StartingDate { get; set; }        //Extended Field 
-        [Display(Name = "D2")]
-        [ToolTip("Ending date (mm/yy) after which the deductible amounts for the individual and family return to $0")]
-        public string EndingDate { get; set; }          //Extended Field
-        [Display(Name = "INDT")]
-        [ToolTip("The date the accident or injury occurred. Required field to be completed on all claims that are accident-related, regardless of whether an INJ INV edit is generated.")]
-        public string AccidentDate { get; set; }        //Extended Field
-        [Display(Name = "AC")]
-        [ToolTip("Code indicating the type of accident.Required field to be completed on all claims that are accident - related, regardless of whether an INJ INV edit is generated." + "\n" +
-                 "This table lists the CMS occurrence codes which indicate that the billed services are due to an accident or injury.It also has descriptions of those codes and the corresponding CAS code that is used.See Mentor for specific codes.")]
-        public string AccidentType { get; set; }        //Extended Field
-        [Display(Name = "REF-NPI")]
-        [ToolTip("")]
-        public string NpiNumber { get; set; }           //Extended Field
-        [Display(Name = "PD")]
-        [ToolTip("")]
-        public string ParDirected { get; set; }         //Extended Field
-        [Display(Name = "SRC")]
-        [ToolTip("The first two letters of the SRC code are the origination of the claim. The last letter of the SRC code is the source of entry. Refer to the Source Codes document for valid codes.")]
-        public string SourceCodeDigit { get; set; }     //Extended Field
-
-    }
-    public class ClaimCodes
-    {
-        [Display(Name = "DIAG 1")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode1 { get; set; }
-        [Display(Name = "DIAG 3")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode3 { get; set; }
-        [Display(Name = "DIAG 5")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode5 { get; set; }
-        [Display(Name = "DIAG 7")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode7 { get; set; }
-        [Display(Name = "DIAG 8")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode8 { get; set; }
-        [Display(Name = "DIAG 9")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode9 { get; set; }
-        [Display(Name = "DIAG 2")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode2 { get; set; }
-        [Display(Name = "DIAG 4")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode4 { get; set; }
-        [Display(Name = "DIAG 6")]
-        [ToolTip("ICD-9-CM/ICD-10-CM diagnostic codes related to the claim.")]
-        public string DiagnosticCode6 { get; set; }
-        [Display(Name = "ADX")]
-        [ToolTip("Principal ICD-9-CM/ICD-10-CM diagnostic code (block 69 on the UB-04 form).")]
-        public string PrincipalDiagnosticCode { get; set; }
-        [Display(Name = "PRC 1")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural codes.")]
-        public string ProcedureCode1 { get; set; }
-        [Display(Name = "PRC 2")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
-        public string ProcedureCode2 { get; set; }
-        [Display(Name = "PRC 3")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
-        public string ProcedureCode3 { get; set; }
-        [Display(Name = "PRC 4")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
-        public string ProcedureCode4 { get; set; }
-        [Display(Name = "PRC 5")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
-        public string ProcedureCode5 { get; set; }
-        [Display(Name = "PRC 6")]
-        [ToolTip("ICD-9-CM/ICD-10-CM procedural code.")]
-        public string ProcedureCode6 { get; set; }
-        [Display(Name = "ICD")]
-        [ToolTip("International Classification of Diseases (ICD-9 or ICD-10).")]
-        public string InternationalClassificationDisease { get; set; }
-        [Display(Name = "DATE 1")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence.")]
-        public string OccurrenceDate1 { get; set; }
-        [Display(Name = "DATE 2")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
-        public string OccurrenceDate2 { get; set; }
-        [Display(Name = "DATE 3")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
-        public string OccurrenceDate3 { get; set; }
-        [Display(Name = "DATE 4")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
-        public string OccurrenceDate4 { get; set; }
-        [Display(Name = "DATE 5")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
-        public string OccurrenceDate5 { get; set; }
-        [Display(Name = "DATE 6")]
-        [ToolTip("ICD-9-CM/ICD-10-CM date of occurrence..")]
-        public string OccurrenceDate6 { get; set; }
-        [Display(Name = "CAUSE ")]
-        [ToolTip("The cause code associated with the type of service. Different cause codes are processed on separate payment screens. Refer to the Cause Codes document for a list of valid codes and their descriptions.")]
-        public string CauseCode { get; set; }
-        [Display(Name = "POA 1")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode1 { get; set; } //Extended Field
-        [Display(Name = "POA 2")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode2 { get; set; } //Extended Field
-        [Display(Name = "POA 3")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode3 { get; set; } //Extended Field
-        [Display(Name = "POA 4")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode4 { get; set; } //Extended Field
-        [Display(Name = "POA 5")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode5 { get; set; } //Extended Field
-        [Display(Name = "POA 6")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode6 { get; set; } //Extended Field
-        [Display(Name = "POA 7")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode7 { get; set; } //Extended Field
-        [Display(Name = "POA 8")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode8 { get; set; } //Extended Field
-        [Display(Name = "POA 9")]
-        [ToolTip("One-digit POA code located after each diagnosis code in the DX field. Refer to the Present on Admission document for a list of POA codes (indicators).")]
-        public string PresentOnAdmissionCode9 { get; set; } //Extended Field
-        [Display(Name = "CAUSE 1")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode1 { get; set; }  //Extended Field
-
-        [Display(Name = "CAUSE 2")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode2 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 3")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode3 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 4")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode4 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 5")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode5 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 6")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode6 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 7")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode7 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 8")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode8 { get; set; }  //Extended Field
-        [Display(Name = "CAUSE 9")]
-        [ToolTip("Same as the CAUSE field on the regular MPC screen.")]
-        public string CauseCode9 { get; set; }  //Extended Field
-    }
-    public class OtherDetails
-    {
-
-        [Display(Name = "ATH#")]
-        [ToolTip("The authorization number assigned from the Preadmission Review Department. The number is found on the PRI screen when preadmission notification is made. When there is no preadmission record, type 9999 in the ATH# field and for pending the claim.")]
-        public string AuthorizationNumber { get; set; }
-
-        [Display(Name = "REF#")]
-        [ToolTip("The referral number given from the PCP for allowing payment of other services performed for one of their members.")]
-        public string ReferralNumber { get; set; }
-
-        [Display(Name = "OI")]
-        [ToolTip("OI. Valid indicators are:" + "\n" +
-        "\n" +
-        "P – Standard COB – Service not covered from the Primary Carrier" + "\n" +
-        "M – Medicare – Service not covered from Medicare" + "\n" +
-        "R – Used for bypassing the INV OI edit on Medicare Supplement claims")]
-        public string OtherInsurance { get; set; }
-
-
-        [Display(Name = "WVR")]
-        [ToolTip("Waiver number.")]
-        public string WaiverNumber { get; set; }
-
-        [Display(Name = "RFLM")]
-        [ToolTip("The original microfilmed claim number. Used when a new claim number is generated.")]
-        public string OriginalClaimNumber { get; set; }//First Screen Field
-
-        [Display(Name = "ADPY")]
-        [ToolTip("An Add Pay indicator is used whenever a claim is reprocessed or adjusted. The indicator Y is manually typed in the ADPY field when a claim was previously denied and is being reprocessed and/or adjusted." + "\n" +
-        "Example: Claim denied for Special Investigations.")]
-        public string AddPayIndicator { get; set; }
-
-        [Display(Name = "AIRDT")]
-        [ToolTip("Date more information was received.")]
-        public string InformationRecievedDate { get; set; }
-
-        [Display(Name = "DRG")]
-        [ToolTip("DRG number assigned to the claim.")]
-        public string DiagnosisRelatedGroupNumber { get; set; }
-        [Display(Name = "DEF")]
-        [ToolTip("Indicates the deficiency code when the claim is found to have a deficiency. Refer to the TXSB418 document for a list of codes and their descriptions.")]
-        public string DeficiencyCode { get; set; }
-            //First Screen Field
-        [Display(Name = "COB")]
-        [ToolTip("COB. Indicates claimant’s other healthcare plan coverage status.")]
-        public string OtherPlanCoverageStatus { get; set; }
-
-        [Display(Name = "RCDT")]
-        [ToolTip("Receipt date (yyyymmdd) for the claim being paid.")]
-        public string ReceiptDate { get; set; } //Extended Field
-    }
-    public class ProviderDetails
-    {
-        [Display(Name = "NAME")]
-        [ToolTip("")]
-        public string ProviderName { get; set; }
-        [Display(Name = "DEGREE")]
-        [ToolTip("Degree of provider, when applicable.")]
-        public string ProviderDegree { get; set; }
-        [Display(Name = "SPECIALTY")]
-        [ToolTip("Specialty of provider, when applicable.")]
-        public string ProviderSpecialty { get; set; }
-        [Display(Name = "ADDRESS")]
-        [ToolTip("")]
-        public string ProviderAddress { get; set; }
-        [Display(Name = "CITY")]
-        [ToolTip("")]
-        public string ProviderCity { get; set; }
-        [Display(Name = "ST")]
-        [ToolTip("")]
-        public string ProviderState { get; set; }
-        [Display(Name = "ZIP")]
-        [ToolTip("")]
-        public string ProviderZipCode { get; set; }
-        [Display(Name = "PAR")]
-        [ToolTip("One-position field displaying the par code.")]
-        public string ParCode { get; set; }
-        [Display(Name = "TYPE")]
-        [ToolTip("Two-position field displaying the provider type code.")]
-        public string ProviderTypeCode { get; set; }
-          
-    }
-    public class ServiceLine
-    {
-        [Display(Name = "FIRST")]
-        public string FirstDOS { get; set; }    //First Screen Field
-        [Display(Name = "LAST")]
-        public string LastDOS{ get; set; }  //First Screen Field
-
-        [Display(Name = "T")]
-        public string OnePositionCode{ get; set; }  //First Screen Field
-        [Display(Name = "TYPE1")]
-        public string ServiceTypeCode { get; set; }
-        [Display(Name = "TYPE2")]
-        public string CptTypeCode { get; set; }
-        [Display(Name = "CHARGE")]
-        public string Charge { get; set; }
-        [Display(Name = "NO")]
-        public string NumberOfMedicalServices { get; set; }
-        [Display(Name = "EX")]
-        public string ExplanationCode{ get; set; }
-        [Display(Name = "P")]
-        public string PayeeCode { get; set; }
-        [Display(Name = "BASIC")]
-        public string BasicBenefitAmount { get; set; }  //First Screen Field
-        [Display(Name = "MAJ MED")]
-        public string MajorBenefitAmount { get; set; }  //First Screen Field
-        [Display(Name = "CR RS")]
-        public string CreditReserveAmount { get; set; }
-        [Display(Name = "OV")]
-        public string Overriding { get; set; }
-        [Display(Name ="MOD")]  
-        public string TypeOfServiceModifier { get; set; }   //Extended Field
-        [Display(Name = "M2")]
-        public string CptModifier2 { get; set; }    //Extended Field
-        [Display(Name = "M3")]
-        public string CptModifier3 { get; set; }    //Extended Field
-        [Display(Name = "M4")]
-        public string CptModifier4 { get; set; }    //Extended Field
-        [Display(Name = "DP")]
-        public string DeterminingCorrectPointer { get; set; }   //Extended Field
-        [Display(Name = "N")]
-        public string N { get; set; }   //Extended Field
-        [Display(Name = "PI")]
-        public string PricingIndicator { get; set; }    //Extended Field
-        [Display(Name = "CFPY")]
-        public string ContractPaymentAmount { get; set; }   //Extended Field
-        [Display(Name = "FD")]
-        public string FollowUpDaysIndicator { get; set; }   //Extended Field
-    }
-    public class Pagination
-    {
-        public string limit { get; set; }
-        public string offset { get; set; }
-        public string MorePages { get; set; }
-
-    }
-    public class Edit
-    {
-        public string EditType { get; set; }
-        public string EditValue { get; set; }
-
+</div>
+<style>
+    .errorcls {
+        border: 2px solid #8c0108 !important;
     }
 
-}
+    .grid {
+        overflow: hidden;
+        left: 50px;
+        border: 1px solid #d7d7d7;
+        border-radius: 10px 10px 0px 0px;
+        width: 100%;
+        margin: 10px 0px 10px 0px;
+    }
 
+    .mai_table tr:nth-child(2n+1) {
+        background-color: #e9e9e9;
+    }
+
+    .mai_table th {
+        padding: 10px 0px 10px 16px;
+        border-right: 1px solid #d7d7d7 !important;
+        background: linear-gradient(#fafafa,#dedede);
+    }
+
+
+    .mai_table td {
+        border: 1px solid #d7d7d7;
+        padding: 16px;
+        height: 56px;
+        min-width: 40px;
+    }
+
+    mai_table:nth-child(2n) td {
+        background-color: red;
+        border: 1px solid;
+    }
+
+    .mai_table th:last-child {
+        border-right: none;
+    }
+
+    .text_GridCenter {
+        text-align: center !important;
+    }
+
+    .first-data td label {
+        font-weight: normal;
+    }
+
+    .textboxsmall td input {
+        width: 65px !important;
+    }
+
+    .Tabform td {
+        padding: 4px 5px 4px 4px;
+    }
+
+    .codestextbox input[type='text'] {
+        width: 90px;
+    }
+
+    .textbox-md input[type='text'] {
+        width: 82px;
+    }
+
+    .textboxinput-lg input[type='text'] {
+        width: 90% !important;
+    }
+
+
+
+    .textboxinput-xs {
+        width: 25px;
+    }
+
+    .textboxinput-sm {
+        width: 35px;
+    }
+
+    .textboxinput-md {
+        width: 36px;
+    }
+
+    .textboxinput-md2 {
+        width: 39px;
+    }
+
+    .textboxinput-md9 {
+        width: 79px !important;
+    }
+
+    .textboxinput-lg {
+        width: 65px;
+    }
+
+    .textboxinput-lg2 {
+        width: 100px;
+    }
+
+    .textboxinput-lg6 {
+        width: 135px;
+    }
+
+    .textboxinput-lg3 {
+        width: 230px;
+    }
+
+    .textboxinput-lg4 {
+        width: 285px;
+    }
+
+    .textboxinput-lg5 {
+        width: 361px;
+    }
+
+    table.Tabform {
+        width: 100%;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    .Tabform th, .Tabform td {
+        padding: 4px 4px 4px 4px;
+        text-transform: uppercase;
+    }
+
+        .Tabform td:last-child {
+            padding-left: 4px;
+        }
+
+    .gridtextbox {
+        Width: 60px !important;
+    }
+
+    .gridtextboxT {
+        Width: 60px !important;
+    }
+
+    .gridtextboxEX1 {
+        Width: 60px !important;
+    }
+
+    .gridtextboxP1 {
+        Width: 60px !important;
+    }
+
+    .gridtextboxOV1 {
+        Width: 60px !important;
+    }
+
+    span.editHard {
+        color: #fff;
+        font-size: 14px;
+        margin: 0px 8px 0px 10px;
+    }
+
+    span.editSoft {
+        color: #00ffff;
+        font-size: 14px;
+        margin: 0px 8px 0px 10px;
+    }
+
+    /*Rajesh*/
+    .textboxinput-md-lg2 input[type='text'] {
+        width: 120px;
+    }
+
+    input[type='text'].Tabtextboxinput-md-lg2 {
+        width: 82px;
+    }
+
+    input[type='text'].Tabtextboxinput-md {
+        width: 36px;
+    }
+
+    input[type='text'].textboxinput-lg6 {
+        width: 160px;
+    }
+
+    @@media only screen and (max-width: 1279px) {
+        .codestextbox input[type='text'] {
+            width: 70px;
+        }
+
+        input[type='text'].Tabtextboxinput-md-lg2 {
+            width: 74px;
+        }
+
+        .Tabform th, .Tabform td {
+            padding: 4px 2px 4px 2px;
+        }
+
+        .col-md-6 {
+            width: 48.50%;
+        }
+
+        input[type='text'].textboxinput-lg6 {
+            width: 124px;
+        }
+
+        .textboxinput-md-lg2 input[type='text'] {
+            width: 90px;
+        }
+
+        #DivAccordianOtherDetail1 .col-md-2:last-child input[type='text'] {
+            width: 42px;
+        }
+
+        #DivAccordianOtherDetail1 .col-md-2:nth-child(5) {
+            width: 20%;
+        }
+
+        #DivAccordianOtherDetail1 .col-md-2:last-child {
+            width: 12.66%;
+        }
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        HandleWindowResizeEvent();
+        $("#txtControlText").val($.trim($("#controlLine").val()));
+        $("#txtControlText").focus();
+        $("#txtControlText").get(0).setSelectionRange(0, 0);
+        $(document).keydown(function (e) {
+            if (e.keyCode == 117) {
+                controlLine.LoadPartialViewMpc2();
+                e.preventDefault();
+            }
+        });
+    });
+</script>
